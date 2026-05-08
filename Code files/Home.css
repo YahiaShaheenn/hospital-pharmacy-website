@@ -34,3 +34,7 @@ h1,p {
     top: 0;
     z-index: 100;
 }
+
+input{
+    color: white;
+}
