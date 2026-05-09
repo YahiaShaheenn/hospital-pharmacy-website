@@ -1,10 +1,11 @@
 // 1. The Static Data (Your 5 Medicines)
 const inventory = [
     { id: "M001", name: "Panadol", category: "Analgesic", stock: 5, expiry: "2026-12" },
-    { id: "M002", name: "Amoxil", category: "Antibiotic", stock: 20, expiry: "2025-08" },
-    { id: "M003", name: "Brufen", category: "Painkiller", stock: 15, expiry: "2026-01" },
+    { id: "M002", name: "Amoxil", category: "Antibiotic", stock: 20, expiry: "2027-08" },
+    { id: "M003", name: "Brufen", category: "Painkiller", stock: 15, expiry: "2030-01" },
     { id: "M004", name: "Zyrtec", category: "Antihistamine", stock: 8, expiry: "2027-03" },
-    { id: "M005", name: "Nexium", category: "Antacid", stock: 12, expiry: "2025-11" }
+    { id: "M005", name: "Nexium", category: "Antacid", stock: 12, expiry: "2028-11" },
+    { id: "M006", name: "Ketofan", category: "Painkiller", stock: 17, expiry: "2027-09" }
 ];
 
 // Remembers which medicine the doctor is currently looking at
