@@ -1,0 +1,118 @@
+.TopBar{
+    background-color:grey;
+    color: white;
+    display: flex;
+    gap: 200px;
+    padding: 20px;
+    position: sticky;
+    top: 0;
+    justify-content: center;
+}
+
+/* .TopBar h1{
+    margin:0;
+} */
+
+.nav{
+    display: flex;
+    gap: 70px;
+    justify-content: center;
+    position: sticky;
+    top: 70px;
+    background-color:lightgray;
+}
+
+.nav button{
+    background-color: white;
+    color: darkblue;
+    padding: 5px;
+    border-radius: 8px;
+
+}
+
+body{
+    margin: 0;
+    padding: 0;
+}
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.search input{
+    border-radius: 8px;
+    width: 600px;
+    padding: 7px;
+    align-content: center;
+}
+
+.search button{
+    border-radius: 8px;
+    padding: 7px;
+    background-color: white;
+    color: darkblue;
+    cursor: pointer;
+}
+
+.profile-icon {
+    color: white;
+}
+
+.profile-icon:visited {
+    color: white;
+}
+
+.profile-icon .material-icons{
+    font-size: 40px;
+}
+
+
+.summary{
+    display: grid;
+    grid-template-columns: auto auto auto auto;
+    margin-top: 20px;
+}
+
+.card:hover{
+    transform: translateY(-5px);
+}
+
+.ts{
+    background-color:mediumturquoise;
+    padding: 27px;
+    margin: 10px;
+    border-radius: 10px;
+}
+
+.tp{
+    background-color:lightgreen;
+    padding: 27px;
+    margin: 10px;
+    border-radius: 10px;
+}
+
+.em{
+    background-color:lightcoral;
+     padding: 27px;
+    margin: 10px;
+    border-radius: 10px;
+}
+
+.ls{
+    background-color:mediumpurple;
+    padding: 27px;
+    margin: 10px;
+    border-radius: 10px;
+}
+
+.sumRow{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.card p{
+    text-align: center;
+}
+
