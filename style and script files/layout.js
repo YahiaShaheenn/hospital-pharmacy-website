@@ -66,20 +66,15 @@ body{
 body::before{
     content: "";
     position: fixed;
-
     top: 0;
     left: 0;
-
     width: 100%;
     height: 100%;
-
-    background-image: url("saidaleya.png");
+    background-image: url('../style and script files/saidaleya.png');
     background-repeat: no-repeat;
     background-position: center 120px;
     background-size: 700px;
-
     opacity: 0.2;
-
     z-index: -1;
 }
 
