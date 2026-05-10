@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Reports</title>
+
+        <link rel="stylesheet" href="../style and script files/reports.css">
+        <link rel="stylesheet" href="../style and script files/dashboard.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=ADLaM Display">
+
+</head>
+
+<body>
+
+
+     <!-- <div class="TopBar">
+
+    <h1>Pharmacy Reports</h1>
+
+      </div class=navigation_bar>
+
+     <button onclick="location.href='home.html'">Home</button>
+     <button onclick="location.href='invnentory.html'">Inventory</button>
+     <button onclick="location.href='sales.html'">Sales</button>
+     <button onclick="location.href='reports.html'">Reports</button>
+
+      </div>
+    </div> -->
+
+    <main class="reports_container">
+
+         <section class="page_title">
+
+            <h2>Sales Reports</h2>
+
+            <p>
+            View medicine sales, revenue, and seller performance.
+            </p>
+
+         </section>
+
+<section class="filters_section">
+
+       <h3>Filter Reports</h3>
+
+    <div class="filters">
+
+        <div class="filter_box">
+
+            <label for="date_filter">Date</label>
+            <input type="date" id="date_filter">
+
+        </div>
+
+        <div class="filter_box">
+
+            <label for="medicine_filter">Medicine</label>
+            <input type="text" id="medicine_filter" placeholder="Search medicine">
+
+        </div>
+
+        <div class="filter_box">
+
+            <label for="seller_filter">Seller</label>
+            <select id="seller_filter">
+
+                <option value="">All Sellers</option>
+                <option value="Ahmed">Ahmed</option>
+                <option value="Mona">Mona</option>
+                <option value="Sara">Sara</option>
+
+            </select>
+
+        </div>
+
+        <button id="filter_button">Apply Filter</button>
+        <button id="reset_button">Reset</button>
+
+    </div>
+
+</section>
+
+<section class="table_section">
+
+    <table>
+
+        <thead>
+
+            <tr>
+
+                <th>Medicine Name</th>
+                <th>Quantity Sold</th>
+                <th>Date</th>
+                <th>Seller</th>
+                <th>Revenue</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody id="reports_table_body">
+
+        </tbody>
+
+    </table>
+    
+
+</section>
+
+    </main>
+
+    <script type="text/javascript" src="../style and script files/layout.js"></script>
+    <script type="text/javascript" src="../style and script files/reports.js"></script>
+
+</body>
