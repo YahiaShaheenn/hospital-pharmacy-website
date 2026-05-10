@@ -260,3 +260,31 @@ transition: 0.4s ease; /* smooth transition for hover effect */
 .cancel-btn:hover {
     background: #e0e0e0;
 }
+@media (max-width: 768px) {
+    .AddDoctor-container,
+    .DoctorsList-container {
+        width: 90%;
+    }
+
+    .popup-content {
+        width: 90%;
+    }
+
+    .popup-actions {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .AddDoctor-container,
+    .DoctorsList-container {
+        width: 95%;
+        padding: 20px;
+    }
+
+    .doctor-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+}
