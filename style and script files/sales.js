@@ -174,8 +174,12 @@ function checkout() {
 }
 function generateReceipt(paymentmethod) {
     let sellerName = sessionStorage.getItem("currentDoctor");
-    let receiptDiv = document.getElementById("receipt");  //save date and time
-    let now = new Date();
+    let receiptDiv = document.getElementById("receipt");  
+    let now = new Date(); // saves date
+    let time = now.toLocaleTimeString("en-US", {
+    hour: "2-digit",
+    minute: "2-digit"
+}); //saves time
     let date = now.toLocaleDateString("en-US", {
         weekday: "long",
         month: "long",
@@ -194,7 +198,7 @@ function generateReceipt(paymentmethod) {
     
    document.getElementById("modal-receipt").innerHTML = `
     <h3>Receipt</h3>
-    <p>${date}</p>
+    <p>${date} | ${time}</p>
     <hr>
     ${itemsHTML}
     <hr>
