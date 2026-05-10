@@ -25,6 +25,8 @@ function displayReports(data){
 
                     <td>${item.price * item.qty} EGP</td>
 
+                    <td>${sale.payment}</td>
+
                 </tr>
 
             `;
