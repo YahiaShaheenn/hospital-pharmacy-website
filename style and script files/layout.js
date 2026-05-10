@@ -66,20 +66,15 @@ body{
 body::before{
     content: "";
     position: fixed;
-
     top: 0;
     left: 0;
-
     width: 100%;
     height: 100%;
-
-    background-image: url("saidaleya.png");
+    background-image: url('../style and script files/saidaleya.png');
     background-repeat: no-repeat;
     background-position: center 120px;
     background-size: 700px;
-
     opacity: 0.2;
-
     z-index: -1;
 }
 
@@ -102,6 +97,10 @@ body::before{
     font-size: 40px;
 }
 
+.profile-icon:hover .material-icons{
+    transform: translateY(-2px);
+}
+
 `;
 
 document.head.appendChild(style);
@@ -117,15 +116,15 @@ topbar.innerHTML = `
         <h1>Pharmacy</h1>
 
         <div class="profile">
-            <a href="login.html" class="profile-icon">
-                <span class="material-icons">account_circle</span>
+            <a href="login.html" class="profile-icon"  id="logout" title="Logout">
+                <span class="material-icons">logout</span>
             </a>
         </div>
 
     </div>
 
     <div class="nav">
-        <button type="button" onclick="location.href='#'">Dashboard</button>
+        <button type="button" onclick="location.href='dashboard.html'">Dashboard</button>
         <button type="button" onclick="location.href='inventory.html'">Inventory</button>
         <button type="button" onclick="location.href='sales.html'">Sales</button>
         <button type="button" onclick="location.href='reports.html'">Reports</button>
