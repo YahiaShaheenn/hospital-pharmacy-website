@@ -6,7 +6,7 @@ const inventory = [
     { id: "M004", name: "Zyrtec", category: "Antihistamine", stock: 8, expiry: "2027-03" },
     { id: "M005", name: "Nexium", category: "Antacid", stock: 12, expiry: "2028-11" },
     { id: "M006", name: "Ketofan", category: "Painkiller", stock: 17, expiry: "2027-09" }
-    .
+    
 ];
 
 // Remembers which medicine the doctor is currently looking at
