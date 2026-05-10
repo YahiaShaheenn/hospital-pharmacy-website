@@ -12,32 +12,28 @@
 </head>
 
 <body>
-    
     <script src="../style and script files/topbar.js"></script>
-
-<!--search-->>
-<div class="search-section">
-    <input type="text" id="searchInput" placeholder="Search medicine...">
-    <button onclick="searchmed()">Search</button>
-</div>
-<div id="searchResults"></div>
-
-<div id="cart"></div>
-
-<!-- payment section -->
-<div id="payment-section">
-    <h3>Payment Method</h3>
-    <input type="radio" name="payment" value="Cash"> Cash
-    <input type="radio" name="payment" value="Card"> Card
-    <br>
-    <button onclick="checkout()">Checkout</button>
-</div>
-<!-- receipt -->
-<div id="receipt"></div>
-
-
+    <div class="sales-container">
+        <div class="left-panel">
+            <div class="search-section">
+                <input type="text" id="searchInput" placeholder="Search medicine..." onkeydown="if(event.key==='Enter') searchmed()">
+                <button onclick="searchmed()">Search</button>
+            </div>
+            <div id="searchResults"></div>
+        </div>
+        <div class="right-panel">
+            <div id="cart"></div>
+            <div id="payment-section">
+                <h3>Payment Method</h3>
+                <input type="radio" name="payment" value="Cash"> Cash
+                <input type="radio" name="payment" value="Card"> Card
+                <br>
+                <button onclick="checkout()">Checkout</button>
+            </div>
+            <div id="receipt"></div>
+        </div>
+    </div>
     <script src="../style and script files/sales.js"></script>
-
 </body>
 
 </html>
