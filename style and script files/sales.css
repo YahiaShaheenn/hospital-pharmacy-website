@@ -1,3 +1,7 @@
+
+.left-panel, .right-panel, .search-section, .medicine-result, .cart-item, #payment-section, #modal-box, #alert-box {
+    font-family: 'ADLaM Display', sans-serif;
+}
 .sales-container {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -12,6 +16,25 @@
     padding: 20px;
 }
 
+.left-panel::before {
+    content: "🔍 Search Medicine";
+    display: block;
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    color: rgb(47, 127, 138);
+}
+
+.right-panel::before {
+    content: "🛒 Cart";
+    display: block;
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    color: rgb(47, 127, 138);
+}
+
+/* Search */
 .search-section {
     display: flex;
     gap: 10px;
@@ -24,6 +47,7 @@
     border-radius: 8px;
     border: 1px solid #2f7f8a;
     font-size: 15px;
+    background: white;
 }
 
 .search-section button {
@@ -33,68 +57,238 @@
     padding: 10px 18px;
     border-radius: 8px;
     cursor: pointer;
+    font-size: 15px;
+    transition: 0.3s;
 }
 
 .search-section button:hover {
     background-color: #2f7f8a;
+    transform: translateY(-2px);
 }
 
+/* Medicine Result Cards */
 .medicine-result {
     background: white;
-    border-radius: 10px;
-    padding: 12px;
+    border-radius: 12px;
+    padding: 15px;
     margin-bottom: 10px;
+    border-left: 4px solid rgb(63, 138, 153);
+    transition: 0.3s;
+}
+
+.medicine-result:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+}
+
+.medicine-result p {
+    margin: 4px 0;
 }
 
 .medicine-result button {
     background-color: rgb(63, 138, 153);
     color: white;
     border: none;
-    padding: 6px 12px;
-    border-radius: 6px;
+    padding: 7px 14px;
+    border-radius: 8px;
     cursor: pointer;
-    margin-top: 5px;
+    margin-top: 8px;
+    transition: 0.3s;
 }
 
 .medicine-result button:hover {
     background-color: #2f7f8a;
 }
 
+/* Cart Items */
 .cart-item {
     background: white;
-    border-radius: 10px;
-    padding: 12px;
+    border-radius: 12px;
+    padding: 15px;
     margin-bottom: 10px;
+    border-left: 4px solid mediumturquoise;
 }
+
+.cart-item p {
+    margin: 4px 0;
+}
+
+
+.qty-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.qty-controls button {
+    background-color: rgb(63, 138, 153);
+    color: white;
+    border: none;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 16px;
+    transition: 0.3s;
+}
+
+.qty-controls button:hover {
+    background-color: #2f7f8a;
+    transform: scale(1.1);
+}
+
+.qty-controls span {
+    font-weight: bold;
+    font-size: 16px;
+    min-width: 20px;
+    text-align: center;
+}
+
+.qty-controls .remove-btn {
+    background-color: rgb(220, 80, 80);
+    border-radius: 8px;
+    width: auto;
+    padding: 0 12px;
+}
+
+.qty-controls .remove-btn:hover {
+    background-color: rgb(180, 50, 50);
+}
+
 
 #payment-section {
     display: none;
     background: white;
-    border-radius: 10px;
+    border-radius: 12px;
     padding: 15px;
     margin-top: 15px;
 }
 
+#payment-section h3 {
+    color: rgb(47, 127, 138);
+    margin-bottom: 10px;
+}
+
+#payment-section label {
+    margin-right: 15px;
+    font-size: 15px;
+}
+
 #payment-section button {
+    display: block;
     background-color: rgb(63, 138, 153);
     color: white;
     border: none;
-    padding: 10px 20px;
+    padding: 10px 30px;
     border-radius: 8px;
     cursor: pointer;
-    margin-top: 10px;
+    margin-top: 12px;
+    font-size: 15px;
+    transition: 0.3s;
 }
 
 #payment-section button:hover {
     background-color: #2f7f8a;
+    transform: translateY(-2px);
 }
 
-#receipt {
-    background: white;
-    border-radius: 10px;
-    padding: 15px;
-    margin-top: 15px;
-}
-#receipt:empty {
+/* Modal */
+#modal-overlay {
     display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    justify-content: center;
+    align-items: center;
+}
+
+#modal-box {
+    background: white;
+    padding: 30px;
+    border-radius: 18px;
+    width: 420px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+#modal-box h3 {
+    color: rgb(47, 127, 138);
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+#modal-box hr {
+    border: 1px solid #e0e0e0;
+    margin: 10px 0;
+}
+
+#modal-box h4 {
+    color: rgb(47, 127, 138);
+    margin: 10px 0;
+}
+
+#modal-box button {
+    margin-top: 20px;
+    background-color: rgb(63, 138, 153);
+    color: white;
+    border: none;
+    padding: 10px 30px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 15px;
+    transition: 0.3s;
+}
+
+#modal-box button:hover {
+    background-color: #2f7f8a;
+    transform: translateY(-2px);
+}
+
+/* Custom Alert Modal */
+#alert-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+#alert-box {
+    background: white;
+    padding: 30px;
+    border-radius: 18px;
+    width: 350px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+#alert-box p {
+    font-size: 17px;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+#alert-box button {
+    background-color: rgb(63, 138, 153);
+    color: white;
+    border: none;
+    padding: 10px 30px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 15px;
+    transition: 0.3s;
+}
+
+#alert-box button:hover {
+    background-color: #2f7f8a;
 }
