@@ -1,53 +1,42 @@
 const supplies = [
-
-    { name: "Paracetamol", category: "Pain Relief", price: 25, stock: 120 },
-    { name: "Ibuprofen", category: "Pain Relief", price: 40, stock: 80 },
-    { name: "Diclofenac", category: "Pain Relief", price: 55, stock: 60 },
-
-    { name: "Amoxicillin", category: "Antibiotics", price: 65, stock: 90 },
-    { name: "Azithromycin", category: "Antibiotics", price: 85, stock: 50 },
-    { name: "Ciprofloxacin", category: "Antibiotics", price: 70, stock: 40 },
-
-    { name: "Cough Syrup", category: "Cold & Flu", price: 35, stock: 75 },
-    { name: "Nasal Spray", category: "Cold & Flu", price: 45, stock: 55 },
-    { name: "Vitamin C Tablets", category: "Cold & Flu", price: 30, stock: 100 },
-
-    { name: "Insulin", category: "Diabetes", price: 150, stock: 20 },
-    { name: "Metformin", category: "Diabetes", price: 40, stock: 60 },
-    { name: "Glucose Test Strips", category: "Diabetes", price: 80, stock: 35 },
-
-    { name: "Amlodipine", category: "Heart", price: 55, stock: 45 },
-    { name: "Atenolol", category: "Heart", price: 45, stock: 50 },
-    { name: "Nitroglycerin", category: "Heart", price: 90, stock: 25 },
-
-    { name: "Omeprazole", category: "Stomach", price: 50, stock: 70 },
-    { name: "Antacids", category: "Stomach", price: 20, stock: 90 },
-    { name: "ORS Packets", category: "Stomach", price: 15, stock: 110 },
-
-    { name: "Salbutamol Inhaler", category: "Respiratory", price: 120, stock: 30 },
-    { name: "Nebulizer Solution", category: "Respiratory", price: 75, stock: 40 },
-
-    { name: "Syringes", category: "Supplies", price: 10, stock: 300 },
-    { name: "Bandages", category: "Supplies", price: 20, stock: 200 },
-    { name: "Alcohol Swabs", category: "Supplies", price: 15, stock: 250 },
-    { name: "Surgical Mask Box", category: "Supplies", price: 60, stock: 150 },
-    { name: "Surgical Gloves", category: "Supplies", price: 45, stock: 180 },
-
-    { name: "Epinephrine Injection", category: "Emergency", price: 200, stock: 15 },
-    { name: "IV Fluids", category: "Emergency", price: 85, stock: 40 },
-    { name: "Oxygen Mask", category: "Emergency", price: 110, stock: 25 },
-
-    { name: "Multivitamins", category: "Vitamins", price: 70, stock: 85 },
-    { name: "Vitamin D", category: "Vitamins", price: 55, stock: 90 },
-    { name: "Omega-3 Capsules", category: "Vitamins", price: 95, stock: 60 },
-
-    { name: "Baby Formula", category: "Baby Care", price: 180, stock: 30 },
-    { name: "Diapers", category: "Baby Care", price: 120, stock: 50 },
-    { name: "Pediatric Syrup", category: "Baby Care", price: 40, stock: 65 }
+{ name: "Paracetamol", category: "Pain Relief", costPrice: 15, sellingPrice: 25, stock: 120, minStock: 20, expiryDate: "2027-06-01" },
+{ name: "Ibuprofen", category: "Pain Relief", costPrice: 25, sellingPrice: 40, stock: 80, minStock: 15, expiryDate: "2027-08-15" },
+{ name: "Diclofenac", category: "Pain Relief", costPrice: 35, sellingPrice: 55, stock: 60, minStock: 10, expiryDate: "2028-01-10" },
+{ name: "Amoxicillin", category: "Antibiotics", costPrice: 45, sellingPrice: 65, stock: 90, minStock: 15, expiryDate: "2027-03-20" },
+{ name: "Azithromycin", category: "Antibiotics", costPrice: 60, sellingPrice: 85, stock: 50, minStock: 10, expiryDate: "2027-09-05" },
+{ name: "Ciprofloxacin", category: "Antibiotics", costPrice: 50, sellingPrice: 70, stock: 40, minStock: 10, expiryDate: "2028-02-14" },
+{ name: "Cough Syrup", category: "Cold & Flu", costPrice: 20, sellingPrice: 35, stock: 75, minStock: 15, expiryDate: "2026-11-30" },
+{ name: "Nasal Spray", category: "Cold & Flu", costPrice: 28, sellingPrice: 45, stock: 55, minStock: 10, expiryDate: "2027-04-18" },
+{ name: "Vitamin C Tablets", category: "Cold & Flu", costPrice: 18, sellingPrice: 30, stock: 100, minStock: 20, expiryDate: "2028-07-22" },
+{ name: "Insulin", category: "Diabetes", costPrice: 100, sellingPrice: 150, stock: 20, minStock: 8, expiryDate: "2026-08-10" },
+{ name: "Metformin", category: "Diabetes", costPrice: 25, sellingPrice: 40, stock: 60, minStock: 12, expiryDate: "2027-12-01" },
+{ name: "Glucose Test Strips", category: "Diabetes", costPrice: 55, sellingPrice: 80, stock: 35, minStock: 10, expiryDate: "2027-05-15" },
+{ name: "Amlodipine", category: "Heart", costPrice: 35, sellingPrice: 55, stock: 45, minStock: 10, expiryDate: "2028-03-08" },
+{ name: "Atenolol", category: "Heart", costPrice: 28, sellingPrice: 45, stock: 50, minStock: 10, expiryDate: "2027-11-20" },
+{ name: "Nitroglycerin", category: "Heart", costPrice: 60, sellingPrice: 90, stock: 25, minStock: 8, expiryDate: "2026-09-30" },
+{ name: "Omeprazole", category: "Stomach", costPrice: 30, sellingPrice: 50, stock: 70, minStock: 15, expiryDate: "2027-07-14" },
+{ name: "Antacids", category: "Stomach", costPrice: 12, sellingPrice: 20, stock: 90, minStock: 20, expiryDate: "2028-01-25" },
+{ name: "ORS Packets", category: "Stomach", costPrice: 8, sellingPrice: 15, stock: 110, minStock: 25, expiryDate: "2027-10-10" },
+{ name: "Salbutamol Inhaler", category: "Respiratory", costPrice: 80, sellingPrice: 120, stock: 30, minStock: 8, expiryDate: "2027-06-18" },
+{ name: "Nebulizer Solution", category: "Respiratory", costPrice: 50, sellingPrice: 75, stock: 40, minStock: 10, expiryDate: "2027-02-28" },
+{ name: "Syringes", category: "Supplies", costPrice: 5, sellingPrice: 10, stock: 300, minStock: 50, expiryDate: "2030-01-01" },
+{ name: "Bandages", category: "Supplies", costPrice: 12, sellingPrice: 20, stock: 200, minStock: 40, expiryDate: "2030-06-01" },
+{ name: "Alcohol Swabs", category: "Supplies", costPrice: 8, sellingPrice: 15, stock: 250, minStock: 50, expiryDate: "2029-12-01" },
+{ name: "Surgical Mask Box", category: "Supplies", costPrice: 40, sellingPrice: 60, stock: 150, minStock: 30, expiryDate: "2029-08-15" },
+{ name: "Surgical Gloves", category: "Supplies", costPrice: 28, sellingPrice: 45, stock: 180, minStock: 30, expiryDate: "2030-03-20" },
+{ name: "Epinephrine Injection", category: "Emergency", costPrice: 140, sellingPrice: 200, stock: 15, minStock: 5, expiryDate: "2026-10-05" },
+{ name: "IV Fluids", category: "Emergency", costPrice: 55, sellingPrice: 85, stock: 40, minStock: 10, expiryDate: "2027-08-30" },
+{ name: "Oxygen Mask", category: "Emergency", costPrice: 70, sellingPrice: 110, stock: 25, minStock: 8, expiryDate: "2030-01-15" },
+{ name: "Multivitamins", category: "Vitamins", costPrice: 45, sellingPrice: 70, stock: 85, minStock: 15, expiryDate: "2028-05-10" },
+{ name: "Vitamin D", category: "Vitamins", costPrice: 35, sellingPrice: 55, stock: 90, minStock: 15, expiryDate: "2028-09-22" },
+{ name: "Omega-3 Capsules", category: "Vitamins", costPrice: 65, sellingPrice: 95, stock: 60, minStock: 12, expiryDate: "2028-11-30" },
+{ name: "Baby Formula", category: "Baby Care", costPrice: 120, sellingPrice: 180, stock: 30, minStock: 8, expiryDate: "2026-12-15" },
+{ name: "Diapers", category: "Baby Care", costPrice: 80, sellingPrice: 120, stock: 50, minStock: 10, expiryDate: "2030-01-01" },
+{ name: "Pediatric Syrup", category: "Baby Care", costPrice: 25, sellingPrice: 40, stock: 65, minStock: 12, expiryDate: "2027-04-05" }
 ];
 
 function searchmed(){
-    let input = document.getElementById("searchInput").value.toLowerCase();
+    let input = document.getElementById("searchInput").value.toLowerCase(); // read it either lowercase or uppercase
     let results= document.getElementById("searchResults");
      results.innerHTML = "";
 
@@ -56,7 +45,7 @@ function searchmed(){
             results.innerHTML += `
                 <div class="medicine-result">
                     <p><strong>${supplies[i].name}</strong></p>
-                    <p>Price: ${supplies[i].price} EGP</p>
+                    <p>Price: ${supplies[i].sellingPrice} EGP</p>
                     <p>Stock: ${supplies[i].stock}</p>
                     <button onclick="addToCart(${i})">Add to Cart</button>
                 </div>
@@ -75,15 +64,19 @@ function addToCart(i){
     for(let j=0;j<cart.length; j++){
         if(cart[j].name ===item.name){
             cart[j].qty++;
+             supplies[i].stock--;
             renderCart();
+            searchmed();
             return;
         }}
+supplies[i].stock--;
 cart.push({
     name:item.name,
-    price: item.price,
+    price: item.sellingPrice,
     qty:1
 });
 renderCart();
+searchmed();
 }
 function renderCart() {
     let cartDiv = document.getElementById("cart");
@@ -93,12 +86,18 @@ function renderCart() {
         let subtotal = cart[j].price * cart[j].qty;
         total += subtotal;
 
-        cartDiv.innerHTML += `
-            <div class="cart-item">
-                <p><strong>${cart[j].name}</strong></p>
-                <p>Qty: ${cart[j].qty} | Price: ${cart[j].price} EGP | Subtotal: ${subtotal} EGP</p>
-            </div>
-        `;
+       cartDiv.innerHTML += `
+    <div class="cart-item">
+        <p><strong>${cart[j].name}</strong></p>
+        <p>Price: ${cart[j].price} EGP | Subtotal: ${subtotal} EGP</p>
+        <div class="qty-controls">
+            <button onclick="decreaseQty(${j})">-</button>
+            <span>${cart[j].qty}</span>
+            <button onclick="increaseQty(${j})">+</button>
+            <button onclick="removeItem(${j})">Remove</button>
+        </div>
+    </div>
+`;
     }
     if (cart.length > 0) {
     cartDiv.innerHTML += `<h3>Total: ${total} EGP</h3>`;
@@ -108,6 +107,44 @@ if (cart.length > 0) {
 } else {
     document.getElementById("payment-section").style.display = "none";
 }
+}
+function increaseQty(j) {
+    // find the matching supply index
+    for (let i = 0; i < supplies.length; i++) {
+        if (supplies[i].name === cart[j].name) {
+            supplies[i].stock--;
+            break;
+        }
+    }
+    cart[j].qty++;
+    renderCart();
+    searchmed();
+}
+function decreaseQty(j) {
+    for (let i = 0; i < supplies.length; i++) {
+        if (supplies[i].name === cart[j].name) {
+            supplies[i].stock++;
+            break;
+        }
+    }
+    if (cart[j].qty > 1) {
+        cart[j].qty--;
+    } else {
+        cart.splice(j, 1);
+    }
+    renderCart();
+    searchmed();
+}
+function removeItem(j) {
+    for (let i = 0; i < supplies.length; i++) {
+        if (supplies[i].name === cart[j].name) {
+            supplies[i].stock += cart[j].qty;
+            break;
+        }
+    }
+    cart.splice(j, 1);
+    renderCart();
+    searchmed();
 }
 function checkout() {
     if (cart.length === 0) {
@@ -124,9 +161,7 @@ function checkout() {
     generateReceipt(paymentmethod);
 }
 function generateReceipt(paymentmethod) {
-    let receiptDiv = document.getElementById("receipt");
-
-    // Get current date and time
+    let receiptDiv = document.getElementById("receipt");  //save date and time
     let now = new Date();
     let date = now.toLocaleDateString("en-US", {
         weekday: "long",
@@ -154,8 +189,16 @@ function generateReceipt(paymentmethod) {
         <p>Payment: ${paymentmethod}</p>
         <p>Thank you!</p>
     `;
+let sale = {      //saves it
+    date: date,
+    items: cart.slice(), 
+    total: total,
+    payment: paymentmethod
+};
+let salesHistory = JSON.parse(localStorage.getItem("salesHistory")) || [];
+salesHistory.push(sale);
+localStorage.setItem("salesHistory", JSON.stringify(salesHistory));
 
-    // Clear cart after checkout
     cart = [];
     renderCart();
 }
