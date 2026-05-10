@@ -1,7 +1,7 @@
-
-.left-panel, .right-panel, .search-section, .medicine-result, .cart-item, #payment-section, #modal-box, #alert-box {
+*{
     font-family: 'ADLaM Display', sans-serif;
 }
+
 .sales-container {
     display: grid;
     grid-template-columns: 1fr 1fr;
