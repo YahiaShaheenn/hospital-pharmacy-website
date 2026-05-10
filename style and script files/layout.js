@@ -86,12 +86,12 @@ body::before{
 }
 
 .profile-icon{
-    color: white;
+    color: black;
     text-decoration: none;
 }
 
 .profile-icon:visited{
-    color: white;
+    color: black;
 }
 
 .profile-icon .material-icons{
