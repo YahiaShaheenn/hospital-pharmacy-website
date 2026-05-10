@@ -1,0 +1,112 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box; /* include padding and border in element's total width and height */
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #b0e0e6, #5f8fdb);
+    min-height: 100vh; /* ensure body takes full viewport height */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative; /* for positioning the background image */
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url("saidaleya.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 700px;
+    opacity: 0.18;
+    z-index: -1;
+    animation: subtleFloat 25s ease-in-out infinite; /* apply the floating animation to the background image */
+}
+
+/* Subtle floating animation for background image */
+@keyframes subtleFloat {
+    0%, 100% { transform: translate(0, 0); } /* start and end at original position */
+    50% { transform: translate(30px, 20px); } /* move slightly to the right and down at the midpoint */
+}
+
+.login-container {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(12px);
+    padding: 40px 30px;
+    border-radius: 16px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+    width: 400px;
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    transition: transform 0.4s ease; /* smooth transition for hover effect */
+}
+
+.login-container:hover {
+    transform: translateY(-8px); /* lift the container on hover */
+}
+
+.login-container h1 {
+    margin-bottom: 28px;
+    color: #1e3a8a;
+    font-weight: 600;
+    font-size: 28px;
+}
+
+.input-group {
+    margin-bottom: 18px;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 14px 16px;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: all 0.3s ease; /* smooth transition for focus effect */
+    background: white;
+}
+
+.input-group input:focus {
+    border-color: #9b59b6; 
+    box-shadow: 0 0 0 4px rgba(155, 89, 182, 0.15);
+    outline: none; /* remove default focus outline */
+}
+
+.btn {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, #9d61bb, #8910bc);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 17px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.4s ease; /* smooth transition for hover and active effects */
+    box-shadow: 0 6px 15px rgba(155, 89, 182, 0.3);
+    margin-top: 8px;
+}
+
+.btn:hover {
+    background: linear-gradient(135deg, #8e44ad, #7e3a9c);
+    transform: translateY(-3px); /* lift the button slightly on hover */
+    box-shadow: 0 10px 20px rgba(155, 89, 182, 0.4);
+}
+
+.btn:active {
+    transform: scale(0.97); /* slightly shrink the button on click */
+}
+
+#message {
+    margin-top: 12px;
+    color: #e74c3c;
+    font-size: 14px;
+    height: 18px; /* reserve space for the message */
+}

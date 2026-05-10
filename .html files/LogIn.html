@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log In</title>
+    <!-- Link to the CSS file -->
+    <link rel="stylesheet" href="../style and script files/LogIn.css">
+</head>
+
+<body>
+
+    <div class="login-container">
+        <h1>Log In</h1>
+        <form id="LoginForm"><!-- This form will redirect to the dashboard on submission & method is to make log in info secure-->
+            <div class="input-group">
+                <input id="username" type="text" placeholder="Username" required>
+            </div>
+            <div class="input-group">
+                <input id="password" type="password" placeholder="Password" required>
+            </div>
+            <p id="message"></p>
+            <button id="LoginBtn" class="btn" type="submit">Log In</button>
+        </form>
+    </div>
+
+    <script type="text/javascript" src="../style and script files/LogIn.js"></script>
+</body>
+</html>
