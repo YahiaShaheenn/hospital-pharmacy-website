@@ -58,9 +58,12 @@ style.textContent = `
 }
 
 body{
-    margin: 0;
+   margin: 0;
     padding: 0;
     background-color: powderblue;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
 body::before{
@@ -82,15 +85,16 @@ body::before{
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: 'ADLaM Display', sans-serif;
 }
 
 .profile-icon{
-    color: white;
+    color: black;
     text-decoration: none;
 }
 
 .profile-icon:visited{
-    color: white;
+    color: black;
 }
 
 .profile-icon .material-icons{
@@ -100,7 +104,19 @@ body::before{
 .profile-icon:hover .material-icons{
     transform: translateY(-2px);
 }
+.footer {
+    background-color: rgb(63, 138, 153);
+    color: white;
+    text-align: center;
+    padding: 15px;
+    margin-top: auto;
+    width: 100%;
+}
 
+.footer p {
+    margin: 5px 0;
+    font-size: 14px;
+}
 `;
 
 document.head.appendChild(style);
@@ -132,3 +148,13 @@ topbar.innerHTML = `
 `;
 
 document.body.insertBefore(topbar, document.body.firstChild);
+
+window.onload = function() {
+    let footer = document.createElement("div");
+    footer.className = "footer";
+    footer.innerHTML = `
+        <p> Pharmacy</p>
+        <p>© ${new Date().getFullYear()} All Rights Reserved</p>
+    `;
+    document.body.appendChild(footer);
+}
