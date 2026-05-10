@@ -80,10 +80,14 @@
     border-radius: 8px;
     margin-top: 10px;
     cursor: pointer;
+    transition: 0.3s;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
 .nav button:hover{
     background-color: lightgoldenrodyellow;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
 }
 
 body{
@@ -139,9 +143,20 @@ body::before{
     width: 96%;
 }
 
+
+.card{
+    transition: transform 0.3s ease;
+}
+
+
 .card:hover{
     transform: translateY(-5px);
 }
+
+.card p{
+    text-align: center;
+}
+
 
 .ts{
     background-color:mediumturquoise;
@@ -176,9 +191,7 @@ body::before{
     align-items: center;
     gap: 10px;
 }
-.card p{
-    text-align: center;
-}
+
 
 
 
