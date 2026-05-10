@@ -11,6 +11,7 @@ document.getElementById("LoginForm").addEventListener("submit", function (e) {
 
     if (foundDoctor) {
         sessionStorage.setItem("currentDoctor", username);
+        sessionStorage.setItem("admin", false); // Mark that a doctor is logged in
         window.location.href = "dashboard.html";
 
     }
