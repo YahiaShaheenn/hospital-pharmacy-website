@@ -38,7 +38,24 @@
         <ul id="doctorsList" class="doctors-list">
             <!-- List of doctors will be populated here -->
         </ul>
+        <p id="noDoctorsMessage"></p>
 
+    </div>
+
+    <div id="editPopup" class="popup">
+        <div class="popup-content">
+            <h2>Edit Doctor</h2>
+            <div class="input-group">
+                <input id="editUsername" type="text" placeholder="Username" required>
+            </div>
+            <div class="input-group">
+                <input id="editPassword" type="password" placeholder="Password" required>
+            </div>
+            <div class="popup-actions">
+                <button id="saveEditBtn" class="btn" type="submit">Save</button>
+                <button id="closePopupBtn" class="btn cancel-btn">Cancel</button>
+            </div>
+        </div>
     </div>
 
 

@@ -1,3 +1,6 @@
+sessionStorage.setItem("admin", true); // Mark that admin is logged in
+sessionStorage.setItem("currentDoctor", "Admin"); // Set current doctor to Admin for personalized messages
+
 
 // Load and display doctors list
 function loadDoctorsList() {
@@ -7,51 +10,97 @@ function loadDoctorsList() {
     doctorsList.innerHTML = ""; // Clear the list
     
     if (doctors.length === 0) {
-        doctorsList.innerHTML = "<p style='text-align:center; color:#999;'>No doctors added yet</p>";
-        return;
+        document.getElementById("noDoctorsMessage").textContent = "No doctors added yet";
     }
     
-    doctors.forEach((doctor, index) => {
-        const doctorItem = document.createElement("div");
-        doctorItem.className = "doctor-item";
-        doctorItem.innerHTML = `
-            <div class="doctor-info">
-                <p class="username">Username: ${doctor.username}</p>
-            </div>
-            <div class="doctor-actions">
-                <button class="action-btn edit-btn" onclick="editDoctor(${index})" title="Edit">✏️</button>
-                <button class="action-btn delete-btn" onclick="deleteDoctor(${index})" title="Delete">🗑️</button>
-            </div>
-        `;
-        doctorsList.appendChild(doctorItem);
-    });
-}
+    for (let i = 0; i < doctors.length; i++) {
+    const doctor = doctors[i];
 
-// Edit doctor (opens prompt to change username/password)
+    const doctorItem = document.createElement("div");
+    doctorItem.className = "doctor-item";
+    
+    doctorItem.innerHTML = `
+        <div class="doctor-info">
+            <p class="username">Username: ${doctor.username}</p>
+            
+        </div>
+        <div class="doctor-actions">
+            <button class="action-btn edit-btn" onclick="editDoctor(${i})" title="Edit"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"/></svg></button>
+            <button class="action-btn delete-btn" onclick="deleteDoctor(${i})" title="Delete"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/></svg></button>
+        </div>
+    `;
+
+    doctorsList.appendChild(doctorItem);
+}
+}
+// Edit doctor by index
+let currentEditIndex = null;
 function editDoctor(index) {
     const doctors = JSON.parse(localStorage.getItem("doctors")) || [];
+
     const doctor = doctors[index];
-    
-    const newUsername = prompt("Enter new username:", doctor.username);
-    if (newUsername === null) return; // User cancelled
-    
-    const newPassword = prompt("Enter new password:", doctor.password);
-    if (newPassword === null) return; // User cancelled
-    
-    doctors[index] = { username: newUsername, password: newPassword };
+
+    currentEditIndex = index;
+
+    document.getElementById("editUsername").value = doctor.username;
+
+    document.getElementById("editPassword").value = doctor.password;
+
+    document.getElementById("editPopup").style.display = "flex";
+}
+
+// Save edited doctor details
+function saveEditedDoctor() {
+    const doctors = JSON.parse(localStorage.getItem("doctors")) || [];
+
+    doctors[currentEditIndex] = {
+        username: document.getElementById("editUsername").value,
+        password: document.getElementById("editPassword").value
+    };
+
     localStorage.setItem("doctors", JSON.stringify(doctors));
+    document.getElementById("editPopup").style.display = "none";
     loadDoctorsList();
 }
 
+//Save when save button is clicked
+document.getElementById("saveEditBtn").addEventListener("click", saveEditedDoctor);
+
+// Move focus to password field when Enter is pressed in username field
+document.getElementById("editUsername").addEventListener("keypress", function(e) {
+    if (e.key === "Enter") {
+        e.preventDefault();
+        document.getElementById("editPassword").focus(); // Move focus to password field    
+    }
+});
+
+// Save when Enter is pressed in password field
+document.getElementById("editPassword").addEventListener("keypress", function(e) {
+    if (e.key === "Enter") {
+        e.preventDefault();
+        saveEditedDoctor();
+    }
+});
+
+
+
+// Close popup without saving (cancel)
+document.getElementById("closePopupBtn").addEventListener("click", function() {
+    document.getElementById("editPopup").style.display = "none";
+});
+
+
+
 // Delete doctor by index
 function deleteDoctor(index) {
-    const doctors = JSON.parse(localStorage.getItem("doctors")) || [];
-    
-    if (confirm(`Delete doctor "${doctors[index].username}"?`)) {
-        doctors.splice(index, 1);
-        localStorage.setItem("doctors", JSON.stringify(doctors));
-        loadDoctorsList();
-    }
+
+    const doctors =JSON.parse(localStorage.getItem("doctors")) || [];
+
+    doctors.splice(index, 1); // Remove 1 doctor at the specified index
+
+    localStorage.setItem("doctors",JSON.stringify(doctors));
+
+    loadDoctorsList();
 }
 
 // Load doctors list when page loads
