@@ -10,6 +10,8 @@ document.getElementById("logout").addEventListener("click", function() {
     window.location.href = "LogIn.html";
 });
 
+ document.getElementById("WelcMsg").textContent = "Welcome Back, Dr. " + sessionStorage.getItem("currentDoctor") + "!";
+
 const medicines = [
     {
         name: "Panadol",
