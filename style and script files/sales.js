@@ -47,7 +47,7 @@ const supplies = [
 ];
 
 function searchmed(){
-    let input = document.getElementById("searchInput").value.toLowerCase();
+    let input = document.getElementById("searchInput").value.toLowerCase(); // read it either lowercase or uppercase
     let results= document.getElementById("searchResults");
      results.innerHTML = "";
 
@@ -75,15 +75,19 @@ function addToCart(i){
     for(let j=0;j<cart.length; j++){
         if(cart[j].name ===item.name){
             cart[j].qty++;
+             supplies[i].stock--;
             renderCart();
+            searchmed();
             return;
         }}
+supplies[i].stock--;
 cart.push({
     name:item.name,
     price: item.price,
     qty:1
 });
 renderCart();
+searchmed();
 }
 function renderCart() {
     let cartDiv = document.getElementById("cart");
@@ -116,22 +120,42 @@ if (cart.length > 0) {
 }
 }
 function increaseQty(j) {
+    // find the matching supply index
+    for (let i = 0; i < supplies.length; i++) {
+        if (supplies[i].name === cart[j].name) {
+            supplies[i].stock--;
+            break;
+        }
+    }
     cart[j].qty++;
     renderCart();
+    searchmed();
 }
-
 function decreaseQty(j) {
+    for (let i = 0; i < supplies.length; i++) {
+        if (supplies[i].name === cart[j].name) {
+            supplies[i].stock++;
+            break;
+        }
+    }
     if (cart[j].qty > 1) {
         cart[j].qty--;
     } else {
         cart.splice(j, 1);
     }
     renderCart();
+    searchmed();
 }
-
 function removeItem(j) {
+    for (let i = 0; i < supplies.length; i++) {
+        if (supplies[i].name === cart[j].name) {
+            supplies[i].stock += cart[j].qty;
+            break;
+        }
+    }
     cart.splice(j, 1);
     renderCart();
+    searchmed();
 }
 function checkout() {
     if (cart.length === 0) {
@@ -148,9 +172,7 @@ function checkout() {
     generateReceipt(paymentmethod);
 }
 function generateReceipt(paymentmethod) {
-    let receiptDiv = document.getElementById("receipt");
-
-    // Get current date and time
+    let receiptDiv = document.getElementById("receipt");  //save date and time
     let now = new Date();
     let date = now.toLocaleDateString("en-US", {
         weekday: "long",
@@ -178,8 +200,16 @@ function generateReceipt(paymentmethod) {
         <p>Payment: ${paymentmethod}</p>
         <p>Thank you!</p>
     `;
+let sale = {      //saves it
+    date: date,
+    items: cart.slice(), 
+    total: total,
+    payment: paymentmethod
+};
+let salesHistory = JSON.parse(localStorage.getItem("salesHistory")) || [];
+salesHistory.push(sale);
+localStorage.setItem("salesHistory", JSON.stringify(salesHistory));
 
-    // Clear cart after checkout
     cart = [];
     renderCart();
 }
