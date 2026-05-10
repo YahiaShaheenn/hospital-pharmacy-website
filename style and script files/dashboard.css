@@ -7,16 +7,26 @@
     padding: 6px;
     position: sticky;
     top: 0;
-    z-index: 1000;
+  
 }
 
-
-
 .toprow{
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
     width: 100%;
-   
+}
+
+.toprow h1{
+    justify-self: center;
+    grid-column: 2;
+    font-size: 45px;
+}
+
+.profile{
+    justify-self: end;
+    grid-column: 3;
+    margin-top: 10px;
 }
 
 .nav{
@@ -28,19 +38,19 @@
 }
 
 .nav button{
-    background-color: white;
-    color: darkblue;
+    background-color:powderblue;
+    color: black;
     padding: 5px;
     border-radius: 8px;
-
+    margin-top: 10px;
 }
 
 body{
     margin: 0;
     padding: 0;
     background-color: powderblue;
-    min-height: 100vh;
 }
+
 
 body::before{
     content: "";
@@ -67,21 +77,6 @@ body::before{
     padding: 0;
     box-sizing: border-box;
 }
-
-/* .search input{
-    border-radius: 8px;
-    width: 600px;
-    padding: 7px;
-    align-content: center;
-}
-
-.search button{
-    border-radius: 8px;
-    padding: 7px;
-    background-color: white;
-    color: darkblue;
-    cursor: pointer;
-} */
 
 .profile-icon {
     color: white;
@@ -144,35 +139,5 @@ body::before{
 }
 
 
-.layout{
-    display: flex;
-    min-height: 100vh;
-}
 
-.SideBar {
-    width: 230px;
-    background-color: #235c64;
-    padding: 25px 18px;
-    color: white;
-}
-
-.SideBar h2 {
-    margin-bottom: 25px;
-}
-
-.SideBar button{
-    display: block;
-    width: 100%;
-    background-color: transparent;
-    color: white;
-    /* border: none; */
-    padding: 10px;
-    text-align: left;
-    font-size: 18px;
-}
-
-.main {
-    flex: 1;
-    min-height: 2000px;
-}
 
