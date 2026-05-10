@@ -14,14 +14,14 @@
 
     <div class="login-container">
         <h1>Log In</h1>
-        <form method="get"><!-- This form will redirect to the dashboard on submission & method is to make log in info secure-->
+        <form action="dashboard.html"><!-- This form will redirect to the dashboard on submission & method is to make log in info secure-->
             <div class="input-group">
                 <input type="text" placeholder="Username" required>
             </div>
             <div class="input-group">
                 <input type="password" placeholder="Password" required>
             </div>
-            <button class="btn" onclick="location.href='dashboard.html'">Log In</button>
+            <button class="btn" type="submit">Log In</button>
         </form>
     </div>
 
