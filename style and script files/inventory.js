@@ -52,3 +52,9 @@ function updateStock(action) {
     updateScreen();
     localStorage.setItem("suppliesStock", JSON.stringify(supplies.map(s => s.stock)));
 }
+if(!sessionStorage.getItem("currentDoctor")) {
+
+   window.location.href = "LogIn.html";
+   alert("Please log in to access the Inventory.");
+
+}
