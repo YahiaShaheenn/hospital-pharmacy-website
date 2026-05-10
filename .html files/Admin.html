@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+    <link rel="stylesheet" href="../style and script files/Admin.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=ADLaM Display">
+</head>
+
+<body>
+
+    <div class="AddDoctor-container">
+
+        <h1>Add Doctor</h1>
+
+        <form id="AddDoctorForm">
+
+            <div class="input-group">
+                <input id="AddDoctorUsername" type="text" placeholder="Username" required>
+            </div>
+            <div class="input-group">
+                <input id="AddDoctorPassword" type="password" placeholder="Password" required>
+            </div>
+            <p id="message"></p>
+            <button id="addDoctorBtn" class="btn" type="submit">Add Doctor</button>
+
+        </form>
+
+    </div>
+
+    <div class="DoctorsList-container">
+
+        <h1>Existing Doctors</h1>
+
+        <ul id="doctorsList" class="doctors-list">
+            <!-- List of doctors will be populated here -->
+        </ul>
+
+    </div>
+
+
+
+
+
+    <script type="text/javascript" src="../style and script files/layout.js"></script>
+    <script type="text/javascript" src="../style and script files/Admin.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,171 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box; /* include padding and border in element's total width and height */
+}
+
+.AddDoctor-container {
+    width: 40%;
+    margin: 30px auto;
+    background: rgba(255,255,255,0.45);
+    border-radius: 18px;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.AddDoctor-container:hover {
+    transform: translateY(-8px); /* lift the container on hover */
+}
+
+.AddDoctor-container h1 {
+    margin-bottom: 28px;
+    color: #1e3a8a;
+    font-weight: 600;
+    font-size: 28px;
+}
+
+.DoctorsList-container {
+    width: 40%;
+    margin: 30px auto;
+    background: rgba(255,255,255,0.45);
+    border-radius: 18px;
+    padding: 30px;
+}
+
+.DoctorsList-container h1 {
+    margin-bottom: 20px;
+    color: #1e3a8a;
+    font-weight: 600;
+    font-size: 28px;
+}
+
+.doctors-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.doctor-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    background: white;
+    border-radius: 8px;
+    border: 2px solid #e2e8f0;
+    transition: all 0.3s ease;
+}
+
+.doctor-item:hover {
+    box-shadow: 0 4px 12px rgba(155, 89, 182, 0.2);
+    transform: translateX(4px);
+}
+
+.doctor-info {
+    flex: 1;
+}
+
+.doctor-info p {
+    margin: 4px 0;
+    color: #333;
+    font-size: 15px;
+}
+
+.doctor-info .username {
+    font-weight: 600;
+    color: #1e3a8a;
+}
+
+.doctor-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.action-btn {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.edit-btn {
+    background: #3498db;
+    color: white;
+}
+
+.edit-btn:hover {
+    background: #2980b9;
+    transform: scale(1.1);
+}
+
+.delete-btn {
+    background: #e74c3c;
+    color: white;
+}
+
+.delete-btn:hover {
+    background: #c0392b;
+    transform: scale(1.1);
+}
+
+
+.input-group {
+    margin-bottom: 18px;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 14px 16px;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: all 0.3s ease; /* smooth transition for focus effect */
+    background: white;
+}
+
+.input-group input:focus {
+    border-color: #9b59b6; 
+    box-shadow: 0 0 0 4px rgba(155, 89, 182, 0.15);
+    outline: none; /* remove default focus outline */
+}
+
+.btn {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, #9d61bb, #8910bc);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 17px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.4s ease; /* smooth transition for hover and active effects */
+    box-shadow: 0 6px 15px rgba(155, 89, 182, 0.3);
+    margin-top: 8px;
+}
+
+.btn:hover {
+    background: linear-gradient(135deg, #8e44ad, #7e3a9c);
+    transform: translateY(-3px); /* lift the button slightly on hover */
+    box-shadow: 0 10px 20px rgba(155, 89, 182, 0.4);
+}
+
+.btn:active {
+    transform: scale(0.97); /* slightly shrink the button on click */
+}
+
+#message {
+    margin-top: 12px;
+    color: #e74c3c;
+    font-size: 14px;
+    height: 18px; /* reserve space for the message */
+}
+
