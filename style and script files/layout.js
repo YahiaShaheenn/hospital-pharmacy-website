@@ -161,7 +161,7 @@ topbar.className = "TopBar";
 topbar.innerHTML = `
     <div class="toprow">
 
-        <h1>Pharmacy</h1>
+        <h1>Al-Shifaa</h1>
 
         <div class="profile">
             <a href="login.html" class="profile-icon"  id="logout" title="Logout">
