@@ -97,6 +97,10 @@ body::before{
     font-size: 40px;
 }
 
+.profile-icon:hover .material-icons{
+    transform: translateY(-2px);
+}
+
 `;
 
 document.head.appendChild(style);
@@ -112,8 +116,8 @@ topbar.innerHTML = `
         <h1>Pharmacy</h1>
 
         <div class="profile">
-            <a href="login.html" class="profile-icon">
-                <span class="material-icons">account_circle</span>
+            <a href="login.html" class="profile-icon"  id="logout" title="Logout">
+                <span class="material-icons">logout</span>
             </a>
         </div>
 
