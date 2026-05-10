@@ -59,7 +59,11 @@ function searchmed(){
 }
 let cart=[];
 function addToCart(i){
-      document.getElementById("receipt").innerHTML = "";
+    if (supplies[i].stock === 0) {
+        alert("This item is out of stock!"); //checks if the stock is 0
+        return;
+    }
+     
     let item=supplies[i];
     for(let j=0;j<cart.length; j++){
         if(cart[j].name ===item.name){
@@ -179,16 +183,17 @@ function generateReceipt(paymentmethod) {
         itemsHTML += `<p>${cart[j].name} x${cart[j].qty} = ${subtotal} EGP</p>`;
     }
     
-    receiptDiv.innerHTML = `
-        <h3>Receipt</h3>
-        <p>${date}</p>
-        <hr>
-        ${itemsHTML}
-        <hr>
-        <h4>Total: ${total} EGP</h4>
-        <p>Payment: ${paymentmethod}</p>
-        <p>Thank you!</p>
-    `;
+   document.getElementById("modal-receipt").innerHTML = `
+    <h3>Receipt</h3>
+    <p>${date}</p>
+    <hr>
+    ${itemsHTML}
+    <hr>
+    <h4>Total: ${total} EGP</h4>
+    <p>Payment: ${paymentmethod}</p>
+    <p>Thank you!</p>
+`;
+document.getElementById("modal-overlay").style.display = "flex";
 let sale = {      //saves it
     date: date,
     items: cart.slice(), 
@@ -201,4 +206,7 @@ localStorage.setItem("salesHistory", JSON.stringify(salesHistory));
 
     cart = [];
     renderCart();
+}
+function closeModal() {
+    document.getElementById("modal-overlay").style.display = "none";
 }
