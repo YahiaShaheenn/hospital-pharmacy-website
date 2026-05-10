@@ -149,11 +149,28 @@ for (let i = 0; i < salesHistory.length; i++) {
 }
 
 
+// let totalProfit = 0;
+
+// for (let i = 0; i < supplies.length; i++) {
+//     totalProfit += supplies[i].sellingPrice - supplies[i].costPrice;
+// }
+
+
 let totalProfit = 0;
 
-for (let i = 0; i < supplies.length; i++) {
-    totalProfit += supplies[i].sellingPrice - supplies[i].costPrice;
-}
+salesHistory.forEach(function(sale) {
+    sale.items.forEach(function(item) {
+        for (let i = 0; i < supplies.length; i++) {
+            if (supplies[i].name === item.name) {
+                let profit = (supplies[i].sellingPrice - supplies[i].costPrice) * item.qty;
+                totalProfit += profit;
+                break;
+            }
+        }
+    });
+});
+
+
 
 
 let expiredMedicines = [];
