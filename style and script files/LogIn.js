@@ -9,7 +9,7 @@ document.getElementById("LoginForm").addEventListener("submit", function (e) {
 
     if (username === doctorUsername && password === doctorPassword) {
 
-        localStorage.setItem("currentDoctor", username);
+        sessionStorage.setItem("currentDoctor", username);
         window.location.href = "dashboard.html";
 
     }
