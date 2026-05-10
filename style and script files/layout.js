@@ -117,6 +117,38 @@ body::before{
     margin: 5px 0;
     font-size: 14px;
 }
+    @media (max-width: 768px) {
+    .toprow h1 {
+        font-size: 28px;
+    }
+
+    .nav {
+        gap: 15px;
+    }
+
+    .nav button {
+        padding: 4px 8px;
+        font-size: 12px;
+    }
+
+    .summary {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .summary {
+        grid-template-columns: 1fr;
+    }
+
+    .nav {
+        gap: 8px;
+    }
+
+    .toprow h1 {
+        font-size: 22px;
+    }
+}
 `;
 
 document.head.appendChild(style);
