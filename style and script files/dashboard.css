@@ -193,7 +193,49 @@ body::before{
     gap: 10px;
 }
 
+.alerts{
+    width: 95%;
+    margin: 30px auto;
+}
 
+.alerts h2{
+    margin-bottom: 15px;
+}
 
+.alertsBox{
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
 
+.alert-card{
+    background-color: white;
+    padding: 18px 22px;
+    border-radius: 12px;
 
+    display: flex;
+    align-items: center;
+    gap: 15px;
+
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+}
+
+.alert-card span{
+    font-size: 32px;
+}
+
+.alert-card h3{
+    margin: 0;
+}
+
+.alert-card p{
+    margin: 5px 0 0;
+}
+
+.alert-card.danger{
+    border-left: 6px solid red;
+}
+
+.alert-card.warning{
+    border-left: 6px solid orange;
+}
