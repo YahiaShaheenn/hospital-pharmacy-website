@@ -5,42 +5,58 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Dashboard</title>
-        <link rel="stylesheet" href="dashboard.css">
+        <link rel="stylesheet" href="../style and script files/dashboard.css">
         <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=ADLaM Display">
     </head>
 
     <body>
 
-        <div class="TopBar">
+        <!-- <div class="TopBar">
 
-           <div class="toprow">
+            <div class="toprow">
+
                 <h1>Pharmacy</h1>
 
-                <!-- <div class="search">
-                    <input type="text" placeholder="Search">
-                    <button type="submit">Search</button>
-                </div> -->
-
                 <div class="profile">
+
                     <a href="login.html" class="profile-icon">
                         <span class="material-icons">account_circle</span>
                     </a>
+
                 </div>
-           </div>
+
+            </div>
 
 
             <div class="nav">
 
-                <button type="button" onclick="location.href='#'">Home</button>
+                <button type="button" onclick="location.href='#'">Dashboard</button>
                 <button type="button" onclick="location.href='inventory.html'">Inventory</button>
                 <button type="button" onclick="location.href='sales.html'">Sales</button>
                 <button type="button" onclick="location.href='reports.html'">Reports</button>
 
             </div>
 
+        </div> -->
+
+
+        <div class="welcome">
+
+            <div class="intro">
+                <h2>Welcome Back, Dr!</h2>
+                <p>Here's a quick overview of your pharmacy's performance.</p>
+            </div>
+
+            <div class="today">
+                <div class="tdyinfo">
+                    <span class="material-icons">calendar_month</span>
+                    <p id="date"></p>
+                </div>
+            </div>
+
         </div>
 
-       
 
         <div class="summary">
 
@@ -87,8 +103,18 @@
         </div>
 
 
+        <div class="alerts">
 
-        <script type="text/javascript" src="dashboard.js"></script>
+            <h2>Pharmacy Alerts</h2>
+
+            <div class="alertsBox" id="boxALERTS"></div>
+
+        </div>
+
+
+        <script type="text/javascript" src="../style and script files/layout.js"></script>
+        <script type="text/javascript" src="../style and script files/dashboard.js"></script>
 
     </body>
+
 </html>

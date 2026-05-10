@@ -1,3 +1,11 @@
+if(!sessionStorage.getItem("currentDoctor")) {
+
+   window.location.href = "LogIn.html";
+   alert("Please log in to access the dashboard.");
+
+}
+
+
 const medicines = [
     {
         name: "Panadol",
@@ -73,3 +81,50 @@ document.getElementById("expmeds").textContent = expiredMedicines.length;
 document.getElementById("lowstock").textContent = lowStockMedicines.length;
 
 
+
+const dateElement = document.getElementById("date");
+
+const today = new Date();
+
+dateElement.textContent = today.toLocaleDateString("en-US", {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+    year: "numeric"
+});
+
+
+
+const alerts = [
+    {
+        type: "danger",
+        icon: "warning",
+        title: "Expired Medicine",
+        message: "1 medicine has expired and should be removed from stock."
+    },
+    {
+        type: "warning",
+        icon: "inventory_2",
+        title: "Low Stock Warning",
+        message: "2 medicines are below the minimum stock level."
+    }
+];
+
+const alertsContainer = document.getElementById("boxALERTS");
+
+alerts.forEach(function(alert){
+    const alertCard = document.createElement("div");
+
+    alertCard.className = `alert-card ${alert.type}`;
+
+    alertCard.innerHTML = `
+        <span class="material-icons">${alert.icon}</span>
+
+        <div>
+            <h3>${alert.title}</h3>
+            <p>${alert.message}</p>
+        </div>
+    `;
+
+    alertsContainer.appendChild(alertCard);
+});
