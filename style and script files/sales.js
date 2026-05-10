@@ -235,3 +235,9 @@ function showAlert(message) {
 function closeAlert() {
     document.getElementById("alert-overlay").style.display = "none";
 };
+if(!sessionStorage.getItem("currentDoctor")) {
+
+   window.location.href = "LogIn.html";
+   alert("Please log in to access the Sales.");
+
+}
