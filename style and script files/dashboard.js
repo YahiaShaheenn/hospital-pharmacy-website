@@ -5,6 +5,10 @@ if(!sessionStorage.getItem("currentDoctor")) {
 
 }
 
+document.getElementById("logout").addEventListener("click", function() {
+    sessionStorage.removeItem("currentDoctor");
+    window.location.href = "LogIn.html";
+});
 
 const medicines = [
     {
