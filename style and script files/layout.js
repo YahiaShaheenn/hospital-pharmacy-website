@@ -120,7 +120,7 @@ topbar.innerHTML = `
     </div>
 
     <div class="nav">
-        <button type="button" onclick="location.href='#'">Dashboard</button>
+        <button type="button" onclick="location.href='dashboard.html'">Dashboard</button>
         <button type="button" onclick="location.href='inventory.html'">Inventory</button>
         <button type="button" onclick="location.href='sales.html'">Sales</button>
         <button type="button" onclick="location.href='reports.html'">Reports</button>
