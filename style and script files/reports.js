@@ -21,11 +21,13 @@ function displayReports(data){
 
                     <td>${sale.date}</td>
 
-                    <td>${sale.seller}</td>
+                    <td>${item.price} EGP</td>
 
                     <td>${item.price * item.qty} EGP</td>
 
                     <td>${sale.payment}</td>
+                    
+                    <td>${sale.seller}</td>
 
                 </tr>
 
