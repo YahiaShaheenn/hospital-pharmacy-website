@@ -5,15 +5,12 @@ const supplies = [
 { name: "Amoxicillin", category: "Antibiotics", costPrice: 45, sellingPrice: 65, stock: 90, minStock: 15, expiryDate: "2027-03-20" },
 { name: "Azithromycin", category: "Antibiotics", costPrice: 60, sellingPrice: 85, stock: 50, minStock: 10, expiryDate: "2027-09-05" },
 { name: "Ciprofloxacin", category: "Antibiotics", costPrice: 50, sellingPrice: 70, stock: 40, minStock: 10, expiryDate: "2028-02-14" },
-{ name: "Cough Syrup", category: "Cold & Flu", costPrice: 20, sellingPrice: 35, stock: 75, minStock: 15, expiryDate: "2026-11-30" },
 { name: "Nasal Spray", category: "Cold & Flu", costPrice: 28, sellingPrice: 45, stock: 55, minStock: 10, expiryDate: "2027-04-18" },
 { name: "Vitamin C Tablets", category: "Cold & Flu", costPrice: 18, sellingPrice: 30, stock: 100, minStock: 20, expiryDate: "2028-07-22" },
-{ name: "Insulin", category: "Diabetes", costPrice: 100, sellingPrice: 150, stock: 20, minStock: 8, expiryDate: "2026-08-10" },
 { name: "Metformin", category: "Diabetes", costPrice: 25, sellingPrice: 40, stock: 60, minStock: 12, expiryDate: "2027-12-01" },
 { name: "Glucose Test Strips", category: "Diabetes", costPrice: 55, sellingPrice: 80, stock: 35, minStock: 10, expiryDate: "2027-05-15" },
 { name: "Amlodipine", category: "Heart", costPrice: 35, sellingPrice: 55, stock: 45, minStock: 10, expiryDate: "2028-03-08" },
 { name: "Atenolol", category: "Heart", costPrice: 28, sellingPrice: 45, stock: 50, minStock: 10, expiryDate: "2027-11-20" },
-{ name: "Nitroglycerin", category: "Heart", costPrice: 60, sellingPrice: 90, stock: 25, minStock: 8, expiryDate: "2026-09-30" },
 { name: "Omeprazole", category: "Stomach", costPrice: 30, sellingPrice: 50, stock: 70, minStock: 15, expiryDate: "2027-07-14" },
 { name: "Antacids", category: "Stomach", costPrice: 12, sellingPrice: 20, stock: 90, minStock: 20, expiryDate: "2028-01-25" },
 { name: "ORS Packets", category: "Stomach", costPrice: 8, sellingPrice: 15, stock: 110, minStock: 25, expiryDate: "2027-10-10" },
@@ -24,16 +21,26 @@ const supplies = [
 { name: "Alcohol Swabs", category: "Supplies", costPrice: 8, sellingPrice: 15, stock: 250, minStock: 50, expiryDate: "2029-12-01" },
 { name: "Surgical Mask Box", category: "Supplies", costPrice: 40, sellingPrice: 60, stock: 150, minStock: 30, expiryDate: "2029-08-15" },
 { name: "Surgical Gloves", category: "Supplies", costPrice: 28, sellingPrice: 45, stock: 180, minStock: 30, expiryDate: "2030-03-20" },
-{ name: "Epinephrine Injection", category: "Emergency", costPrice: 140, sellingPrice: 200, stock: 15, minStock: 5, expiryDate: "2026-10-05" },
 { name: "IV Fluids", category: "Emergency", costPrice: 55, sellingPrice: 85, stock: 40, minStock: 10, expiryDate: "2027-08-30" },
 { name: "Oxygen Mask", category: "Emergency", costPrice: 70, sellingPrice: 110, stock: 25, minStock: 8, expiryDate: "2030-01-15" },
 { name: "Multivitamins", category: "Vitamins", costPrice: 45, sellingPrice: 70, stock: 85, minStock: 15, expiryDate: "2028-05-10" },
 { name: "Vitamin D", category: "Vitamins", costPrice: 35, sellingPrice: 55, stock: 90, minStock: 15, expiryDate: "2028-09-22" },
 { name: "Omega-3 Capsules", category: "Vitamins", costPrice: 65, sellingPrice: 95, stock: 60, minStock: 12, expiryDate: "2028-11-30" },
-{ name: "Baby Formula", category: "Baby Care", costPrice: 120, sellingPrice: 180, stock: 30, minStock: 8, expiryDate: "2026-12-15" },
 { name: "Diapers", category: "Baby Care", costPrice: 80, sellingPrice: 120, stock: 50, minStock: 10, expiryDate: "2030-01-01" },
-{ name: "Pediatric Syrup", category: "Baby Care", costPrice: 25, sellingPrice: 40, stock: 65, minStock: 12, expiryDate: "2027-04-05" }
+{ name: "Pediatric Syrup", category: "Baby Care", costPrice: 25, sellingPrice: 40, stock: 65, minStock: 12, expiryDate: "2027-04-05" },
+{ name: "Insulin", category: "Diabetes", costPrice: 100, sellingPrice: 150, stock: 5, minStock: 8, expiryDate: "2025-06-01" },
+{ name: "Nitroglycerin", category: "Heart", costPrice: 60, sellingPrice: 90, stock: 3, minStock: 8, expiryDate: "2025-07-15" },
+{ name: "Epinephrine Injection", category: "Emergency", costPrice: 140, sellingPrice: 200, stock: 2, minStock: 5, expiryDate: "2025-08-01" },
+{ name: "Baby Formula", category: "Baby Care", costPrice: 120, sellingPrice: 180, stock: 4, minStock: 8, expiryDate: "2025-09-10" },
+{ name: "Cough Syrup", category: "Cold & Flu", costPrice: 20, sellingPrice: 35, stock: 6, minStock: 15, expiryDate: "2025-05-30" },
 ];
+
+let savedStock = JSON.parse(localStorage.getItem("suppliesStock"));
+if (savedStock) {
+    for (let i = 0; i < supplies.length; i++) {
+        supplies[i].stock = savedStock[i];
+    }
+}
 
 function searchmed(){
     let input = document.getElementById("searchInput").value.toLowerCase(); // read it either lowercase or uppercase
@@ -60,7 +67,7 @@ function searchmed(){
 let cart=[];
 function addToCart(i){
     if (supplies[i].stock === 0) {
-        alert("This item is out of stock!"); //checks if the stock is 0
+       showAlert("This item is out of stock!") //checks if the stock is 0
         return;
     }
      
@@ -98,7 +105,7 @@ function renderCart() {
             <button onclick="decreaseQty(${j})">-</button>
             <span>${cart[j].qty}</span>
             <button onclick="increaseQty(${j})">+</button>
-            <button onclick="removeItem(${j})">Remove</button>
+            <button  class="remove-btn" onclick="removeItem(${j})">Remove</button>
         </div>
     </div>
 `;
@@ -111,6 +118,7 @@ if (cart.length > 0) {
 } else {
     document.getElementById("payment-section").style.display = "none";
 }
+localStorage.setItem("suppliesStock", JSON.stringify(supplies.map(s => s.stock)));
 }
 function increaseQty(j) {
     // find the matching supply index
@@ -152,12 +160,12 @@ function removeItem(j) {
 }
 function checkout() {
     if (cart.length === 0) {
-        alert("Your cart is empty!");
+        showAlert("Your cart is empty!")
         return;
     }
     let paymentinput = document.querySelector('input[name="payment"]:checked');
     if (paymentinput === null) {
-        alert("Please select a payment method!");
+       showAlert("Please select a payment method!")
         return;
     }
 
@@ -209,4 +217,12 @@ localStorage.setItem("salesHistory", JSON.stringify(salesHistory));
 }
 function closeModal() {
     document.getElementById("modal-overlay").style.display = "none";
+}
+function showAlert(message) {
+    document.getElementById("alert-message").textContent = message;
+    document.getElementById("alert-overlay").style.display = "flex";
+}
+
+function closeAlert() {
+    document.getElementById("alert-overlay").style.display = "none";
 }
