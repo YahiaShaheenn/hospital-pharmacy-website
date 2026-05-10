@@ -175,7 +175,7 @@ body::before{
 
 .em{
     background-color:rgb(236, 236, 180);
-     padding: 27px;
+    padding: 27px;
     margin: 10px;
     border-radius: 18px;
 }
@@ -215,7 +215,13 @@ body::before{
     display: flex;
     align-items: center;
     gap: 15px;
+    transition: transform 0.3s ease;
     box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+}
+
+.alert-card:hover{
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
 }
 
 .alert-card span{
@@ -236,4 +242,44 @@ body::before{
 
 .alert-card.warning{
     border-left: 6px solid orange;
+}
+
+
+.contact{
+    width: 95%;
+    margin: 40px auto;
+    background-color: rgba(255,255,255,0.4);
+    padding: 25px;
+    border-radius: 16px;
+    backdrop-filter: blur(5px);
+}
+
+.contact h2{
+    margin-bottom: 20px;
+}
+
+.contact-container{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.contact-item{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background-color: white;
+    padding: 15px;
+    border-radius: 12px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+    transition: transform 0.3s ease;
+}
+
+.contact-item:hover{
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+}
+
+.contact-item .material-icons{
+    color: #2f7f8a;
 }
