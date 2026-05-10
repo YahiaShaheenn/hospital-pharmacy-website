@@ -121,6 +121,21 @@
 
 }
 
+tbody tr:nth-child(even){
+
+    background-color: #f9f9f9;
+
+}
+
+tbody tr:hover{
+    background-color: #f1f1f1;
+}
+
+.table_section{
+    overflow-x: auto;
+}
+
+
 /* .statistic_card{
 
     flex: 1;
