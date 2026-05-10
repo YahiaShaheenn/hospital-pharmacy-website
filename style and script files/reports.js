@@ -112,3 +112,9 @@ document.getElementById("export_button")
 
 });
 
+if(!sessionStorage.getItem("currentDoctor")) {
+
+   window.location.href = "LogIn.html";
+   alert("Please log in to access the Reports.");
+
+}
