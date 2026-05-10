@@ -66,7 +66,7 @@ function searchmed(){
 }
 let cart=[];
 function addToCart(i){
-    if (supplies[i].stock === 0) {
+    if (supplies[i].stock <= 0) {
        showAlert("This item is out of stock!") //checks if the stock is 0
         return;
     }
@@ -121,10 +121,13 @@ if (cart.length > 0) {
 localStorage.setItem("suppliesStock", JSON.stringify(supplies.map(s => s.stock)));
 }
 function increaseQty(j) {
-    // find the matching supply index
     for (let i = 0; i < supplies.length; i++) {
         if (supplies[i].name === cart[j].name) {
-            supplies[i].stock--;
+            if (supplies[i].stock === 0) {
+                showAlert("No more stock available!");
+                return;
+            }
+            supplies[i].stock--; 
             break;
         }
     }
@@ -173,8 +176,12 @@ function checkout() {
     generateReceipt(paymentmethod);
 }
 function generateReceipt(paymentmethod) {
-    let receiptDiv = document.getElementById("receipt");  //save date and time
-    let now = new Date();
+    let sellerName = sessionStorage.getItem("currentDoctor");  
+    let now = new Date(); // saves date
+    let time = now.toLocaleTimeString("en-US", { //saves time
+    hour: "2-digit",
+    minute: "2-digit"
+}); //saves time
     let date = now.toLocaleDateString("en-US", {
         weekday: "long",
         month: "long",
@@ -193,7 +200,8 @@ function generateReceipt(paymentmethod) {
     
    document.getElementById("modal-receipt").innerHTML = `
     <h3>Receipt</h3>
-    <p>${date}</p>
+    <p>${date} | ${time}</p>
+    <p>Seller: ${sellerName}</p>
     <hr>
     ${itemsHTML}
     <hr>
@@ -206,7 +214,8 @@ let sale = {      //saves it
     date: date,
     items: cart.slice(), 
     total: total,
-    payment: paymentmethod
+    payment: paymentmethod,
+     seller: sellerName 
 };
 let salesHistory = JSON.parse(localStorage.getItem("salesHistory")) || [];
 salesHistory.push(sale);
@@ -225,4 +234,4 @@ function showAlert(message) {
 
 function closeAlert() {
     document.getElementById("alert-overlay").style.display = "none";
-}
+};
