@@ -173,6 +173,7 @@ function checkout() {
     generateReceipt(paymentmethod);
 }
 function generateReceipt(paymentmethod) {
+    let sellerName = sessionStorage.getItem("currentDoctor");
     let receiptDiv = document.getElementById("receipt");  //save date and time
     let now = new Date();
     let date = now.toLocaleDateString("en-US", {
@@ -206,7 +207,8 @@ let sale = {      //saves it
     date: date,
     items: cart.slice(), 
     total: total,
-    payment: paymentmethod
+    payment: paymentmethod,
+     seller: sellerName 
 };
 let salesHistory = JSON.parse(localStorage.getItem("salesHistory")) || [];
 salesHistory.push(sale);
