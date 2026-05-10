@@ -37,7 +37,7 @@
     font-size: 30px;
 }
 
-.TopBar{
+/* .TopBar{
     background-color:rgb(63, 138, 153);
     color: black;
     display: flex;
@@ -82,6 +82,7 @@
     cursor: pointer;
     transition: 0.3s;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    border: none;
 }
 
 .nav button:hover{
@@ -133,7 +134,7 @@ body::before{
 
 .profile-icon .material-icons{
     font-size: 40px;
-}
+} */
 
 
 .summary{
