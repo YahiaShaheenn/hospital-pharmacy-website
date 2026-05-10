@@ -1,16 +1,23 @@
-if(!sessionStorage.getItem("currentDoctor")) {
+if (!sessionStorage.getItem("currentDoctor")) {
 
-   window.location.href = "LogIn.html";
-   alert("Please log in to access the dashboard.");
+    window.location.href = "LogIn.html";
+    alert("Please log in to access the dashboard.");
 
 }
 
-document.getElementById("logout").addEventListener("click", function() {
+document.getElementById("logout").addEventListener("click", function () {
     sessionStorage.removeItem("currentDoctor");
+    sessionStorage.setItem("admin", "false");
     window.location.href = "LogIn.html";
 });
 
-document.getElementById("WelcMsg").textContent = "Welcome Back, Dr. " + sessionStorage.getItem("currentDoctor") + "!";
+const isAdmin = sessionStorage.getItem("admin") === "true";
+if (!isAdmin) {
+    document.getElementById("WelcMsg").textContent = "Welcome Back, Dr. " + sessionStorage.getItem("currentDoctor") + "!";
+}
+else {
+    document.getElementById("WelcMsg").textContent = "Welcome to the Admin Dashboard!";
+}
 
 // const medicines = [
 //     {
@@ -158,8 +165,8 @@ for (let i = 0; i < salesHistory.length; i++) {
 
 let totalProfit = 0;
 
-salesHistory.forEach(function(sale) {
-    sale.items.forEach(function(item) {
+salesHistory.forEach(function (sale) {
+    sale.items.forEach(function (item) {
         for (let i = 0; i < supplies.length; i++) {
             if (supplies[i].name === item.name) {
                 let profit = (supplies[i].sellingPrice - supplies[i].costPrice) * item.qty;
