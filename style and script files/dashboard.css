@@ -1,3 +1,42 @@
+.welcome{
+    width: 95%;
+    margin: 30px auto;
+    background: rgba(255,255,255,0.45);
+    border-radius: 18px;
+    padding: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.intro h2{
+    font-size: 32px;
+    margin-bottom: 10px;
+}
+
+.intro p{
+    font-size: 17px;
+}
+
+.today{
+    display: flex;
+    align-items: center;
+}
+
+.tdyinfo{
+    background-color: white;
+    padding: 15px 20px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.tdyinfo .material-icons{
+    color: #2f7f8a;
+    font-size: 30px;
+}
+
 .TopBar{
     background-color:rgb(63, 138, 153);
     color: black;
@@ -7,7 +46,6 @@
     padding: 6px;
     position: sticky;
     top: 0;
-  
 }
 
 .toprow{
@@ -33,8 +71,6 @@
     display: flex;
     gap: 70px;
     justify-content: center;
-    /* position: sticky;
-    top: 70px; */
 }
 
 .nav button{
@@ -43,6 +79,11 @@
     padding: 5px;
     border-radius: 8px;
     margin-top: 10px;
+    cursor: pointer;
+}
+
+.nav button:hover{
+    background-color: lightgoldenrodyellow;
 }
 
 body{
@@ -94,7 +135,8 @@ body::before{
 .summary{
     display: grid;
     grid-template-columns: auto auto auto auto;
-    margin-top: 20px;
+    margin: 20px auto;
+    width: 96%;
 }
 
 .card:hover{
@@ -105,28 +147,28 @@ body::before{
     background-color:mediumturquoise;
     padding: 27px;
     margin: 10px;
-    border-radius: 10px;
+    border-radius: 18px;
 }
 
 .tp{
     background-color:lightgreen;
     padding: 27px;
     margin: 10px;
-    border-radius: 10px;
+    border-radius: 18px;
 }
 
 .em{
-    background-color:lightcoral;
+    background-color:rgb(236, 236, 180);
      padding: 27px;
     margin: 10px;
-    border-radius: 10px;
+    border-radius: 18px;
 }
 
 .ls{
-    background-color:mediumpurple;
+    background-color:rgb(250, 168, 168);
     padding: 27px;
     margin: 10px;
-    border-radius: 10px;
+    border-radius: 18px;
 }
 
 .sumRow{
