@@ -212,11 +212,9 @@ body::before{
     background-color: white;
     padding: 18px 22px;
     border-radius: 12px;
-
     display: flex;
     align-items: center;
     gap: 15px;
-
     box-shadow: 0 3px 10px rgba(0,0,0,0.1);
 }
 
