@@ -7,20 +7,24 @@
     padding: 6px;
     position: sticky;
     top: 0;
+    z-index: 1000;
 }
+
+
 
 .toprow{
     display: flex;
     justify-content: space-between;
     width: 100%;
+   
 }
 
 .nav{
     display: flex;
     gap: 70px;
     justify-content: center;
-    position: sticky;
-    top: 70px;
+    /* position: sticky;
+    top: 70px; */
 }
 
 .nav button{
@@ -35,13 +39,7 @@ body{
     margin: 0;
     padding: 0;
     background-color: powderblue;
-    /* background-image: url(pharma.jpg);
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    background-position: center 150px;
-    background-size: 300px; */
-
-
+    min-height: 100vh;
 }
 
 body::before{
@@ -56,7 +54,7 @@ body::before{
 
     background-image: url("saidaleya.png");
     background-repeat: no-repeat;
-    background-position: center 150px;
+    background-position: center 120px;
     background-size: 700px;
 
     opacity: 0.2;
@@ -143,5 +141,38 @@ body::before{
 }
 .card p{
     text-align: center;
+}
+
+
+.layout{
+    display: flex;
+    min-height: 100vh;
+}
+
+.SideBar {
+    width: 230px;
+    background-color: #235c64;
+    padding: 25px 18px;
+    color: white;
+}
+
+.SideBar h2 {
+    margin-bottom: 25px;
+}
+
+.SideBar button{
+    display: block;
+    width: 100%;
+    background-color: transparent;
+    color: white;
+    /* border: none; */
+    padding: 10px;
+    text-align: left;
+    font-size: 18px;
+}
+
+.main {
+    flex: 1;
+    min-height: 2000px;
 }
 
