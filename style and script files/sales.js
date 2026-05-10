@@ -70,6 +70,7 @@ function searchmed(){
 }
 let cart=[];
 function addToCart(i){
+      document.getElementById("receipt").innerHTML = "";
     let item=supplies[i];
     for(let j=0;j<cart.length; j++){
         if(cart[j].name ===item.name){
@@ -99,7 +100,9 @@ function renderCart() {
             </div>
         `;
     }
+    if (cart.length > 0) {
     cartDiv.innerHTML += `<h3>Total: ${total} EGP</h3>`;
+}
 if (cart.length > 0) {
     document.getElementById("payment-section").style.display = "block";
 } else {
