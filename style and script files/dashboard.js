@@ -73,3 +73,14 @@ document.getElementById("expmeds").textContent = expiredMedicines.length;
 document.getElementById("lowstock").textContent = lowStockMedicines.length;
 
 
+
+const dateElement = document.getElementById("date");
+
+const today = new Date();
+
+dateElement.textContent = today.toLocaleDateString("en-US", {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+    year: "numeric"
+});
