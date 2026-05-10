@@ -1,17 +1,17 @@
 * {
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
+    box-sizing: border-box; /* include padding and border in element's total width and height */
 }
 
 body {
     font-family: 'Poppins', sans-serif;
     background: linear-gradient(135deg, #b0e0e6, #5f8fdb);
-    min-height: 100vh;
+    min-height: 100vh; /* ensure body takes full viewport height */
     display: flex;
     justify-content: center;
     align-items: center;
-    position: relative;
+    position: relative; /* for positioning the background image */
 }
 
 body::before {
@@ -27,13 +27,13 @@ body::before {
     background-size: 700px;
     opacity: 0.18;
     z-index: -1;
-    animation: subtleFloat 25s ease-in-out infinite;
+    animation: subtleFloat 25s ease-in-out infinite; /* apply the floating animation to the background image */
 }
 
 /* Subtle floating animation for background image */
 @keyframes subtleFloat {
-    0%, 100% { transform: translate(0, 0); }
-    50% { transform: translate(30px, 20px); }
+    0%, 100% { transform: translate(0, 0); } /* start and end at original position */
+    50% { transform: translate(30px, 20px); } /* move slightly to the right and down at the midpoint */
 }
 
 .login-container {
@@ -45,11 +45,11 @@ body::before {
     width: 400px;
     text-align: center;
     border: 1px solid rgba(255, 255, 255, 0.4);
-    transition: transform 0.4s ease;
+    transition: transform 0.4s ease; /* smooth transition for hover effect */
 }
 
 .login-container:hover {
-    transform: translateY(-8px);
+    transform: translateY(-8px); /* lift the container on hover */
 }
 
 .login-container h1 {
@@ -61,7 +61,6 @@ body::before {
 
 .input-group {
     margin-bottom: 18px;
-    position: relative;
 }
 
 .input-group input {
@@ -70,14 +69,14 @@ body::before {
     border: 2px solid #e2e8f0;
     border-radius: 8px;
     font-size: 16px;
-    transition: all 0.3s ease;
+    transition: all 0.3s ease; /* smooth transition for focus effect */
     background: white;
 }
 
 .input-group input:focus {
-    border-color: #9b59b6;
+    border-color: #9b59b6; 
     box-shadow: 0 0 0 4px rgba(155, 89, 182, 0.15);
-    outline: none;
+    outline: none; /* remove default focus outline */
 }
 
 .btn {
@@ -90,17 +89,24 @@ body::before {
     font-size: 17px;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.4s ease; /* smooth transition for hover and active effects */
     box-shadow: 0 6px 15px rgba(155, 89, 182, 0.3);
     margin-top: 8px;
 }
 
 .btn:hover {
     background: linear-gradient(135deg, #8e44ad, #7e3a9c);
-    transform: translateY(-3px);
+    transform: translateY(-3px); /* lift the button slightly on hover */
     box-shadow: 0 10px 20px rgba(155, 89, 182, 0.4);
 }
 
 .btn:active {
-    transform: scale(0.97);
+    transform: scale(0.97); /* slightly shrink the button on click */
+}
+
+#message {
+    margin-top: 12px;
+    color: #e74c3c;
+    font-size: 14px;
+    height: 18px; /* reserve space for the message */
 }
