@@ -1,0 +1,188 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* body {
+    font-family: Arial, sans-serif;
+} */
+
+/* .top_bar h1 {
+    margin-bottom: 12px;
+} */
+
+/* .TopBar{
+    background-color: rgb(63, 138, 153);
+    color: black;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: 6px;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+} */
+
+/* .navigation_bar {
+    display: flex;
+    gap: 10px;
+}*/
+
+/*.navigation_bar button {
+    padding: 10px 16px;
+    border: none;
+    border-radius: 6px;
+    background-color: white;
+    color: rgb(63, 138, 153);
+    font-weight: bold;
+    cursor: pointer;
+    /* mesh 3arfa k=leh pointer mesh shaghal */
+    /*da elli beykhali lama a hover el  button a2of 3aleh ya3ni,ye2leb hand)
+} */
+
+.reports_container{
+    padding: 25px;
+}
+
+.page_title{
+    margin-bottom: 20px;
+}
+
+.page_title h2{
+    color: rgb(63, 138, 153);
+    margin-bottom: 5px;
+}
+
+.filters_section{
+
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.filters_section h3{
+
+    margin-bottom: 15px;
+
+}
+
+.filters{
+
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    align-items: end;
+
+}
+
+.filter_box{
+
+    display: flex;
+    flex-direction: column;
+
+}
+
+.filter_box label{
+
+    margin-bottom: 5px;
+    font-weight: bold;
+
+}
+
+.filter_box input,
+.filter_box select{
+
+    padding: 9px;
+    width: 180px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+
+}
+
+.filters button{
+
+    padding: 10px 16px;
+    border: none;
+    border-radius: 6px;
+    background-color: rgb(63, 138, 153);
+    color: white;
+    cursor: pointer;
+
+}
+
+.statistics_section{
+
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+
+}
+
+.statistic_card{
+
+    flex: 1;
+    min-width: 220px;
+    background-color: white;
+    padding: 20px;
+    border-left: 5px solid rgb(63, 138, 153);
+    border-radius: 10px;
+
+}
+
+.statistic_card h3{
+
+    margin-bottom: 10px;
+    color: #444;
+
+}
+
+.statistic_card p{
+
+    font-size: 22px;
+    font-weight: bold;
+    color: rgb(63, 138, 153);
+
+}
+
+.table_section{
+
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+
+}
+
+table{
+
+    width: 100%;
+    border-collapse: collapse;
+
+}
+
+thead{
+
+    background-color: rgb(63, 138, 153);
+    color: white;
+
+}
+
+th,
+td{
+
+    padding: 12px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+
+}
+
+tbody tr:hover{
+
+    background-color: #f1f1f1;
+    
+} 
+
+
+
