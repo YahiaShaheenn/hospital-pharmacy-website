@@ -198,7 +198,7 @@ function generateReceipt(paymentmethod) {
         itemsHTML += `<p>${cart[j].name} x${cart[j].qty} = ${subtotal} EGP</p>`;
     }
     
-   document.getElementById("modal-receipt").innerHTML = `  // receipt modal
+   document.getElementById("modal-receipt").innerHTML = `  
     <h3>Receipt</h3>
     <p>${date} | ${time}</p>
     <p>Seller: ${sellerName}</p>
