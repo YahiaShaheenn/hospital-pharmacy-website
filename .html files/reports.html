@@ -7,64 +7,71 @@
 
     <title>Reports</title>
 
-        <link rel="stylesheet" href="../style and script files/reports.css">
-        <link rel="stylesheet" href="../style and script files/dashboard.css">
-        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=ADLaM Display">
+    <link rel="stylesheet" href="../style and script files/reports.css">
+    <link rel="stylesheet" href="../style and script files/dashboard.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=ADLaM Display">
 
 </head>
 
 <body>
 
-    <section class="statistics_section">
+<section class="statistics_section">
 
     <div class="statistic_card">
-        <h3>Total Revenue</h3>
-        <p id="total_revenue">0 EGP</p>
+        <span class="material-icons">payments</span>
+        <h3>Total Sales</h3>
+        <p id="total_sales">0 EGP</p>
     </div>
 
     <div class="statistic_card">
+        <span class="material-icons">trending_up</span>
         <h3>Total Profit</h3>
         <p id="total_profit">0 EGP</p>
     </div>
 
     <div class="statistic_card">
+        <span class="material-icons">medication</span>        
         <h3>Total Medicines Sold</h3>
         <p id="total_sales_count">0</p>
     </div>
 
 </section>
 
-
-     <!-- <div class="TopBar">
+<!-- 
+<div class="TopBar">
 
     <h1>Pharmacy Reports</h1>
 
-      </div class=navigation_bar>
+</div>
 
-     <button onclick="location.href='home.html'">Home</button>
-     <button onclick="location.href='invnentory.html'">Inventory</button>
-     <button onclick="location.href='sales.html'">Sales</button>
-     <button onclick="location.href='reports.html'">Reports</button>
+<div class="navigation_bar">
 
-      </div>
-    </div> -->
-<!-- 
-    <main class="reports_container">
+    <button onclick="location.href='home.html'">Home</button>
+    <button onclick="location.href='inventory.html'">Inventory</button>
+    <button onclick="location.href='sales.html'">Sales</button>
+    <button onclick="location.href='reports.html'">Reports</button>
 
-         <section class="page_title">
+</div>
+-->
 
-            <h2>Sales Reports</h2>
+<!--
+<main class="reports_container">
 
-            <p>
-            View medicine sales, revenue, and seller performance.
-            </p>
+    <section class="page_title">
 
-         </section> -->
+        <h2>Sales Reports</h2>
+
+        <p>
+            View medicine sales, profit, and seller performance.
+        </p>
+
+    </section>
+-->
 
 <section class="filters_section">
 
-       <h3>Filter Reports</h3>
+    <h3>Filter Reports</h3>
 
     <div class="filters">
 
@@ -78,16 +85,19 @@
         <div class="filter_box">
 
             <label for="medicine_filter">Medicine</label>
+
             <select id="medicine_filter">
 
                 <option value="">All Medicines</option>
 
-            </select>  
+            </select>
+
         </div>
 
         <div class="filter_box">
 
             <label for="seller_filter">Seller</label>
+
             <select id="seller_filter">
 
                 <option value="">All Sellers</option>
@@ -119,6 +129,7 @@
                 <th>Medicine Name</th>
                 <th>Quantity Sold</th>
                 <th>Date</th>
+                <th>Time</th>
                 <th>Unit Price</th>
                 <th>Total Price</th>
                 <th>Payment Method</th>
@@ -133,7 +144,6 @@
         </tbody>
 
     </table>
-    
 
 </section>
 
@@ -143,10 +153,13 @@
     <button id="export_button">Export EXCEL</button>
 
 </section>
-    </main>
 
-    <script type="text/javascript" src="../style and script files/layout.js"></script>
-    <script type="text/javascript" src="../style and script files/sales.js"></script>
-    <script type="text/javascript" src="../style and script files/reports.js"></script>
+</main>
+
+<script type="text/javascript" src="../style and script files/layout.js"></script>
+<script type="text/javascript" src="../style and script files/sales.js"></script>
+<script type="text/javascript" src="../style and script files/reports.js"></script>
 
 </body>
+
+</html>

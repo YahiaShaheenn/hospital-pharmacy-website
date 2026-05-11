@@ -213,6 +213,7 @@ function generateReceipt(paymentmethod) {
 document.getElementById("modal-overlay").style.display = "flex";
 let sale = {      //saves it
     date: date,
+    time: time,
     items: cart.slice(), 
     total: total,
     payment: paymentmethod,
