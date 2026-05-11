@@ -1,53 +1,108 @@
-// 1. The Static Data (Your 5 Medicines)
-const inventory = [
-    { id: "M001", name: "Panadol", category: "Analgesic", stock: 5, expiry: "2026-12" },
-    { id: "M002", name: "Amoxil", category: "Antibiotic", stock: 20, expiry: "2027-08" },
-    { id: "M003", name: "Brufen", category: "Painkiller", stock: 15, expiry: "2030-01" },
-    { id: "M004", name: "Zyrtec", category: "Antihistamine", stock: 8, expiry: "2027-03" },
-    { id: "M005", name: "Nexium", category: "Antacid", stock: 12, expiry: "2028-11" },
-    { id: "M006", name: "Ketofan", category: "Painkiller", stock: 17, expiry: "2027-09" }
-    .
-];
+if (!sessionStorage.getItem("currentDoctor")) {
+    window.location.href = "LogIn.html";
+}
 
-// Remembers which medicine the doctor is currently looking at
-let currentMedicineIndex = -1; 
+let currentMedicineIndex = -1;
 
-// 2. Search Function
+// --- Summary Cards ---
+function updateSummaryCards() {
+    let lowStock = 0;
+    let expired = 0;
+
+    for (let i = 0; i < supplies.length; i++) {
+        if (supplies[i].stock <= supplies[i].minStock) lowStock++;
+        if (new Date(supplies[i].expiryDate) < new Date()) expired++;
+    }
+
+    document.getElementById("total_items").textContent = supplies.length;
+    document.getElementById("low_stock_count").textContent = lowStock;
+    document.getElementById("expired_count").textContent = expired;
+}
+
+// --- Display Table ---
+function displayTable(data) {
+    let tableBody = document.getElementById("inventory_table_body");
+    tableBody.innerHTML = "";
+
+    if (data.length === 0) {
+        tableBody.innerHTML = <tr><td colspan="9">No medicines found.</td></tr>;
+        return;
+    }
+
+    for (let i = 0; i < data.length; i++) {
+        let med = data[i];
+        let isExpired = new Date(med.expiryDate) < new Date();
+        let isLowStock = med.stock <= med.minStock;
+
+        let status = "✅ OK";
+        let rowClass = "";
+
+        if (isExpired) {
+            status = "❌ Expired";
+            rowClass = "expired_row";
+        } else if (isLowStock) {
+            status = "⚠️ Low Stock";
+            rowClass = "lowstock_row";
+        }
+
+        let originalIndex = supplies.indexOf(med);
+
+        tableBody.innerHTML += `
+            <tr class="${rowClass}">
+                <td>${med.name}</td>
+                <td>${med.category}</td>
+                <td>${med.stock}</td>
+                <td>${med.minStock}</td>
+                <td>${med.expiryDate}</td>
+                <td>${med.costPrice} EGP</td>
+                <td>${med.sellingPrice} EGP</td>
+                <td>${status}</td>
+                <td><button onclick="openEditModal(${originalIndex})">Update Stock</button></td>
+            </tr>
+        `;
+    }
+}
+
+// --- Search & Filter ---
 function searchMedicine() {
-    const searchQuery = document.getElementById("searchInput").value.toLowerCase();
-    
-    let found = false;
-    for (let i = 0; i < inventory.length; i++) {
-        if (inventory[i].name.toLowerCase() === searchQuery) {
-            currentMedicineIndex = i; 
-            found = true;
-            break;
+    let searchQuery = document.getElementById("searchInput").value.toLowerCase();
+    let categoryValue = document.getElementById("categoryFilter").value;
+
+    let filtered = [];
+
+    for (let i = 0; i < supplies.length; i++) {
+        let nameMatch = supplies[i].name.toLowerCase().includes(searchQuery);
+        let categoryMatch = categoryValue === "" || supplies[i].category === categoryValue;
+
+        if (nameMatch && categoryMatch) {
+            filtered.push(supplies[i]);
         }
     }
 
-    if (found) {
-        updateScreen();
-        document.getElementById("medicineCard").style.display = "block";
-    } else {
-        document.getElementById("medicineCard").style.display = "none";
-        alert("Medicine not found! Please try 'Panadol' or 'Amoxil'.");
-    }
+    displayTable(filtered);
 }
 
-// 3. Update HTML Screen Function
-function updateScreen() {
-    const med = inventory[currentMedicineIndex];
-    document.getElementById("display-name").innerText = med.name;
-    document.getElementById("display-id").innerText = med.id;
-    document.getElementById("display-category").innerText = med.category;
-    document.getElementById("display-expiry").innerText = med.expiry;
-    document.getElementById("display-stock").innerText = med.stock;
+function resetSearch() {
+    document.getElementById("searchInput").value = "";
+    document.getElementById("categoryFilter").value = "";
+    displayTable(supplies);
 }
 
-// 4. Add/Take Stock Function
+// --- Edit Modal ---
+function openEditModal(index) {
+    currentMedicineIndex = index;
+    document.getElementById("edit_medicine_name").textContent = supplies[index].name;
+    document.getElementById("edit_current_stock").textContent = supplies[index].stock;
+    document.getElementById("edit_qty").value = "";
+    document.getElementById("edit_modal").style.display = "flex";
+}
+
+function closeEditModal() {
+    document.getElementById("edit_modal").style.display = "none";
+}
+
 function updateStock(action) {
-    const inputBox = document.getElementById("qtyInput");
-    const qty = parseInt(inputBox.value);
+    let qty = parseInt(document.getElementById("edit_qty").value);
 
     if (isNaN(qty) || qty <= 0) {
         alert("Please enter a valid quantity.");
@@ -55,15 +110,21 @@ function updateStock(action) {
     }
 
     if (action === 'add') {
-        inventory[currentMedicineIndex].stock += qty; 
+        supplies[currentMedicineIndex].stock += qty;
     } else if (action === 'take') {
-        if (qty > inventory[currentMedicineIndex].stock) {
-            alert("Not enough stock available!");
+        if (qty > supplies[currentMedicineIndex].stock) {
+            alert("Not enough stock!");
             return;
         }
-        inventory[currentMedicineIndex].stock -= qty; 
+        supplies[currentMedicineIndex].stock -= qty;
     }
 
-    inputBox.value = "";
-    updateScreen();
+    localStorage.setItem("suppliesStock", JSON.stringify(supplies.map(s => s.stock)));
+    document.getElementById("edit_current_stock").textContent = supplies[currentMedicineIndex].stock;
+    updateSummaryCards();
+    displayTable(supplies);
 }
+
+// --- Init ---
+updateSummaryCards();
+displayTable(supplies);
