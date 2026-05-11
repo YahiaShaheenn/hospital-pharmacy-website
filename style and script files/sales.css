@@ -16,25 +16,6 @@
     border-radius: 18px;
     padding: 20px;
 }
-
-.left-panel::before {
-    content: "🔍 Search Medicine";
-    display: block;
-    font-size: 20px;
-    font-weight: bold;
-    margin-bottom: 15px;
-    color: rgb(47, 127, 138);
-}
-
-.right-panel::before {
-    content: "🛒 Cart";
-    display: block;
-    font-size: 20px;
-    font-weight: bold;
-    margin-bottom: 15px;
-    color: rgb(47, 127, 138);
-}
-
 /* Search */
 .search-section {
     display: flex;
@@ -297,4 +278,17 @@
     .sales-container {
         grid-template-columns: 1fr;
     }
+}
+.panel-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 20px;
+    font-weight: bold;
+    margin: 0 0 15px 0;
+    color: rgb(47, 127, 138);
+}
+
+.panel-title .material-icons {
+    font-size: 24px;
 }
