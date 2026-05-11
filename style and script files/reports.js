@@ -16,17 +16,12 @@ function displayReports(data){
                 <tr>
 
                     <td>${item.name}</td>
-
                     <td>${item.qty}</td>
-
                     <td>${sale.date}</td>
-
+                    <td>${sale.time || "No time"}</td>
                     <td>${item.price} EGP</td>
-
                     <td>${item.price * item.qty} EGP</td>
-
                     <td>${sale.payment}</td>
-                    
                     <td>${sale.seller}</td>
 
                 </tr>
@@ -61,20 +56,18 @@ loadMedicineOptions();
 
 function updateCards(data){
 
-    let totalRevenue = 0;
-
+    let totalSales = 0;
     let totalProfit = 0;
-
     let totalMedicinesSold = 0;
 
     data.forEach(function(sale){
 
         sale.items.forEach(function(item){
 
-            let itemRevenue =
+            let itemSales =
             item.price * item.qty;
 
-            totalRevenue += itemRevenue;
+            totalSales += itemSales;
 
             totalMedicinesSold += item.qty;
 
@@ -98,9 +91,9 @@ function updateCards(data){
 
     });
 
-    document.getElementById("total_revenue")
+    document.getElementById("total_sales")
     .textContent =
-    totalRevenue + " EGP";
+    totalSales + " EGP";
 
     document.getElementById("total_profit")
     .textContent =
@@ -158,6 +151,7 @@ document.getElementById("filter_button")
     });
 
     displayReports(filteredSales);
+    updateCards(filteredSales);
 
 });
 
@@ -190,11 +184,11 @@ document.getElementById("export_button").addEventListener("click", function() {
         return;
     }
 
-    let csv = "Medicine Name,Quantity,Date,Seller,Revenue\n";
+    let csv = "Medicine Name,Quantity,Date,Time,Seller,Sales\n";
 
     salesHistory.forEach(function(sale) {
         sale.items.forEach(function(item) {
-            csv += `${item.name},${item.qty},${sale.date},${sale.seller || "Unknown"},${item.price * item.qty} EGP\n`;
+            csv += `${item.name},${item.qty},${sale.date},${sale.time || "No time"},${sale.seller || "Unknown"},${item.price * item.qty} EGP\n`;
         });
     });
 
