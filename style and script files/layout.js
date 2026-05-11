@@ -161,11 +161,15 @@ topbar.className = "TopBar";
 topbar.innerHTML = `
     <div class="toprow">
 
-        <h1>Pharmacy</h1>
+        <h1>Al-Shifaa</h1>
 
         <div class="profile">
             <a href="login.html" class="profile-icon"  id="logout" title="Logout">
                 <span class="material-icons">logout</span>
+            </a>
+
+            <a href="LogIn.html" class="profile-icon" title="Profile" id="profileLink">
+                <span class="material-icons">account_circle</span>
             </a>
         </div>
 
@@ -176,6 +180,7 @@ topbar.innerHTML = `
         <button type="button" onclick="location.href='inventory.html'">Inventory</button>
         <button type="button" onclick="location.href='sales.html'">Sales</button>
         <button type="button" onclick="location.href='reports.html'">Reports</button>
+        <button id="manageDoctorsBtn" type="button" onclick="location.href='admin.html'">Manage Doctors</button>
     </div>
 `;
 
@@ -190,3 +195,12 @@ window.onload = function() {
     `;
     document.body.appendChild(footer);
 }
+
+
+ isAdmin = sessionStorage.getItem("admin") === "true";
+
+
+document.getElementById("manageDoctorsBtn").style.display = isAdmin ? "block" : "none";
+document.getElementById("profileLink").style.display = isAdmin ? "block" : "none";
+document.getElementById("logout").style.display = isAdmin    ? "none" : "block";
+
