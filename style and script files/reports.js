@@ -1,4 +1,5 @@
 const tableBody = document.getElementById("reports_table_body");
+const sellerFilter = document.getElementById("seller_filter");
 
 let salesHistory =
 JSON.parse(localStorage.getItem("salesHistory")) || [];
@@ -52,7 +53,18 @@ function loadMedicineOptions(){
 
 }
 
+function loadSellerOptions(){
+    sellerFilter.innerHTML = "<option value=''>All Sellers</option>";
+    const doctors = JSON.parse(localStorage.getItem("doctors")) || [];
+    doctors.forEach(function(doctor){
+        sellerFilter.innerHTML += `
+            <option value="${doctor.username}">${doctor.username}</option>
+        `;
+    });
+}
+
 loadMedicineOptions();
+loadSellerOptions();
 
 function updateCards(data){
 
@@ -207,3 +219,4 @@ if(!sessionStorage.getItem("currentDoctor")) {
    alert("Please log in to access the Reports.");
 
 }
+
