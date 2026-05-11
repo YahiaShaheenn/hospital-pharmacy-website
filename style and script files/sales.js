@@ -1,3 +1,11 @@
+window.onload = function() {
+if(!sessionStorage.getItem("currentDoctor")) {
+
+   window.location.href = "LogIn.html";
+   alert("Please log in to access the Sales.");
+
+}
+}
 const supplies = [
 { name: "Paracetamol", category: "Pain Relief", costPrice: 15, sellingPrice: 25, stock: 120, minStock: 20, expiryDate: "2027-06-01" },
 { name: "Ibuprofen", category: "Pain Relief", costPrice: 25, sellingPrice: 40, stock: 80, minStock: 15, expiryDate: "2027-08-15" },
@@ -198,7 +206,7 @@ function generateReceipt(paymentmethod) {
         itemsHTML += `<p>${cart[j].name} x${cart[j].qty} = ${subtotal} EGP</p>`;
     }
     
-   document.getElementById("modal-receipt").innerHTML = `  // receipt modal
+   document.getElementById("modal-receipt").innerHTML = `  
     <h3>Receipt</h3>
     <p>${date} | ${time}</p>
     <p>Seller: ${sellerName}</p>
@@ -237,9 +245,3 @@ function showAlert(message) {
 function closeAlert() {
     document.getElementById("alert-overlay").style.display = "none";
 };
-if(!sessionStorage.getItem("currentDoctor")) {
-
-   window.location.href = "LogIn.html";
-   alert("Please log in to access the Sales.");
-
-}
