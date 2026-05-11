@@ -16,6 +16,25 @@
 
 <body>
 
+    <section class="statistics_section">
+
+    <div class="statistic_card">
+        <h3>Total Revenue</h3>
+        <p id="total_revenue">0 EGP</p>
+    </div>
+
+    <div class="statistic_card">
+        <h3>Total Profit</h3>
+        <p id="total_profit">0 EGP</p>
+    </div>
+
+    <div class="statistic_card">
+        <h3>Total Medicines Sold</h3>
+        <p id="total_sales_count">0</p>
+    </div>
+
+</section>
+
 
      <!-- <div class="TopBar">
 
@@ -59,8 +78,11 @@
         <div class="filter_box">
 
             <label for="medicine_filter">Medicine</label>
-            <input type="text" id="medicine_filter" placeholder="Search medicine">
+            <select id="medicine_filter">
 
+                <option value="">All Medicines</option>
+
+            </select>  
         </div>
 
         <div class="filter_box">
@@ -68,6 +90,7 @@
             <label for="seller_filter">Seller</label>
             <select id="seller_filter">
 
+                <option value="">All Sellers</option>
                 <option value="Yahia">Dr.Yahia</option>
                 <option value="Amena">Dr.Amena</option>
                 <option value="Maya">Dr.Maya</option>
@@ -123,6 +146,7 @@
     </main>
 
     <script type="text/javascript" src="../style and script files/layout.js"></script>
+    <script type="text/javascript" src="../style and script files/sales.js"></script>
     <script type="text/javascript" src="../style and script files/reports.js"></script>
 
 </body>

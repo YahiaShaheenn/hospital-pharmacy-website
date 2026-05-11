@@ -4,45 +4,44 @@
     padding: 0;
 }
 
-/* body {
-    font-family: Arial, sans-serif;
-} */
-
-/* .top_bar h1 {
-    margin-bottom: 12px;
-} */
-
-/* .TopBar{
-    background-color: rgb(63, 138, 153);
-    color: black;
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    padding: 6px;
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-} */
-
-/* .navigation_bar {
-    display: flex;
-    gap: 10px;
-}*/
-
-/*.navigation_bar button {
-    padding: 10px 16px;
-    border: none;
-    border-radius: 6px;
-    background-color: white;
-    color: rgb(63, 138, 153);
-    font-weight: bold;
-    cursor: pointer;
-    /* mesh 3arfa k=leh pointer mesh shaghal */
-    /*da elli beykhali lama a hover el  button a2of 3aleh ya3ni,ye2leb hand)
-} */
-
 .reports_container{
-    padding: 25px;
+    width: 95%;
+    margin: 30px auto;
+}
+
+.statistics_section{
+
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+
+}
+
+.statistic_card{
+
+    flex: 1;
+    min-width: 220px;
+    background-color: white;
+    padding: 20px;
+    border-left: 5px solid rgb(63, 138, 153);
+    border-radius: 10px;
+
+}
+
+.statistic_card h3{
+
+    margin-bottom: 10px;
+    color: #444;
+
+}
+
+.statistic_card p{
+
+    font-size: 22px;
+    font-weight: bold;
+    color: rgb(63, 138, 153);
+
 }
 
 .page_title{
@@ -54,12 +53,13 @@
     margin-bottom: 5px;
 }
 
-.filters_section{
 
-    background-color: white;
-    padding: 20px;
-    border-radius: 10px;
-    margin-bottom: 20px;
+.filters_section{
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 25px;
+    border-radius: 18px;
+    margin-bottom: 25px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
 }
 
 .filters_section h3{
@@ -93,12 +93,11 @@
 
 .filter_box input,
 .filter_box select{
-
-    padding: 9px;
-    width: 180px;
+    padding: 12px;
+    width: 220px;
     border: 1px solid #ccc;
-    border-radius: 6px;
-
+    border-radius: 10px;
+    font-size: 15px;
 }
 
 .filters button{
@@ -110,6 +109,11 @@
     color: white;
     cursor: pointer;
 
+}
+
+.filters button:hover{
+    background-color: #2f7f8a;
+    transform: translateY(-2px);
 }
 
 .statistics_section{
@@ -132,42 +136,11 @@ tbody tr:hover{
 }
 
 .table_section{
+    background-color: rgba(255, 255, 255, 0.92);
+    padding: 25px;
+    border-radius: 18px;
     overflow-x: auto;
-}
-
-
-/* .statistic_card{
-
-    flex: 1;
-    min-width: 220px;
-    background-color: white;
-    padding: 20px;
-    border-left: 5px solid rgb(63, 138, 153);
-    border-radius: 10px;
-
-} */
-
-/* .statistic_card h3{
-
-    margin-bottom: 10px;
-    color: #444;
-
-} */
-
-/* .statistic_card p{
-
-    font-size: 22px;
-    font-weight: bold;
-    color: rgb(63, 138, 153);
-
-} */
-
-.table_section{
-
-    background-color: white;
-    padding: 20px;
-    border-radius: 10px;
-
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
 }
 
 table{
@@ -186,11 +159,10 @@ thead{
 
 th,
 td{
-
-    padding: 12px;
+    padding: 15px;
     text-align: center;
     border-bottom: 1px solid #ddd;
-
+    font-size: 15px;
 }
 
 tbody tr:hover{
@@ -199,5 +171,24 @@ tbody tr:hover{
     
 } 
 
+.actions_section{
+    display: flex;
+    gap: 15px;
+    justify-content: flex-end;
+    margin-top: 20px;
+}
 
+.actions_section button{
+    padding: 12px 20px;
+    border: none;
+    border-radius: 10px;
+    background-color: rgb(63, 138, 153);
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
 
+.actions_section button:hover{
+    background-color: #2f7f8a;
+    transform: translateY(-2px);
+}

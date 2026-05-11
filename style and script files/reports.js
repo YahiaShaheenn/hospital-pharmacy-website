@@ -39,6 +39,80 @@ function displayReports(data){
 
 }
 
+const medicineFilter =
+document.getElementById("medicine_filter");
+
+function loadMedicineOptions(){
+
+    for(let i = 0; i < supplies.length; i++){
+
+        medicineFilter.innerHTML += `
+
+            <option value="${supplies[i].name}">
+                ${supplies[i].name}
+            </option>
+
+        `;
+    }
+
+}
+
+loadMedicineOptions();
+
+function updateCards(data){
+
+    let totalRevenue = 0;
+
+    let totalProfit = 0;
+
+    let totalMedicinesSold = 0;
+
+    data.forEach(function(sale){
+
+        sale.items.forEach(function(item){
+
+            let itemRevenue =
+            item.price * item.qty;
+
+            totalRevenue += itemRevenue;
+
+            totalMedicinesSold += item.qty;
+
+            for(let i = 0; i < supplies.length; i++){
+
+                if(supplies[i].name === item.name){
+
+                    let itemProfit =
+                    (item.price - supplies[i].costPrice)
+                    * item.qty;
+
+                    totalProfit += itemProfit;
+
+                    break;
+
+                }
+
+            }
+
+        });
+
+    });
+
+    document.getElementById("total_revenue")
+    .textContent =
+    totalRevenue + " EGP";
+
+    document.getElementById("total_profit")
+    .textContent =
+    totalProfit + " EGP";
+
+    document.getElementById("total_sales_count")
+    .textContent =
+    totalMedicinesSold;
+
+}
+
+updateCards(salesHistory);
 displayReports(salesHistory);
 
 document.getElementById("filter_button")
@@ -90,13 +164,18 @@ document.getElementById("filter_button")
 document.getElementById("reset_button")
 .addEventListener("click", function(){
 
+    document.getElementById("date_filter").value = "";
+
     document.getElementById("medicine_filter").value = "";
 
     document.getElementById("seller_filter").value = "";
 
     displayReports(salesHistory);
 
+    updateCards(salesHistory);
+
 });
+
 
 document.getElementById("print_button")
 .addEventListener("click", function(){
