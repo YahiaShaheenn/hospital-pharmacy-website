@@ -58,28 +58,26 @@ style.textContent = `
 }
 
 body{
-    margin: 0;
+   margin: 0;
     padding: 0;
     background-color: powderblue;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
 body::before{
     content: "";
     position: fixed;
-
     top: 0;
     left: 0;
-
     width: 100%;
     height: 100%;
-
-    background-image: url("saidaleya.png");
+    background-image: url('../style and script files/saidaleya.png');
     background-repeat: no-repeat;
     background-position: center 120px;
     background-size: 700px;
-
     opacity: 0.2;
-
     z-index: -1;
 }
 
@@ -87,21 +85,70 @@ body::before{
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: 'ADLaM Display', sans-serif;
 }
 
 .profile-icon{
-    color: white;
+    color: black;
     text-decoration: none;
 }
 
 .profile-icon:visited{
-    color: white;
+    color: black;
 }
 
 .profile-icon .material-icons{
     font-size: 40px;
 }
 
+.profile-icon:hover .material-icons{
+    transform: translateY(-2px);
+}
+.footer {
+    background-color: rgb(63, 138, 153);
+    color: white;
+    text-align: center;
+    padding: 15px;
+    margin-top: auto;
+    width: 100%;
+}
+
+.footer p {
+    margin: 5px 0;
+    font-size: 14px;
+}
+    @media (max-width: 768px) {
+    .toprow h1 {
+        font-size: 28px;
+    }
+
+    .nav {
+        gap: 15px;
+    }
+
+    .nav button {
+        padding: 4px 8px;
+        font-size: 12px;
+    }
+
+    .summary {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .summary {
+        grid-template-columns: 1fr;
+    }
+
+    .nav {
+        gap: 8px;
+    }
+
+    .toprow h1 {
+        font-size: 22px;
+    }
+}
 `;
 
 document.head.appendChild(style);
@@ -114,10 +161,14 @@ topbar.className = "TopBar";
 topbar.innerHTML = `
     <div class="toprow">
 
-        <h1>Pharmacy</h1>
+        <h1>Al-Shifaa</h1>
 
         <div class="profile">
-            <a href="login.html" class="profile-icon">
+            <a href="login.html" class="profile-icon"  id="logout" title="Logout">
+                <span class="material-icons">logout</span>
+            </a>
+
+            <a href="LogIn.html" class="profile-icon" title="Profile" id="profileLink">
                 <span class="material-icons">account_circle</span>
             </a>
         </div>
@@ -125,11 +176,31 @@ topbar.innerHTML = `
     </div>
 
     <div class="nav">
-        <button type="button" onclick="location.href='#'">Dashboard</button>
+        <button type="button" onclick="location.href='dashboard.html'">Dashboard</button>
         <button type="button" onclick="location.href='inventory.html'">Inventory</button>
         <button type="button" onclick="location.href='sales.html'">Sales</button>
         <button type="button" onclick="location.href='reports.html'">Reports</button>
+        <button id="manageDoctorsBtn" type="button" onclick="location.href='admin.html'">Manage Doctors</button>
     </div>
 `;
 
 document.body.insertBefore(topbar, document.body.firstChild);
+
+window.onload = function() {
+    let footer = document.createElement("div");
+    footer.className = "footer";
+    footer.innerHTML = `
+        <p> Pharmacy</p>
+        <p>© ${new Date().getFullYear()} All Rights Reserved</p>
+    `;
+    document.body.appendChild(footer);
+}
+
+
+ isAdmin = sessionStorage.getItem("admin") === "true";
+
+
+document.getElementById("manageDoctorsBtn").style.display = isAdmin ? "block" : "none";
+document.getElementById("profileLink").style.display = isAdmin ? "block" : "none";
+document.getElementById("logout").style.display = isAdmin    ? "none" : "block";
+

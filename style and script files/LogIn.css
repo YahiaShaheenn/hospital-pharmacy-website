@@ -2,16 +2,17 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box; /* include padding and border in element's total width and height */
+    font-family: 'ADLaM Display', sans-serif;
 }
 
 body {
-    font-family: 'Poppins', sans-serif;
-    background: linear-gradient(135deg, #b0e0e6, #5f8fdb);
+    background: linear-gradient(315deg, rgb(63, 138, 153), powderblue);
     min-height: 100vh; /* ensure body takes full viewport height */
     display: flex;
     justify-content: center;
     align-items: center;
     position: relative; /* for positioning the background image */
+    
 }
 
 body::before {
@@ -46,6 +47,7 @@ body::before {
     text-align: center;
     border: 1px solid rgba(255, 255, 255, 0.4);
     transition: transform 0.4s ease; /* smooth transition for hover effect */
+    
 }
 
 .login-container:hover {
@@ -57,6 +59,7 @@ body::before {
     color: #1e3a8a;
     font-weight: 600;
     font-size: 28px;
+    font-family: 'ADLaM Display', sans-serif;
 }
 
 .input-group {
@@ -109,4 +112,5 @@ body::before {
     color: #e74c3c;
     font-size: 14px;
     height: 18px; /* reserve space for the message */
+    font-family: 'ADLaM Display', sans-serif;
 }
