@@ -25,7 +25,7 @@ function displayTable(data) {
     tableBody.innerHTML = "";
 
     if (data.length === 0) {
-        tableBody.innerHTML = <tr><td colspan="9">No medicines found.</td></tr>;
+        tableBody.innerHTML = `<tr><td colspan="9">No medicines found.</td></tr>`;
         return;
     }
 
