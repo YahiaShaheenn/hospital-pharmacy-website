@@ -7,30 +7,85 @@
     <title>Inventory</title>
     <link rel="stylesheet" href="../style and script files/inventory.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-    <link href="https://fonts.googleapis.com/css2?family=ADLaM+Display&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=ADLaM Display">
 </head>
 
 <body>
 
-    <!-- Search Area -->
-    <div class="search-container">
-        <input type="text" id="searchInput" placeholder="Enter Medicine Name">
-        <button onclick="searchMedicine()">Search</button>
-    </div>
+    <main class="inventory_container">
 
-    <!-- Details Card (Hidden by default) -->
-    <div class="medicine-card" id="medicineCard">
-        <h2 id="display-name">Medicine Name</h2>
-        <p><strong>ID:</strong> <span id="display-id">---</span></p>
-        <p><strong>Category:</strong> <span id="display-category">---</span></p>
-        <p><strong>Expiry Date:</strong> <span id="display-expiry">---</span></p>
-        <p><strong>Current Stock:</strong> <span class="stock-number" id="display-stock">0</span></p>
+    
 
-        <!-- Update Stock Area -->
-        <div class="action-area">
-            <input type="number" id="qtyInput" placeholder="Qty">
-            <button class="add-btn" onclick="updateStock('add')">Load (+)</button>
-            <button class="take-btn" onclick="updateStock('take')">Take (-)</button>
+        <section class="summary_cards">
+            <div class="summary_card">
+                <h3>Total Items</h3>
+                <p id="total_items">0</p>
+            </div>
+            <div class="summary_card warning_card">
+                <h3>Low Stock Items</h3>
+                <p id="low_stock_count">0</p>
+            </div>
+            <div class="summary_card danger_card">
+                <h3>Expired Items</h3>
+                <p id="expired_count">0</p>
+            </div>
+        </section>
+
+        <section class="search_filter_section">
+            <div class="search_filter">
+                <input type="text" id="searchInput" placeholder="Search medicine..." onkeydown="if(event.key==='Enter') searchMedicine()">
+                <select id="categoryFilter">
+                    <option value="">All Categories</option>
+                    <option value="Pain Relief">Pain Relief</option>
+                    <option value="Antibiotics">Antibiotics</option>
+                    <option value="Cold & Flu">Cold & Flu</option>
+                    <option value="Diabetes">Diabetes</option>
+                    <option value="Heart">Heart</option>
+                    <option value="Stomach">Stomach</option>
+                    <option value="Respiratory">Respiratory</option>
+                    <option value="Supplies">Supplies</option>
+                    <option value="Emergency">Emergency</option>
+                    <option value="Vitamins">Vitamins</option>
+                    <option value="Baby Care">Baby Care</option>
+                </select>
+                <button onclick="searchMedicine()">Search</button>
+                <button onclick="resetSearch()">Reset</button>
+            </div>
+        </section>
+
+        <section class="table_section">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Medicine Name</th>
+                        <th>Category</th>
+                        <th>Stock</th>
+                        <th>Min Stock</th>
+                        <th>Expiry Date</th>
+                        <th>Cost Price</th>
+                        <th>Selling Price</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="inventory_table_body"></tbody>
+            </table>
+        </section>
+
+    </main>
+
+    <!-- Edit Stock Modal -->
+    <div id="edit_modal">
+        <div id="edit_box">
+            <h3>Update Stock</h3>
+            <p id="edit_medicine_name"></p>
+            <p>Current Stock: <span id="edit_current_stock"></span></p>
+            <input type="number" id="edit_qty" placeholder="Enter quantity">
+            <div class="edit_buttons">
+                <button onclick="updateStock('add')">Add Stock ➕</button>
+                <button class="remove_btn" onclick="updateStock('take')">Remove Stock ➖</button>
+            </div>
+            <button class="close_btn" onclick="closeEditModal()">Close</button>
         </div>
     </div>
 
@@ -39,5 +94,4 @@
     <script type="text/javascript" src="../style and script files/inventory.js"></script>
 
 </body>
-
 </html>
