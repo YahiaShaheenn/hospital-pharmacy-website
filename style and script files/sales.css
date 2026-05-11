@@ -1,3 +1,4 @@
+/*layout*/
 *{
     font-family: 'ADLaM Display', sans-serif;
 }
@@ -66,7 +67,7 @@
     transform: translateY(-2px);
 }
 
-/* Medicine Result Cards */
+/* Result Cards */
 .medicine-result {
     background: white;
     border-radius: 12px;
@@ -156,7 +157,7 @@
     background-color: rgb(180, 50, 50);
 }
 
-
+/* payment section*/
 #payment-section {
     display: none;
     background: white;
@@ -248,6 +249,7 @@
     background-color: #2f7f8a;
     transform: translateY(-2px);
 }
+/* alert part modal*/
 #alert-overlay {
     display: none;
     position: fixed;
@@ -290,6 +292,7 @@
 #alert-box button:hover {
     background-color: #2f7f8a;
 }
+
 @media (max-width: 768px) {
     .sales-container {
         grid-template-columns: 1fr;
