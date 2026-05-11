@@ -1,5 +1,8 @@
-if (!sessionStorage.getItem("currentDoctor")) {
-    window.location.href = "LogIn.html";
+window.onload = function () {
+    if (!sessionStorage.getItem("currentDoctor")) {
+        window.location.href = "LogIn.html";
+        window.alert("Please log in to access the inventory.");
+    }
 }
 
 let currentMedicineIndex = -1;

@@ -1,16 +1,17 @@
+
 const tableBody = document.getElementById("reports_table_body");
 const sellerFilter = document.getElementById("seller_filter");
 
 let salesHistory =
-JSON.parse(localStorage.getItem("salesHistory")) || [];
+    JSON.parse(localStorage.getItem("salesHistory")) || [];
 
-function displayReports(data){
+function displayReports(data) {
 
     tableBody.innerHTML = "";
 
-    data.forEach(function(sale){
+    data.forEach(function (sale) {
 
-        sale.items.forEach(function(item){
+        sale.items.forEach(function (item) {
 
             tableBody.innerHTML += `
 
@@ -36,11 +37,11 @@ function displayReports(data){
 }
 
 const medicineFilter =
-document.getElementById("medicine_filter");
+    document.getElementById("medicine_filter");
 
-function loadMedicineOptions(){
+function loadMedicineOptions() {
 
-    for(let i = 0; i < supplies.length; i++){
+    for (let i = 0; i < supplies.length; i++) {
 
         medicineFilter.innerHTML += `
 
@@ -53,10 +54,10 @@ function loadMedicineOptions(){
 
 }
 
-function loadSellerOptions(){
+function loadSellerOptions() {
     sellerFilter.innerHTML = "<option value=''>All Sellers</option>";
     const doctors = JSON.parse(localStorage.getItem("doctors")) || [];
-    doctors.forEach(function(doctor){
+    doctors.forEach(function (doctor) {
         sellerFilter.innerHTML += `
             <option value="${doctor.username}">${doctor.username}</option>
         `;
@@ -66,30 +67,30 @@ function loadSellerOptions(){
 loadMedicineOptions();
 loadSellerOptions();
 
-function updateCards(data){
+function updateCards(data) {
 
     let totalSales = 0;
     let totalProfit = 0;
     let totalMedicinesSold = 0;
 
-    data.forEach(function(sale){
+    data.forEach(function (sale) {
 
-        sale.items.forEach(function(item){
+        sale.items.forEach(function (item) {
 
             let itemSales =
-            item.price * item.qty;
+                item.price * item.qty;
 
             totalSales += itemSales;
 
             totalMedicinesSold += item.qty;
 
-            for(let i = 0; i < supplies.length; i++){
+            for (let i = 0; i < supplies.length; i++) {
 
-                if(supplies[i].name === item.name){
+                if (supplies[i].name === item.name) {
 
                     let itemProfit =
-                    (item.price - supplies[i].costPrice)
-                    * item.qty;
+                        (item.price - supplies[i].costPrice)
+                        * item.qty;
 
                     totalProfit += itemProfit;
 
@@ -104,16 +105,16 @@ function updateCards(data){
     });
 
     document.getElementById("total_sales")
-    .textContent =
-    totalSales + " EGP";
+        .textContent =
+        totalSales + " EGP";
 
     document.getElementById("total_profit")
-    .textContent =
-    totalProfit + " EGP";
+        .textContent =
+        totalProfit + " EGP";
 
     document.getElementById("total_sales_count")
-    .textContent =
-    totalMedicinesSold;
+        .textContent =
+        totalMedicinesSold;
 
 }
 
@@ -121,76 +122,76 @@ updateCards(salesHistory);
 displayReports(salesHistory);
 
 document.getElementById("filter_button")
-.addEventListener("click", function(){
+    .addEventListener("click", function () {
 
-    const medicineValue =
-    document.getElementById("medicine_filter")
-    .value.toLowerCase();
+        const medicineValue =
+            document.getElementById("medicine_filter")
+                .value.toLowerCase();
 
-    const sellerValue =
-    document.getElementById("seller_filter").value;
+        const sellerValue =
+            document.getElementById("seller_filter").value;
 
-    let filteredSales = [];
+        let filteredSales = [];
 
-    salesHistory.forEach(function(sale){
+        salesHistory.forEach(function (sale) {
 
-        let filteredItems = sale.items.filter(function(item){
+            let filteredItems = sale.items.filter(function (item) {
 
-            let medicineMatch =
-            item.name.toLowerCase()
-            .includes(medicineValue);
+                let medicineMatch =
+                    item.name.toLowerCase()
+                        .includes(medicineValue);
 
-            return medicineMatch;
-
-        });
-
-        if(
-            filteredItems.length > 0 &&
-            (sellerValue === "" ||
-             sale.seller === sellerValue)
-        ){
-
-            filteredSales.push({
-
-                ...sale,
-
-                items: filteredItems
+                return medicineMatch;
 
             });
 
-        }
+            if (
+                filteredItems.length > 0 &&
+                (sellerValue === "" ||
+                    sale.seller === sellerValue)
+            ) {
+
+                filteredSales.push({
+
+                    ...sale,
+
+                    items: filteredItems
+
+                });
+
+            }
+
+        });
+
+        displayReports(filteredSales);
+        updateCards(filteredSales);
 
     });
 
-    displayReports(filteredSales);
-    updateCards(filteredSales);
-
-});
-
 document.getElementById("reset_button")
-.addEventListener("click", function(){
+    .addEventListener("click", function () {
 
-    document.getElementById("date_filter").value = "";
+        document.getElementById("date_filter").value = "";
 
-    document.getElementById("medicine_filter").value = "";
+        document.getElementById("medicine_filter").value = "";
 
-    document.getElementById("seller_filter").value = "";
+        document.getElementById("seller_filter").value = "";
 
-    displayReports(salesHistory);
+        displayReports(salesHistory);
 
-    updateCards(salesHistory);
+        updateCards(salesHistory);
 
-});
+    });
 
 
 document.getElementById("print_button")
-.addEventListener("click", function(){
+    .addEventListener("click", function () {
 
-    window.print();
+        window.print();
 
-});
+    });
 
-document.getElementById("export_button").addEventListener("click", function() {
+document.getElementById("export_button").addEventListener("click", function () {
     if (salesHistory.length === 0) {
         alert("No sales data to export!");
         return;
@@ -198,8 +199,8 @@ document.getElementById("export_button").addEventListener("click", function() {
 
     let csv = "Medicine Name,Quantity,Date,Time,Seller,Sales\n";
 
-    salesHistory.forEach(function(sale) {
-        sale.items.forEach(function(item) {
+    salesHistory.forEach(function (sale) {
+        sale.items.forEach(function (item) {
             csv += `${item.name},${item.qty},${sale.date},${sale.time || "No time"},${sale.seller || "Unknown"},${item.price * item.qty} EGP\n`;
         });
     });
@@ -213,10 +214,12 @@ document.getElementById("export_button").addEventListener("click", function() {
     URL.revokeObjectURL(url);
 });
 
-if(!sessionStorage.getItem("currentDoctor")) {
+window.onload = function () {
+    if (!sessionStorage.getItem("currentDoctor")) {
 
-   window.location.href = "LogIn.html";
-   alert("Please log in to access the Reports.");
+        window.location.href = "LogIn.html";
+        alert("Please log in to access the Reports.");
 
+    }
 }
 
