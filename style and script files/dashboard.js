@@ -1,9 +1,11 @@
+window.onload = function() {
 if (!sessionStorage.getItem("currentDoctor")) {
 
     window.location.href = "LogIn.html";
     alert("Please log in to access the dashboard.");
 
 }
+};
 
 document.getElementById("logout").addEventListener("click", function () {
     sessionStorage.removeItem("currentDoctor");
