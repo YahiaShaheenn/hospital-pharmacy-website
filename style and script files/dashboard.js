@@ -58,6 +58,8 @@ salesHistory.forEach(function (sale) {
 });
 
 
+
+
 let expiredMedicines = [];
 
 for (let i = 0; i < supplies.length; i++) {
