@@ -184,11 +184,27 @@ document.getElementById("print_button")
 
 });
 
-document.getElementById("export_button")
-.addEventListener("click", function(){
+document.getElementById("export_button").addEventListener("click", function() {
+    if (salesHistory.length === 0) {
+        alert("No sales data to export!");
+        return;
+    }
 
-    alert("PDF Exported Successfully!");
+    let csv = "Medicine Name,Quantity,Date,Seller,Revenue\n";
 
+    salesHistory.forEach(function(sale) {
+        sale.items.forEach(function(item) {
+            csv += `${item.name},${item.qty},${sale.date},${sale.seller || "Unknown"},${item.price * item.qty} EGP\n`;
+        });
+    });
+
+    let blob = new Blob([csv], { type: "text/csv" });
+    let url = URL.createObjectURL(blob);
+    let link = document.createElement("a");
+    link.href = url;
+    link.download = "SalesReport.csv";
+    link.click();
+    URL.revokeObjectURL(url);
 });
 
 if(!sessionStorage.getItem("currentDoctor")) {
