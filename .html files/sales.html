@@ -5,14 +5,15 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sales</title>
-    <link rel="stylesheet" href="../style and script files/dashboard.css">
     <link rel="stylesheet" href="../style and script files/sales.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=ADLaM Display">
+   
 </head>
 
 <body>
-    <script src="../style and script files/topbar.js"></script>
+    <script src="../style and script files/layout.js"></script>
+
     <div class="sales-container">
         <div class="left-panel">
             <div class="search-section">
@@ -30,9 +31,22 @@
                 <br>
                 <button onclick="checkout()">Checkout</button>
             </div>
-            <div id="receipt"></div>
         </div>
     </div>
+
+    <!-- Modal -->
+    <div id="modal-overlay">
+        <div id="modal-box">
+            <div id="modal-receipt"></div>
+            <button onclick="closeModal()">Close</button>
+        </div>
+    </div><div id="alert-overlay">
+    <div id="alert-box">
+        <p id="alert-message"></p>
+        <button onclick="closeAlert()">OK</button>
+    </div>
+</div>
+
     <script src="../style and script files/sales.js"></script>
 </body>
 

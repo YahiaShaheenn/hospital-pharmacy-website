@@ -1,15 +1,17 @@
-const doctorUsername = "Yahia";
-const doctorPassword = "123456";
 
 document.getElementById("LoginForm").addEventListener("submit", function (e) {
     e.preventDefault(); // Prevent form submission
-
+    
     const username = document.getElementById("username").value;
     const password = document.getElementById("password").value;
+    const doctors =JSON.parse(localStorage.getItem("doctors")) || [];
+    const foundDoctor = doctors.find(user =>user.username === username && user.password === password
 
-    if (username === doctorUsername && password === doctorPassword) {
+);
 
+    if (foundDoctor) {
         sessionStorage.setItem("currentDoctor", username);
+        sessionStorage.setItem("admin", false); // Mark that a doctor is logged in
         window.location.href = "dashboard.html";
 
     }
