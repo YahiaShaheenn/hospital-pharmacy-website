@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Dashboard</title>
+        <link rel="stylesheet" href="dashboard.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    </head>
+
+    <body>
+
+        <div class="TopBar">
+
+           <div class="toprow">
+                <h1>Pharmacy</h1>
+
+                <!-- <div class="search">
+                    <input type="text" placeholder="Search">
+                    <button type="submit">Search</button>
+                </div> -->
+
+                <div class="profile">
+                    <a href="login.html" class="profile-icon">
+                        <span class="material-icons">account_circle</span>
+                    </a>
+                </div>
+           </div>
+
+
+            <div class="nav">
+
+                <button type="button" onclick="location.href='#'">Home</button>
+                <button type="button" onclick="location.href='inventory.html'">Inventory</button>
+                <button type="button" onclick="location.href='sales.html'">Sales</button>
+                <button type="button" onclick="location.href='reports.html'">Reports</button>
+
+            </div>
+
+        </div>
+
+       
+
+        <div class="summary">
+
+            <div class="card">
+                <div class="ts">
+                    <div class="sumRow">
+                        <span class="material-icons">payments</span>
+                        <h3>Total Sales</h3>
+                    </div>
+                    <p id="totalsales">0 EGP</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="tp">
+                    <div class="sumRow">
+                        <span class="material-icons">trending_up</span>
+                        <h3>Total Profit</h3>
+                    </div>
+                    <p id="totalprofit">0 EGP</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="em">
+                    <div class="sumRow">
+                        <span class="material-icons">warning</span>
+                        <h3>Expired Medicines</h3>
+                    </div>
+                    <p id="expmeds">0</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="ls">
+                    <div class="sumRow">
+                        <span class="material-icons">inventory</span>
+                        <h3>Low Stock Items</h3>
+                    </div>
+                    <p id="lowstock">0</p>
+                </div>
+            </div>
+
+        </div>
+
+
+
+        <script type="text/javascript" src="dashboard.js"></script>
+
+    </body>
+</html>
