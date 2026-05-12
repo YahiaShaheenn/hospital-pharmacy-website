@@ -12,46 +12,46 @@ function updateSummaryCards() {
     let lowStock = 0;
     let expired = 0;
 
-    for (let i = 0; i < supplies.length; i++) {
-        if (supplies[i].stock <= supplies[i].minStock) lowStock++;
-        if (new Date(supplies[i].expiryDate) < new Date()) expired++;
+    for (let i = 0; i < supplies.length; i++) {  // Loop through supplies to count low stock and expired medicines
+        if (supplies[i].stock <= supplies[i].minStock) lowStock++; //bnshof lw el stock a2al aw equal el minStock
+        if (new Date(supplies[i].expiryDate) < new Date()) expired++; //bnshof lw el expiryDate a2al mn el date el 7aly (expired)
     }
 
-    document.getElementById("total_items").textContent = supplies.length;
-    document.getElementById("low_stock_count").textContent = lowStock;
-    document.getElementById("expired_count").textContent = expired;
+    document.getElementById("total_items").textContent = supplies.length; 
+    document.getElementById("low_stock_count").textContent = lowStock; 
+    document.getElementById("expired_count").textContent = expired; 
 }
 
 // --- Display Table ---
-function displayTable(data) {
-    let tableBody = document.getElementById("inventory_table_body");
-    tableBody.innerHTML = "";
+function displayTable(data) {  // function el bt3ml display lel table 
+    let tableBody = document.getElementById("inventory_table_body"); // ya3ny el tbody elly feh el data
+    tableBody.innerHTML = ""; // bnms7 el data el 2dema 3ashan n7ot el data el gdeda
 
     if (data.length === 0) {
-        tableBody.innerHTML = `<tr><td colspan="9">No medicines found.</td></tr>`;
+        tableBody.innerHTML = `<tr><td colspan="9">No medicines found.</td></tr>`; // lw mafeesh data y3ny mafeesh medicines, hyb2a yktb no medicines found
         return;
     }
 
-    for (let i = 0; i < data.length; i++) {
-        let med = data[i];
-        let isExpired = new Date(med.expiryDate) < new Date();
-        let isLowStock = med.stock <= med.minStock;
+    for (let i = 0; i < data.length; i++) { // bnloop 3ala el data elly 3ndna (el medicines) w n7ot kol wa7da fe row
+        let med = data[i]; // el medicine elly bn7ot fe row
+        let isExpired = new Date(med.expiryDate) < new Date(); // bnshof lw el expiryDate a2al mn el date el 7aly (expired)
+        let isLowStock = med.stock <= med.minStock; // bnshof lw el stock a2al aw equal el minStock (low stock)
 
-        let status = "✅ OK";
+        let status = "✅ OK"; 
         let rowClass = "";
 
         if (isExpired) {
-            status = "❌ Expired";
-            rowClass = "expired_row";
+            status = "❌ Expired"; // lw expired hyb2a status expired w rowClass expired_row
+            rowClass = "expired_row"; // el class elly hyb2a feh el row elly expired
         } else if (isLowStock) {
-            status = "⚠️ Low Stock";
-            rowClass = "lowstock_row";
+            status = "⚠️ Low Stock"; // lw low stock hyb2a status low stock w rowClass lowstock_row
+            rowClass = "lowstock_row";// el class elly hyb2a feh el row elly low stock
         }
 
-        let originalIndex = supplies.indexOf(med);
+        let originalIndex = supplies.indexOf(med); // bn7awel n3raf el index el asly lel medicine fe array el supplies 3ashan n3ml update 3aleh ba3d kda
 
         tableBody.innerHTML += `
-            <tr class="${rowClass}">
+            <tr class="${rowClass}"> 
                 <td>${med.name}</td>
                 <td>${med.category}</td>
                 <td>${med.stock}</td>
@@ -67,26 +67,27 @@ function displayTable(data) {
 }
 
 // --- Search & Filter ---
-function searchMedicine() {
-    let searchQuery = document.getElementById("searchInput").value.toLowerCase();
-    let categoryValue = document.getElementById("categoryFilter").value;
+function searchMedicine() { // function el bt3ml search w filter lel medicines
+    let searchQuery = document.getElementById("searchInput").value.toLowerCase(); // bn7awel el search query lowercase 3ashan n3ml search case-insensitive
+    let categoryValue = document.getElementById("categoryFilter").value; // bn5od el category elly enta m5tarha fe filter
 
-    let filtered = [];
+    let filtered = []; 
 
-    for (let i = 0; i < supplies.length; i++) {
-        let nameMatch = supplies[i].name.toLowerCase().includes(searchQuery);
-        let categoryMatch = categoryValue === "" || supplies[i].category === categoryValue;
+    for (let i = 0; i < supplies.length; i++) { // // bn-loop 3ala el supplies 3ashan nla2y el dwa elly matches el esm wel category elly el user katabhom
+        let nameMatch = supplies[i].name.toLowerCase().includes(searchQuery); // bnshof lw el name fe el supply includes el search query (case-insensitive)
+        let categoryMatch = categoryValue === "" || supplies[i].category === categoryValue; //
 
-        if (nameMatch && categoryMatch) {
+        if (nameMatch && categoryMatch) { 
             filtered.push(supplies[i]);
         }
+        // by filter msln lw ekhtart para ysheel ay haga mn el table  khlas ysebly da bs
     }
 
     displayTable(filtered);
 }
 
 function resetSearch() {
-    document.getElementById("searchInput").value = "";
+    document.getElementById("searchInput").value = ""; 
     document.getElementById("categoryFilter").value = "";
     displayTable(supplies);
 }
