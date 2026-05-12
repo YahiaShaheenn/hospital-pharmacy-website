@@ -36,18 +36,28 @@ dateElement.textContent = today.toLocaleDateString("en-US", {
 
 
 
+
 let salesHistory = JSON.parse(localStorage.getItem("salesHistory")) || [];
+
+
+const todayDate = dateElement.textContent;
+
+let todaySales = salesHistory.filter(function(sale) {
+    return sale.date === todayDate;
+});
+
+
 
 let totalSales = 0;
 
-for (let i = 0; i < salesHistory.length; i++) {
-    totalSales += salesHistory[i].total;
+for (let i = 0; i < todaySales.length; i++) {
+    totalSales += todaySales[i].total;
 }
 
 
 let totalProfit = 0;
 
-salesHistory.forEach(function (sale) {
+todaySales.forEach(function (sale) {
     sale.items.forEach(function (item) {
         for (let i = 0; i < supplies.length; i++) {
             if (supplies[i].name === item.name) {
@@ -58,7 +68,6 @@ salesHistory.forEach(function (sale) {
         }
     });
 });
-
 
 
 
@@ -80,10 +89,19 @@ for (let i = 0; i < supplies.length; i++) {
 }
 
 
-document.getElementById("totalsales").textContent = totalSales + " EGP";
-document.getElementById("totalprofit").textContent = totalProfit + " EGP";
+// document.getElementById("totalsales").textContent = totalSales + " EGP";
+// document.getElementById("totalprofit").textContent = totalProfit + " EGP";
 document.getElementById("expmeds").textContent = expiredMedicines.length;
 document.getElementById("lowstock").textContent = lowStockMedicines.length;
+
+
+if (todaySales.length === 0) {
+    document.getElementById("totalsales").textContent = "No sales today";
+    document.getElementById("totalprofit").textContent = "No profit today";
+} else {
+    document.getElementById("totalsales").textContent = totalSales + " EGP";
+    document.getElementById("totalprofit").textContent = totalProfit + " EGP";
+}
 
 
 
