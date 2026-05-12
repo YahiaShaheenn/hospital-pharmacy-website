@@ -1,7 +1,7 @@
 window.onload = function() {
     if(!sessionStorage.getItem("currentDoctor")) {
         window.location.href = "LogIn.html";
-        alert("Please log in to access the Sales.");
+        alert("Please log in to access the Sales.");   // redirect to login if not logged in, then restore cart on page load
     }
     if(document.getElementById("cart")) {
         renderCart();
@@ -48,22 +48,22 @@ const supplies = [
 let savedStock = JSON.parse(localStorage.getItem("suppliesStock"));
 if (savedStock) {
     for (let i = 0; i < supplies.length; i++) {
-        supplies[i].stock = savedStock[i];
+        supplies[i].stock = savedStock[i];              // reload ftom local stroage saved stock
     }
-}
+} 
 
-let cart = JSON.parse(localStorage.getItem("cart")) || [];
+let cart = JSON.parse(localStorage.getItem("cart")) || []; //// restore cart from previous session
 
-function searchmed() {
-    let input = document.getElementById("searchInput").value.toLowerCase();
+function searchmed() {  // Search medicines by name and display results
+    let input = document.getElementById("searchInput").value.toLowerCase(); //searchs by partial name match
     let results = document.getElementById("searchResults");
     results.innerHTML = "";
 
-    for (let i = 0; i < supplies.length; i++) {
+    for (let i = 0; i < supplies.length; i++) {    //loops the supply list 
         if (supplies[i].name.toLowerCase().includes(input)) {
             results.innerHTML += `
                 <div class="medicine-result">
-                    <p><strong>${supplies[i].name}</strong></p>
+                    <p><strong>${supplies[i].name}</strong></p>  
                     <p>Price: ${supplies[i].sellingPrice} EGP</p>
                     <button onclick="addToCart(${i})">Add to Cart</button>
                 </div>
