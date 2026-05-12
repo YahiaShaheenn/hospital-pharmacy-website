@@ -37,7 +37,7 @@ dateElement.textContent = today.toLocaleDateString("en-US", {
 
 
 
-let salesHistory = JSON.parse(localStorage.getItem("salesHistory")) || []; // if not use empty array
+let salesHistory = JSON.parse(localStorage.getItem("salesHistory")) || []; // if no sales use empty array
 
 const todayDate = dateElement.textContent;
 
@@ -183,9 +183,13 @@ let sortedMedicines = Object.entries(medicineSales).sort(function(a, b) {
     return b[1] - a[1];
 });
 
+
+
+const mostSoldSection = document.querySelector(".mostSold");
+
 if (sortedMedicines.length === 0) {
 
-    topMedsBox.innerHTML = "<p>No medicines sold today.</p>";
+    mostSoldSection.style.display = "none";
 
 } else {
 
