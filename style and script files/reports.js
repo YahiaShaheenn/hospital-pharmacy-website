@@ -1,9 +1,39 @@
-
 const tableBody = document.getElementById("reports_table_body");
 const sellerFilter = document.getElementById("seller_filter");
+const medicineFilter = document.getElementById("medicine_filter");
+const dateFilter = document.getElementById("date_filter");
+const inventoryTableBody = document.getElementById("inventory_report_body");
+//el taht di bet3et el medicine name dropdown beta3et el inventory report
+const inventoryNameFilter = document.getElementById("inventory_name_filter");
+const inventoryCategoryFilter = document.getElementById("inventory_category_filter");
+const stockFilter = document.getElementById("stock_filter");
+const salesReportContainer = document.getElementById("sales_report_container");
+const inventoryReportContainer = document.getElementById("inventory_report_container");
 
-let salesHistory =
-    JSON.parse(localStorage.getItem("salesHistory")) || [];
+let salesHistory = JSON.parse(localStorage.getItem("salesHistory")) || [];
+let currentSalesData = salesHistory;
+let currentInventoryData = supplies;
+
+dateFilter.max = new Date().toISOString().split("T")[0];
+
+//show/hide reports
+
+function showSalesReport() {
+
+    salesReportContainer.classList.remove("hidden");
+    inventoryReportContainer.classList.add("hidden");
+
+}
+
+
+function showInventoryReport() {
+
+    inventoryReportContainer.classList.remove("hidden");
+    salesReportContainer.classList.add("hidden");
+
+}
+
+//sales report
 
 function displayReports(data) {
 
@@ -36,43 +66,42 @@ function displayReports(data) {
 
 }
 
-const medicineFilter =
-    document.getElementById("medicine_filter");
-document.getElementById("medicine_filter");
 
-const dateFilter =
-document.getElementById("date_filter");
+function loadMedicineOptions() {
 
-dateFilter.max =
-new Date().toISOString().split("T")[0];
-
-function loadMedicineOptions(){
+    medicineFilter.innerHTML = `<option value="">All Medicines</option>`;
 
     for (let i = 0; i < supplies.length; i++) {
 
         medicineFilter.innerHTML += `
 
-            <option value="${supplies[i].name}">
-                ${supplies[i].name}
-            </option>
+            <option value="${supplies[i].name}">${supplies[i].name}</option>
 
         `;
+
     }
 
 }
 
+
 function loadSellerOptions() {
-    sellerFilter.innerHTML = "<option value=''>All Sellers</option>";
+
+    sellerFilter.innerHTML = `<option value="">All Sellers</option>`;
+
     const doctors = JSON.parse(localStorage.getItem("doctors")) || [];
+
     doctors.forEach(function (doctor) {
+
         sellerFilter.innerHTML += `
+
             <option value="${doctor.username}">${doctor.username}</option>
+
         `;
+
     });
+
 }
 
-loadMedicineOptions();
-loadSellerOptions();
 
 function updateCards(data) {
 
@@ -84,8 +113,7 @@ function updateCards(data) {
 
         sale.items.forEach(function (item) {
 
-            let itemSales =
-                item.price * item.qty;
+            let itemSales = item.price * item.qty;
 
             totalSales += itemSales;
 
@@ -95,9 +123,7 @@ function updateCards(data) {
 
                 if (supplies[i].name === item.name) {
 
-                    let itemProfit =
-                        (item.price - supplies[i].costPrice)
-                        * item.qty;
+                    let itemProfit = (item.price - supplies[i].costPrice)* item.qty;
 
                     totalProfit += itemProfit;
 
@@ -111,41 +137,49 @@ function updateCards(data) {
 
     });
 
-    document.getElementById("total_sales")
-        .textContent =
-        totalSales + " EGP";
-
-    document.getElementById("total_profit")
-        .textContent =
-        totalProfit + " EGP";
-
-    document.getElementById("total_sales_count")
-        .textContent =
-        totalMedicinesSold;
+    document.getElementById("total_sales").textContent =totalSales + " EGP";
+    document.getElementById("total_profit").textContent = totalProfit + " EGP";
+    document.getElementById("total_sales_count").textContent = totalMedicinesSold;
 
 }
 
-updateCards(salesHistory);
-displayReports(salesHistory);
+//inventory report functions
 
-const inventoryTableBody =
-document.getElementById("inventory_report_body");
+function getStockStatus(item) {
 
-function displayInventoryReport(){
+    if (item.stock === 0) {
+
+        return "Out of Stock";
+
+    }
+
+    else if (item.stock <= item.minStock) {
+
+        return "Low Stock";
+
+    }
+
+    else {
+
+        return "Available";
+
+    }
+
+}
+
+
+function displayInventoryReport(data) {
 
     inventoryTableBody.innerHTML = "";
 
-    supplies.forEach(function(item){
+    data.forEach(function (item) {
 
-        let status = "Available";
-
-        if(item.stock <= item.minStock){
-            status = "Low Stock";
-        }
+        let status = getStockStatus(item);
 
         inventoryTableBody.innerHTML += `
 
             <tr>
+
                 <td>${item.name}</td>
                 <td>${item.category}</td>
                 <td>${item.costPrice} EGP</td>
@@ -154,6 +188,7 @@ function displayInventoryReport(){
                 <td>${item.minStock}</td>
                 <td>${item.expiryDate}</td>
                 <td>${status}</td>
+
             </tr>
 
         `;
@@ -162,33 +197,45 @@ function displayInventoryReport(){
 
 }
 
-displayInventoryReport();
 
-const inventoryCategoryFilter =
-document.getElementById("inventory_category_filter");
+function loadInventoryMedicineOptions() {
 
-const stockFilter =
-document.getElementById("stock_filter");
+    inventoryNameFilter.innerHTML = `<option value="">All Medicines</option>`;
 
-function loadInventoryCategories(){
+    supplies.forEach(function (item) {
+
+        inventoryNameFilter.innerHTML += `
+
+            <option value="${item.name}">${item.name}</option>
+
+        `;
+
+    });
+
+}
+
+
+function loadInventoryCategories() {
+
+    inventoryCategoryFilter.innerHTML = `<option value="">All Categories</option>`;
 
     let categories = [];
 
-    supplies.forEach(function(item){
+    supplies.forEach(function (item) {
 
-        if(!categories.includes(item.category)){
+        if (!categories.includes(item.category)) {
+
             categories.push(item.category);
+
         }
 
     });
 
-    categories.forEach(function(category){
+    categories.forEach(function (category) {
 
         inventoryCategoryFilter.innerHTML += `
 
-            <option value="${category}">
-                ${category}
-            </option>
+            <option value="${category}">${category}</option>
 
         `;
 
@@ -196,151 +243,55 @@ function loadInventoryCategories(){
 
 }
 
-loadInventoryCategories();
-
-function displayFilteredInventory(data){
-
-    inventoryTableBody.innerHTML = "";
-
-    data.forEach(function(item){
-
-        let status = "Available";
-
-        if(item.stock === 0){
-            status = "Out of Stock";
-        }
-        else if(item.stock <= item.minStock){
-            status = "Low Stock";
-        }
-
-        inventoryTableBody.innerHTML += `
-
-            <tr>
-                <td>${item.name}</td>
-                <td>${item.category}</td>
-                <td>${item.costPrice} EGP</td>
-                <td>${item.sellingPrice} EGP</td>
-                <td>${item.stock}</td>
-                <td>${item.minStock}</td>
-                <td>${item.expiryDate}</td>
-                <td>${status}</td>
-            </tr>
-
-        `;
-
-    });
-
-}
-
-document.getElementById("inventory_filter_button")
-.addEventListener("click", function(){
-
-    const categoryValue =
-    inventoryCategoryFilter.value;
-
-    const stockValue =
-    stockFilter.value;
-
-    let filteredInventory = supplies.filter(function(item){
-
-        let categoryMatch =
-        categoryValue === "" ||
-        item.category === categoryValue;
-
-        let stockMatch = true;
-
-        if(stockValue === "available"){
-            stockMatch = item.stock > item.minStock;
-        }
-        else if(stockValue === "low"){
-            stockMatch =
-            item.stock > 0 &&
-            item.stock <= item.minStock;
-        }
-        else if(stockValue === "out"){
-            stockMatch = item.stock === 0;
-        }
-
-        return categoryMatch && stockMatch;
-
-    });
-
-    displayFilteredInventory(filteredInventory);
-
-});
-
-document.getElementById("inventory_reset_button")
-.addEventListener("click", function(){
-
-    inventoryCategoryFilter.value = "";
-    stockFilter.value = "";
-
-    displayFilteredInventory(supplies);
-
-});
+//sales report filter
 
 document.getElementById("filter_button")
-.addEventListener("click", function(){
+    .addEventListener("click", function () {
 
-    const dateValue =
-    document.getElementById("date_filter").value;
+        const dateValue = dateFilter.value;
+        const medicineValue = medicineFilter.value.toLowerCase();
+        const sellerValue = sellerFilter.value;
 
-    const medicineValue =
-    document.getElementById("medicine_filter")
-    .value.toLowerCase();
+        let selectedDateText = "";
 
-        const sellerValue =
-            document.getElementById("seller_filter").value;
+        if (dateValue !== "") {
+
+            selectedDateText =
+                new Date(dateValue).toLocaleDateString("en-US", {
+
+                    weekday: "long",
+                    month: "long",
+                    day: "numeric",
+                    year: "numeric"
+
+                });
+
+        }
 
         let filteredSales = [];
 
         salesHistory.forEach(function (sale) {
 
-        let selectedDateText = "";
+            let dateMatch = dateValue === "" || sale.date === selectedDateText;
 
-        if(dateValue !== ""){
+            let sellerMatch = sellerValue === "" || sale.seller === sellerValue;
 
-            selectedDateText =
-            new Date(dateValue).toLocaleDateString("en-US", {
+            let filteredItems = sale.items.filter(function (item) {
 
-                weekday: "long",
-                month: "long",
-                day: "numeric",
-                year: "numeric"
+                    let medicineMatch = item.name.toLowerCase().includes(medicineValue);
 
-            });
+                    return medicineMatch;
 
-        }
+                });
 
-        let dateMatch =
-        dateValue === "" ||
-        sale.date === selectedDateText;
+            if (
+                dateMatch && sellerMatch && filteredItems.length > 0
+            ) {
 
-        let sellerMatch =
-        sellerValue === "" ||
-        sale.seller === sellerValue;
+                filteredSales.push({
 
-        let filteredItems =
-        sale.items.filter(function(item){
-
-                let medicineMatch =
-                    item.name.toLowerCase()
-                        .includes(medicineValue);
-
-            return medicineMatch;
-
-        });
-
-        if(
-            dateMatch &&
-            sellerMatch &&
-            filteredItems.length > 0
-        ){
-
-            filteredSales.push({
-
-                ...sale,
-                items: filteredItems
+                    ...sale,
+                    items: filteredItems
 
                 });
 
@@ -348,72 +299,209 @@ document.getElementById("filter_button")
 
         });
 
-        displayReports(filteredSales);
-        updateCards(filteredSales);
+        currentSalesData = filteredSales;
 
-    });
-
-document.getElementById("reset_button")
-    .addEventListener("click", function () {
-
-        document.getElementById("date_filter").value = "";
-
-        document.getElementById("medicine_filter").value = "";
-
-        document.getElementById("seller_filter").value = "";
-
-        displayReports(salesHistory);
-
-        updateCards(salesHistory);
+        displayReports(currentSalesData);
+        updateCards(currentSalesData);
 
     });
 
 
-document.getElementById("print_button")
-    .addEventListener("click", function () {
+document.getElementById("reset_button").addEventListener("click", function () {
 
+        dateFilter.value = "";
+        medicineFilter.value = "";
+        sellerFilter.value = "";
+
+        currentSalesData = salesHistory;
+
+        displayReports(currentSalesData);
+        updateCards(currentSalesData);
+
+    });
+
+//inventory report filter
+
+document.getElementById("inventory_filter_button").addEventListener("click", function () {
+
+        const nameValue = inventoryNameFilter.value;
+
+        const categoryValue = inventoryCategoryFilter.value;
+
+        const stockValue = stockFilter.value;
+
+        let filteredInventory = supplies.filter(function (item) {
+
+                let nameMatch = nameValue === "" || item.name === nameValue;
+
+                let categoryMatch = categoryValue === "" || item.category === categoryValue;
+
+                let stockMatch = true;
+
+                if (stockValue === "available") {
+
+                    stockMatch = item.stock > item.minStock;
+
+                }
+
+                else if (stockValue === "low") {
+
+                    stockMatch =
+                        item.stock > 0 && item.stock <= item.minStock;
+
+                }
+
+                else if (stockValue === "out") {
+
+                    stockMatch = item.stock === 0;
+
+                }
+
+                return nameMatch && categoryMatch && stockMatch;
+
+            });
+
+        currentInventoryData = filteredInventory;
+
+        displayInventoryReport(currentInventoryData);
+
+    });
+
+
+document.getElementById("inventory_reset_button").addEventListener("click", function () {
+
+        inventoryNameFilter.value = "";
+        inventoryCategoryFilter.value = "";
+        stockFilter.value = "";
+
+        currentInventoryData = supplies;
+
+        displayInventoryReport(currentInventoryData);
+
+    });
+
+//print sales report function
+
+document.getElementById("print_button").addEventListener("click", function () {
+
+        document.body.classList.add("print-sales");
         window.print();
+        document.body.classList.remove("print-sales");
 
     });
+
+//print inventory report function
+
+document.getElementById("inventory_print_button").addEventListener("click", function () {
+
+        document.body.classList.add("print-inventory");
+        window.print();
+        document.body.classList.remove("print-inventory");
+
+    });
+
+//export sales report function
 
 document.getElementById("export_button").addEventListener("click", function () {
-    if (salesHistory.length === 0) {
-        alert("No sales data to export!");
-        return;
-    }
 
-    let csv = "Medicine Name,Quantity,Date,Time,Seller,Sales\n";
+        if (currentSalesData.length === 0) {
 
-    salesHistory.forEach(function (sale) {
-        sale.items.forEach(function (item) {
-            csv += `${item.name},${item.qty},${sale.date},${sale.time || "No time"},${sale.seller || "Unknown"},${item.price * item.qty} EGP\n`;
+            alert("No sales data to export!");
+
+            return;
+
+        }
+
+        let csv = "Medicine Name,Quantity,Date,Time,Unit Price,Total Price,Payment Method,Seller\n";
+
+        currentSalesData.forEach(function (sale) {
+
+            sale.items.forEach(function (item) {
+
+                csv +=
+                    `${item.name},${item.qty},${sale.date},${sale.time || "No time"},${item.price} EGP,${item.price * item.qty} EGP,${sale.payment},${sale.seller}\n`;
+
+            });
+
         });
+
+        let blob = new Blob([csv], { type: "text/csv" });
+
+        let url =URL.createObjectURL(blob);
+
+        let link =document.createElement("a");
+
+        link.href = url;
+
+        link.download = "SalesReport.csv";
+
+        link.click();
+
+        URL.revokeObjectURL(url);
+
     });
 
-    let blob = new Blob([csv], { type: "text/csv" });
-    let url = URL.createObjectURL(blob);
-    let link = document.createElement("a");
-    link.href = url;
-    link.download = "SalesReport.csv";
-    link.click();
-    URL.revokeObjectURL(url);
-});
+//export inventory report function
 
-window.onload = function () {
+document.getElementById("inventory_export_button").addEventListener("click", function () {
+
+        if (currentInventoryData.length === 0) {
+
+            alert("No inventory data to export!");
+
+            return;
+
+        }
+
+        let csv ="Medicine Name,Category,Cost Price,Selling Price,Stock,Minimum Stock,Expiry Date,Status\n";
+
+        currentInventoryData.forEach(function (item) {
+
+            let status =getStockStatus(item);
+
+            csv +=`${item.name},${item.category},${item.costPrice} EGP,${item.sellingPrice} EGP,${item.stock},${item.minStock},${item.expiryDate},${status}\n`;
+
+        });
+
+        let blob =new Blob([csv], { type: "text/csv" });
+
+        let url =URL.createObjectURL(blob);
+
+        let link =document.createElement("a");
+
+        link.href = url;
+
+        link.download = "InventoryReport.csv";
+
+        link.click();
+
+        URL.revokeObjectURL(url);
+
+    });
+
+// login check
+
+window.addEventListener("load", function () {
+
     if (!sessionStorage.getItem("currentDoctor")) {
 
-        window.location.href = "LogIn.html";
         alert("Please log in to access the Reports.");
 
-}
+        window.location.href = "LogIn.html";
+
+    }
+
+});
 
 
+//page start
 
+loadMedicineOptions();
+loadSellerOptions();
 
+loadInventoryMedicineOptions();
+loadInventoryCategories();
 
-
-
-
-
-
-}
+displayReports(salesHistory);
+updateCards(salesHistory);
+displayInventoryReport(supplies);

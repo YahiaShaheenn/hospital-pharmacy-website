@@ -16,180 +16,222 @@
 
 <body>
 
-<section class="statistics_section">
+    <section class="reports_choice">
 
-    <div class="statistic_card">
-        <span class="material-icons">payments</span>
-        <h3>Total Sales</h3>
-        <p id="total_sales">0 EGP</p>
-    </div>
+        <h2>Choose Report Type</h2>
 
-    <div class="statistic_card">
-        <span class="material-icons">trending_up</span>
-        <h3>Total Profit</h3>
-        <p id="total_profit">0 EGP</p>
-    </div>
+        <p>Please select the report you want to view.</p>
 
-    <div class="statistic_card">
-        <span class="material-icons">medication</span>        
-        <h3>Total Medicines Sold</h3>
-        <p id="total_sales_count">0</p>
-    </div>
+        <div class="choice_buttons">
 
-</section>
-
-<section class="filters_section">
-
-    <h3>Sales Reports Filter</h3>
-
-
-    <div class="filters">
-
-        <div class="filter_box">
-
-            <label for="date_filter">Date</label>
-            <input type="date" id="date_filter">
+            <button type="button" onclick="showSalesReport()">Sales Report</button>
+            <button type="button" onclick="showInventoryReport()">Inventory Report</button>
 
         </div>
 
-        <div class="filter_box">
-
-            <label for="medicine_filter">Medicine</label>
-
-            <select id="medicine_filter">
-
-                <option value="">All Medicines</option>
-
-            </select>
-
-        </div>
-
-        <div class="filter_box">
-
-            <label for="seller_filter">Seller</label>
-
-            <select id="seller_filter">
+    </section>
 
 
-            </select>
+    <!-- SALES REPORT CONTAINER -->
+    <main id="sales_report_container" class="report_container hidden">
 
-        </div>
+        <section class="statistics_section">
 
-        <button id="filter_button">Apply Filter</button>
-        <button id="reset_button">Reset</button>
+            <div class="statistic_card">
+                <span class="material-icons">payments</span>
+                <h3>Total Sales</h3>
+                <p id="total_sales">0 EGP</p>
+            </div>
 
-    </div>
+            <div class="statistic_card">
+                <span class="material-icons">trending_up</span>
+                <h3>Total Profit</h3>
+                <p id="total_profit">0 EGP</p>
+            </div>
 
-</section>
+            <div class="statistic_card">
+                <span class="material-icons">medication</span>
+                <h3>Total Medicines Sold</h3>
+                <p id="total_sales_count">0</p>
+            </div>
 
-<section class="table_section">
-
-        <h3>Sales Report</h3>
-
-    <table>
-
-        <thead>
-
-            <tr>
-
-                <th>Medicine Name</th>
-                <th>Quantity Sold</th>
-                <th>Date</th>
-                <th>Time</th>
-                <th>Unit Price</th>
-                <th>Total Price</th>
-                <th>Payment Method</th>
-                <th>Seller</th>
-
-            </tr>
-
-        </thead>
-
-        <tbody id="reports_table_body">
-
-        </tbody>
-
-    </table>
-
-</section>
-
-<section class="actions_section">
-
-    <button id="print_button">Print Report</button>
-    <button id="export_button">Export EXCEL</button>
-
-</section>
-
-<section class="filters_section">
-
-    <h3>Inventory Report Filter</h3>
-
-    <div class="filters">
-
-        <div class="filter_box">
-            <label for="inventory_category_filter">Category</label>
-            <select id="inventory_category_filter">
-                <option value="">All Categories</option>
-            </select>
-        </div>
-
-        <div class="filter_box">
-            <label for="stock_filter">Stock Status</label>
-            <select id="stock_filter">
-                <option value="">All Stock</option>
-                <option value="available">Available</option>
-                <option value="low">Low Stock</option>
-                <option value="out">Out of Stock</option>
-            </select>
-        </div>
-
-        <button id="inventory_filter_button">Apply Filter</button>
-        <button id="inventory_reset_button">Reset Filter</button>
-
-    </div>
-
-</section>
-
-<section class="table_section">
-
-    <h3>Inventory Report</h3>
-
-    <table>
-
-        <thead>
-
-            <tr>
-                <th>Medicine Name</th>
-                <th>Category</th>
-                <th>Cost Price</th>
-                <th>Selling Price</th>
-                <th>Stock</th>
-                <th>Minimum Stock</th>
-                <th>Expiry Date</th>
-                <th>Status</th>
-            </tr>
-
-        </thead>
-
-        <tbody id="inventory_report_body">
-
-        </tbody>
-
-    </table>
-
-</section>
-
-<section class="actions_section">
-
-    <button id="print_button">Print Report</button>
-    <button id="export_button">Export EXCEL</button>
-
-</section>
+        </section>
 
 
-<script type="text/javascript" src="../style and script files/layout.js"></script>
-<script type="text/javascript" src="../style and script files/sales.js"></script>
-<script type="text/javascript" src="../style and script files/reports.js"></script>
+        <section class="filters_section">
+
+            <h3>Sales Reports Filter</h3>
+
+            <div class="filters">
+
+                <div class="filter_box">
+
+                    <label for="date_filter">Date</label>
+                    <input type="date" id="date_filter">
+
+                </div>
+
+                <div class="filter_box">
+
+                    <label for="medicine_filter">Medicine</label>
+
+                    <select id="medicine_filter">
+                        <option value="">All Medicines</option>
+                    </select>
+
+                </div>
+
+                <div class="filter_box">
+
+                    <label for="seller_filter">Seller</label>
+
+                    <select id="seller_filter">
+                        <option value="">All Sellers</option>
+                    </select>
+
+                </div>
+
+                <button type="button" id="filter_button">Apply Filter</button>
+                <button type="button" id="reset_button">Reset</button>
+
+            </div>
+
+        </section>
+
+
+        <section class="table_section">
+
+            <h3>Sales Report</h3>
+
+            <table>
+
+                <thead>
+
+                    <tr>
+                        <th>Medicine Name</th>
+                        <th>Quantity Sold</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Unit Price</th>
+                        <th>Total Price</th>
+                        <th>Payment Method</th>
+                        <th>Seller</th>
+                    </tr>
+
+                </thead>
+
+                <tbody id="reports_table_body">
+
+                </tbody>
+
+            </table>
+
+        </section>
+
+
+        <section class="actions_section">
+
+            <button type="button" id="print_button">Print Sales Report</button>
+            <button type="button" id="export_button">Export Sales EXCEL</button>
+
+        </section>
+
+    </main>
+
+
+    <!-- INVENTORY REPORT CONTAINER -->
+    <main id="inventory_report_container" class="report_container hidden">
+
+        <section class="filters_section">
+
+            <h3>Inventory Report Filter</h3>
+
+            <div class="filters">
+
+                <div class="filter_box">
+
+                    <label for="inventory_name_filter">Medicine Name</label>
+
+                    <select id="inventory_name_filter">
+                        <option value="">All Medicines</option>
+                    </select>
+
+                </div>
+
+                <div class="filter_box">
+
+                    <label for="inventory_category_filter">Category</label>
+
+                    <select id="inventory_category_filter">
+                        <option value="">All Categories</option>
+                    </select>
+
+                </div>
+
+                <div class="filter_box">
+
+                    <label for="stock_filter">Stock Status</label>
+
+                    <select id="stock_filter">
+                        <option value="">All Stock</option>
+                        <option value="available">Available</option>
+                        <option value="low">Low Stock</option>
+                        <option value="out">Out of Stock</option>
+                    </select>
+
+                </div>
+
+                <button type="button" id="inventory_filter_button">Apply Filter</button>
+                <button type="button" id="inventory_reset_button">Reset Filter</button>
+
+            </div>
+
+        </section>
+
+
+        <section class="table_section">
+
+            <h3>Inventory Report</h3>
+
+            <table>
+
+                <thead>
+
+                    <tr>
+                        <th>Medicine Name</th>
+                        <th>Category</th>
+                        <th>Cost Price</th>
+                        <th>Selling Price</th>
+                        <th>Stock</th>
+                        <th>Minimum Stock</th>
+                        <th>Expiry Date</th>
+                        <th>Status</th>
+                    </tr>
+
+                </thead>
+
+                <tbody id="inventory_report_body">
+
+                </tbody>
+
+            </table>
+
+        </section>
+
+
+        <section class="actions_section">
+
+            <button type="button" id="inventory_print_button">Print Inventory Report</button>
+            <button type="button" id="inventory_export_button">Export Inventory EXCEL</button>
+
+        </section>
+
+    </main>
+
+
+    <script type="text/javascript" src="../style and script files/layout.js"></script>
+    <script type="text/javascript" src="../style and script files/sales.js"></script>
+    <script type="text/javascript" src="../style and script files/reports.js"></script>
 
 </body>
 
