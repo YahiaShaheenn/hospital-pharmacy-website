@@ -76,13 +76,13 @@ function searchmed() {  // Search medicines by name and display results
     }
 }
 
-function addToCart(i) {
+function addToCart(i) {   // add selected medicine to cart 
     if (supplies[i].stock <= 0) {
-        showAlert("This item is out of stock!");
-        return;
+        showAlert("This item is out of stock!");   //checks if the item is out of stock before adding to cart
+        return; 
     }
     if (new Date(supplies[i].expiryDate) < new Date()) {
-        showAlert(supplies[i].name + " is expired and cannot be sold!");
+        showAlert(supplies[i].name + " is expired and cannot be sold!");  //checks if the item is expired before adding to cart
         return;
     }
 
@@ -90,7 +90,7 @@ function addToCart(i) {
     for (let j = 0; j < cart.length; j++) {
         if (cart[j].name === item.name) {
             if (cart[j].qty >= supplies[i].stock) {
-                showAlert("No more stock available for " + item.name + "!");
+                showAlert("No more stock available for " + item.name + "!"); //makes sure you can't add more to cart than available in stock
                 return;
             }
             cart[j].qty++;
@@ -102,7 +102,7 @@ function addToCart(i) {
     renderCart();
 }
 
-function renderCart() {
+function renderCart() {                                          // render cart items total title and payment section
     localStorage.setItem("cart", JSON.stringify(cart));
     let cartDiv = document.getElementById("cart");
     cartDiv.innerHTML = "";
@@ -127,19 +127,19 @@ function renderCart() {
         cartDiv.innerHTML += `<h3>Total: ${total} EGP</h3>`;
     }
     if (cart.length > 0) {
-        document.getElementById("cart-title").style.display = "flex";
+        document.getElementById("cart-title").style.display = "flex";        //gets hidden when cart is empty and shows when there's at least 1 item in cart
         document.getElementById("payment-section").style.display = "block";
     } else {
         document.getElementById("cart-title").style.display = "none";
-        document.getElementById("payment-section").style.display = "none";
+        document.getElementById("payment-section").style.display = "none";  
     }
 }
 
 function increaseQty(j) {
     for (let i = 0; i < supplies.length; i++) {
-        if (supplies[i].name === cart[j].name) {
+        if (supplies[i].name === cart[j].name) {                    // checks if increasing quantity exceeds stock before allowing it            
             if (cart[j].qty >= supplies[i].stock) {
-                showAlert("No more stock available for " + cart[j].name + "!");
+                showAlert("No more stock available for " + cart[j].name + "!");  // shows alert if quantity exceeds stock
                 return;
             }
             break;
@@ -153,19 +153,19 @@ function decreaseQty(j) {
     if (cart[j].qty > 1) {
         cart[j].qty--;
     } else {
-        cart.splice(j, 1);
+        cart.splice(j, 1);     // if quantity goes to 0 it removes the item from cart
     }
     renderCart();
 }
 
-function removeItem(j) {
+function removeItem(j) {   // remove item from cart entirely
     cart.splice(j, 1);
     renderCart();
 }
 
 function checkout() {
     if (cart.length === 0) {
-        showAlert("Your cart is empty!");
+        showAlert("Your cart is empty!");                                     //// validate cart and payment method then decrement stock and generate receipt
         return;
     }
     let paymentinput = document.querySelector('input[name="payment"]:checked');
@@ -188,7 +188,7 @@ function checkout() {
 }
 
 function generateReceipt(paymentmethod) {
-    let sellerName = sessionStorage.getItem("currentDoctor");
+    let sellerName = sessionStorage.getItem("currentDoctor");                                              //// build and display receipt, save sale to history, clear cart
     let now = new Date();
     let time = now.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" });
     let date = now.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" });
@@ -229,7 +229,7 @@ function generateReceipt(paymentmethod) {
 
     cart = [];
     renderCart();
-    document.querySelector('input[name="payment"]:checked').checked = false;
+    document.querySelector('input[name="payment"]:checked').checked = false;   //payment is reset after checkout
 }
 
 function closeReceipt() {
@@ -246,32 +246,41 @@ function closeAlert() {
 }
 
 function openRefund() {
-    let salesHistory = JSON.parse(localStorage.getItem("salesHistory")) || [];
+    let salesHistory = JSON.parse(localStorage.getItem("salesHistory")) || [];    // Load past sales and display them in refund popup
     let listDiv = document.getElementById("refund-sales-list");
     listDiv.innerHTML = "";
 
     if (salesHistory.length === 0) {
-        listDiv.innerHTML = "<p>No past sales found.</p>";
+        listDiv.innerHTML = "<p>No past sales found.</p>";    //if no sales are stored or not checked out
     }
 
     let today = new Date();
-    for (let i = salesHistory.length - 1; i >= 0; i--) {
-        let sale = salesHistory[i];
-        let saleDate = sale.timestamp ? new Date(sale.timestamp) : new Date(sale.date);
-        let diffDays = Math.floor((today - saleDate) / (1000 * 60 * 60 * 24));
-        let blocked = diffDays > 14;
+   for (let i = salesHistory.length - 1; i >= 0; i--) { // loop in reverse to show most recent sales at top
+    let sale = salesHistory[i];
+    let saleDate;
+    if (sale.timestamp) {
+        saleDate = new Date(sale.timestamp); // checks if sale is refundable based on date before showing refund button
+    } else {
+        saleDate = new Date(sale.date);
+    }
+    let diffDays = Math.floor((today - saleDate) / (1000 * 60 * 60 * 24)); // Calculate how many days ago the sale was made
+    let blocked = diffDays > 14;  // Block refund if sale is older than 14 days
 
-        listDiv.innerHTML += `
-            <div class="refund-sale-card">
-                <p><strong>${sale.date}</strong> | ${sale.time}</p>
-                <p>Total: ${sale.total} EGP | Seller: ${sale.seller}</p>
-                ${blocked
-                    ? `<p class="refund-blocked">Refund period expired</p>`
-                    : `<button onclick="showRefundItems(${i})">Select</button>`}
-            </div>
-        `;
+    let refundButton;
+    if (blocked) {
+        refundButton = `<p class="refund-blocked">Refund period expired</p>`;
+    } else {
+        refundButton = `<button onclick="showRefundItems(${i})">Select</button>`;
     }
 
+    listDiv.innerHTML += `
+        <div class="refund-sale-card">
+            <p><strong>${sale.date}</strong> | ${sale.time}</p>
+            <p>Total: ${sale.total} EGP | Seller: ${sale.seller}</p>
+            ${refundButton}
+        </div>
+    `;
+}
     document.getElementById("refund-sales-view").style.display = "block";
     document.getElementById("refund-items-view").style.display = "none";
     document.getElementById("refund-bg").style.display = "flex";
@@ -280,28 +289,27 @@ function openRefund() {
 function showRefundItems(saleIndex) {
     let salesHistory = JSON.parse(localStorage.getItem("salesHistory")) || [];
     let sale = salesHistory[saleIndex];
-    let itemsDiv = document.getElementById("refund-items-list");
+    let itemsDiv = document.getElementById("refund-items-list");  // Display items of the selected sale and allow user to choose refund quantities
     itemsDiv.innerHTML = "";
 
     let today = new Date();
     let hasRefundable = false;
 
-    for (let j = 0; j < sale.items.length; j++) {
+    for (let j = 0; j < sale.items.length; j++) {  // find matching supply in supplies array
         let item = sale.items[j];
         let supplyData = null;
-        for (let i = 0; i < supplies.length; i++) {
+        for (let i = 0; i < supplies.length; i++) { // display items of the selected sale and allow user to choose refund quantities
             if (supplies[i].name === item.name) {
                 supplyData = supplies[i];
                 break;
             }
         }
 
-        if (!supplyData) continue;
 
         let isExpired = new Date(supplyData.expiryDate) < today;
         let isNotRefundable = !supplyData.refundable;
 
-        if (isExpired || isNotRefundable) {
+        if (isExpired || isNotRefundable) {     // Show reason if item cannot be refunded
             let reason = "";
             if (isNotRefundable && isExpired) {
                 reason = "Not refundable: refrigerated/sensitive & expired";
