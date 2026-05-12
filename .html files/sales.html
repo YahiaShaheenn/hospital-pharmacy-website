@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="../style and script files/sales.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=ADLaM Display">
-   
 </head>
 
 <body>
@@ -24,7 +23,12 @@
             <div id="searchResults"></div>
         </div>
         <div class="right-panel">
-           <h2 class="panel-title" id="cart-title" style="display:none"><span class="material-icons">shopping_cart</span> Cart</h2>
+            <div class="refund-header">
+                <h2 class="panel-title" id="cart-title" style="display:none">
+                    <span class="material-icons">shopping_cart</span> Cart
+                </h2>
+                <button class="refund-btn" onclick="openRefundModal()">↩ Refund</button>
+            </div>
             <div id="cart"></div>
             <div id="payment-section">
                 <h3>Payment Method</h3>
@@ -36,18 +40,38 @@
         </div>
     </div>
 
-    <!-- Modal -->
-    <div id="modal-overlay">
-        <div id="modal-box">
-            <div id="modal-receipt"></div>
-            <button onclick="closeModal()">Close</button>
+    <!-- Receipt -->
+    <div id="receipt-bg">
+        <div id="receipt-popup">
+            <div id="receipt-content"></div>
+            <button onclick="closeReceipt()">Close</button>
         </div>
-    </div><div id="alert-overlay">
-    <div id="alert-box">
-        <p id="alert-message"></p>
-        <button onclick="closeAlert()">OK</button>
     </div>
-</div>
+
+    <!-- Alert -->
+    <div id="alert-bg">
+        <div id="alert-popup">
+            <p id="alert-message"></p>
+            <button onclick="closeAlert()">OK</button>
+        </div>
+    </div>
+
+    <!-- Refund -->
+    <div id="refund-bg">
+        <div id="refund-popup">
+            <div id="refund-sales-view">
+                <h3>Select a Sale</h3>
+                <div id="refund-sales-list"></div>
+                <button onclick="closeRefundModal()">Cancel</button>
+            </div>
+            <div id="refund-items-view" style="display:none">
+                <h3>Select Items to Refund</h3>
+                <div id="refund-items-list"></div>
+                <button id="refund-confirm-btn">Confirm Refund</button>
+                <button onclick="openRefundModal()">Back</button>
+            </div>
+        </div>
+    </div>
 
     <script src="../style and script files/sales.js"></script>
 </body>
