@@ -36,21 +36,35 @@ dateElement.textContent = today.toLocaleDateString("en-US", {
 
 
 
+
 let salesHistory = JSON.parse(localStorage.getItem("salesHistory")) || [];
+
+
+const todayDate = dateElement.textContent;
+
+
+// Filter sales history to get today's sales, sales history gowaha date w total 
+let todaySales = salesHistory.filter(function(sale) {
+    return sale.date === todayDate;
+});
+
+
 
 let totalSales = 0;
 
-for (let i = 0; i < salesHistory.length; i++) {
-    totalSales += salesHistory[i].total;
+// Calculate total sales for today
+for (let i = 0; i < todaySales.length; i++) {
+    totalSales += todaySales[i].total;
 }
 
 
 let totalProfit = 0;
 
-salesHistory.forEach(function (sale) {
-    sale.items.forEach(function (item) {
+// Calculate total profit for today
+todaySales.forEach(function (sale) {  // Loop through each sale
+    sale.items.forEach(function (item) { // Loop through each item in the sale
         for (let i = 0; i < supplies.length; i++) {
-            if (supplies[i].name === item.name) {
+            if (supplies[i].name === item.name) {  //check if the suppply name matches the item name, sales.item fiha el sold cart items
                 let profit = (supplies[i].sellingPrice - supplies[i].costPrice) * item.qty;
                 totalProfit += profit;
                 break;
@@ -61,11 +75,10 @@ salesHistory.forEach(function (sale) {
 
 
 
-
 let expiredMedicines = [];
 
 for (let i = 0; i < supplies.length; i++) {
-    if (new Date(supplies[i].expiryDate) < new Date()) {
+    if (new Date(supplies[i].expiryDate) < new Date()) { 
         expiredMedicines.push(supplies[i]);
     }
 }
@@ -80,17 +93,25 @@ for (let i = 0; i < supplies.length; i++) {
 }
 
 
-document.getElementById("totalsales").textContent = totalSales + " EGP";
-document.getElementById("totalprofit").textContent = totalProfit + " EGP";
+
 document.getElementById("expmeds").textContent = expiredMedicines.length;
 document.getElementById("lowstock").textContent = lowStockMedicines.length;
+
+
+if (todaySales.length === 0) {
+    document.getElementById("totalsales").textContent = "No sales today";
+    document.getElementById("totalprofit").textContent = "No profit today";
+} else {
+    document.getElementById("totalsales").textContent = totalSales + " EGP";
+    document.getElementById("totalprofit").textContent = totalProfit + " EGP";
+}
 
 
 
 
 const alertsContainer = document.getElementById("boxALERTS");
 
-alertsContainer.innerHTML = "";
+alertsContainer.innerHTML = ""; //clears html of the container before adding new alerts, so that we don't have duplicate alerts when we refresh the page
 
 for (let i = 0; i < expiredMedicines.length; i++) {
     createAlert(
