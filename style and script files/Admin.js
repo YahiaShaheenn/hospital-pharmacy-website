@@ -113,11 +113,16 @@ function addDoctor() {
     const doctorUsername = document.getElementById("AddDoctorUsername").value;
     const doctorPassword = document.getElementById("AddDoctorPassword").value;
     const doctors = JSON.parse(localStorage.getItem("doctors")) || [];
-
-    doctors.push({
-        username: doctorUsername,
-        password: doctorPassword
-    });
+    if (doctors.find(doc => doc.username === doctorUsername)) {
+        document.getElementById("message").textContent = "Username already exists. Please choose a different username.";
+        return;
+    }
+    else{
+        doctors.push({
+            username: doctorUsername,
+            password: doctorPassword
+        });
+    }
 
     localStorage.setItem("doctors", JSON.stringify(doctors));
 
