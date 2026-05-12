@@ -27,7 +27,7 @@
                 <h2 class="panel-title" id="cart-title" style="display:none">
                     <span class="material-icons">shopping_cart</span> Cart
                 </h2>
-                <button class="refund-btn" onclick="openRefundModal()">↩ Refund</button>
+                <button class="refund-btn" onclick="openRefund()">↩ Refund</button>
             </div>
             <div id="cart"></div>
             <div id="payment-section">
@@ -62,13 +62,13 @@
             <div id="refund-sales-view">
                 <h3>Select a Sale</h3>
                 <div id="refund-sales-list"></div>
-                <button onclick="closeRefundModal()">Cancel</button>
+              <button onclick="closeRefund()">Cancel</button>
             </div>
             <div id="refund-items-view" style="display:none">
                 <h3>Select Items to Refund</h3>
                 <div id="refund-items-list"></div>
                 <button id="refund-confirm-btn">Confirm Refund</button>
-                <button onclick="openRefundModal()">Back</button>
+                <button onclick="openRefund()">Back</button>
             </div>
         </div>
     </div>

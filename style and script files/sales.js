@@ -3,7 +3,9 @@ window.onload = function() {
         window.location.href = "LogIn.html";
         alert("Please log in to access the Sales.");
     }
-    renderCart();
+    if(document.getElementById("cart")) {
+        renderCart();
+    }
 }
 
 const supplies = [
@@ -63,6 +65,7 @@ function searchmed() {
                 <div class="medicine-result">
                     <p><strong>${supplies[i].name}</strong></p>
                     <p>Price: ${supplies[i].sellingPrice} EGP</p>
+                    <p>Stock: ${supplies[i].stock}</p>
                     <button onclick="addToCart(${i})">Add to Cart</button>
                 </div>
             `;
@@ -168,10 +171,16 @@ function checkout() {
         return;
     }
 
+    for (let j = 0; j < cart.length; j++) {
+        for (let i = 0; i < supplies.length; i++) {
+            if (supplies[i].name === cart[j].name) {
+                supplies[i].stock -= cart[j].qty;
+                break;
+            }
+        }
+    }
+
     localStorage.setItem("suppliesStock", JSON.stringify(supplies.map(s => s.stock)));
-
-    
-
     generateReceipt(paymentinput.value);
 }
 
@@ -353,6 +362,6 @@ function processRefund(saleIndex) {
     showAlert("Refund processed successfully!");
 }
 
-function closeRefundModal() {
+function closeRefund() {
     document.getElementById("refund-bg").style.display = "none";
 }
