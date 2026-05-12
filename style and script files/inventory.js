@@ -70,11 +70,22 @@ function updateSummaryCards() {
     document.getElementById("expired_count").textContent = supplies.filter(s => new Date(s.expiryDate) < today).length;
 }
 
+// UPDATED: SORTS OK ITEMS TO TOP, PROBLEMS TO BOTTOM
 function displayTable(data) {
     const tableBody = document.getElementById("inventory_table_body");
     tableBody.innerHTML = "";
 
-    data.forEach((med) => {
+    // Sorting Logic: OK (0) < Low Stock (1) < Expired (2)
+    const sortedData = [...data].sort((a, b) => {
+        const getScore = (m) => {
+            if (new Date(m.expiryDate) < new Date()) return 2; // Expired is worst
+            if (m.stock <= m.minStock) return 1;              // Low stock is second
+            return 0;                                         // OK is best
+        };
+        return getScore(a) - getScore(b);
+    });
+
+    sortedData.forEach((med) => {
         const indexInMain = supplies.indexOf(med);
         const isExp = new Date(med.expiryDate) < new Date();
         const isLow = med.stock <= med.minStock;
