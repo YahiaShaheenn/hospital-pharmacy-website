@@ -56,7 +56,6 @@ function displayReports(data) {
 
                 <tr>
 
-                    //shakl el dollar da ma3nah en java hay insert el value da fe html
                     <td>${item.name}</td>
                     <td>${item.qty}</td>
                     <td>${sale.date}</td>
@@ -435,7 +434,7 @@ document.getElementById("export_button").addEventListener("click", function () {
         //automatic click 3ashan a download file
         link.click();
 
-        //ashil el temp link
+        //ashil el temp
         URL.revokeObjectURL(url);
 
     });
