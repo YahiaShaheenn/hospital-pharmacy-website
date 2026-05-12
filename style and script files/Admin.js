@@ -109,10 +109,7 @@ function deleteDoctor(index) {
 // Load doctors list when page loads
 document.addEventListener("DOMContentLoaded", loadDoctorsList); //DOMContentLoaded event is fired when the initial HTML document has been completely loaded and parsed, without waiting for stylesheets, images, and subframes to finish loading. This means that the loadDoctorsList function will be called as soon as the HTML is ready, ensuring that the doctors list is displayed immediately when the page loads.
 
-// Update list after adding a doctor
-document.getElementById("AddDoctorForm").addEventListener("submit", function (e) {
-    e.preventDefault();
-
+function addDoctor() {
     const doctorUsername = document.getElementById("AddDoctorUsername").value;
     const doctorPassword = document.getElementById("AddDoctorPassword").value;
     const doctors = JSON.parse(localStorage.getItem("doctors")) || [];
@@ -120,7 +117,7 @@ document.getElementById("AddDoctorForm").addEventListener("submit", function (e)
     doctors.push({
         username: doctorUsername,
         password: doctorPassword
-    }); 
+    });
 
     localStorage.setItem("doctors", JSON.stringify(doctors));
 
@@ -133,4 +130,24 @@ document.getElementById("AddDoctorForm").addEventListener("submit", function (e)
     if (doctors.length > 0) {
         document.getElementById("noDoctorsMessage").textContent = ""; // Clear "No doctors" message if there are now doctors in the list
     }
+};
+
+document.getElementById("AddDoctorUsername").addEventListener("keypress", function (e) {
+    if (e.key === "Enter") {
+        e.preventDefault();
+        document.getElementById("AddDoctorPassword").focus(); // Move focus to password field    
+    }
 });
+
+document.getElementById("AddDoctorPassword").addEventListener("keypress", function (e) {
+    if (e.key === "Enter") {
+        e.preventDefault();
+        addDoctor();
+    }
+});
+
+document.getElementById("AddDoctorForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+    addDoctor();
+});
+
