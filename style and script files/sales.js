@@ -65,7 +65,6 @@ function searchmed() {
                 <div class="medicine-result">
                     <p><strong>${supplies[i].name}</strong></p>
                     <p>Price: ${supplies[i].sellingPrice} EGP</p>
-                    <p>Stock: ${supplies[i].stock}</p>
                     <button onclick="addToCart(${i})">Add to Cart</button>
                 </div>
             `;
@@ -80,6 +79,10 @@ function searchmed() {
 function addToCart(i) {
     if (supplies[i].stock <= 0) {
         showAlert("This item is out of stock!");
+        return;
+    }
+    if (new Date(supplies[i].expiryDate) < new Date()) {
+        showAlert(supplies[i].name + " is expired and cannot be sold!");
         return;
     }
 
@@ -293,10 +296,28 @@ function showRefundItems(saleIndex) {
             }
         }
 
-        if (!supplyData || !supplyData.refundable) continue;
+        if (!supplyData) continue;
 
-        let expiry = new Date(supplyData.expiryDate);
-        if (today > expiry) continue;
+        let isExpired = new Date(supplyData.expiryDate) < today;
+        let isNotRefundable = !supplyData.refundable;
+
+        if (isExpired || isNotRefundable) {
+            let reason = "";
+            if (isNotRefundable && isExpired) {
+                reason = "Not refundable: refrigerated/sensitive & expired";
+            } else if (isNotRefundable) {
+                reason = "Not refundable: refrigerated/sensitive item";
+            } else {
+                reason = "Not refundable: item is expired";
+            }
+            itemsDiv.innerHTML += `
+                <div class="refund-item-card">
+                    <p><strong>${item.name}</strong></p>
+                    <p class="refund-blocked">${reason}</p>
+                </div>
+            `;
+            continue;
+        }
 
         let alreadyRefunded = item.refundedQty || 0;
         let remaining = item.qty - alreadyRefunded;
@@ -312,12 +333,12 @@ function showRefundItems(saleIndex) {
         `;
     }
 
-   if (!hasRefundable) {
-    itemsDiv.innerHTML = "<p>No refundable items in this sale.</p>";
-    document.getElementById("refund-confirm-btn").style.display = "none";
-} else {
-    document.getElementById("refund-confirm-btn").style.display = "block";
-}
+    if (!hasRefundable) {
+        document.getElementById("refund-confirm-btn").style.display = "none";
+    } else {
+        document.getElementById("refund-confirm-btn").style.display = "block";
+    }
+
     document.getElementById("refund-confirm-btn").setAttribute("onclick", `processRefund(${saleIndex})`);
     document.getElementById("refund-sales-view").style.display = "none";
     document.getElementById("refund-items-view").style.display = "block";
@@ -360,7 +381,7 @@ function processRefund(saleIndex) {
     salesHistory[saleIndex] = sale;
     localStorage.setItem("salesHistory", JSON.stringify(salesHistory));
     localStorage.setItem("suppliesStock", JSON.stringify(supplies.map(s => s.stock)));
-    closeRefundModal();
+    closeRefund();
     showAlert("Refund processed successfully!");
 }
 
