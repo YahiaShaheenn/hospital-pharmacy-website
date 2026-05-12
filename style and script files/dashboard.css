@@ -1,6 +1,6 @@
 .welcome{
     width: 95%;
-    margin: 30px auto;
+    margin: 30px auto; /* top-bottom & left and right, auto bey7otaha perfectly fel nos */
     background: rgba(255,255,255,0.45);
     border-radius: 18px;
     padding: 30px;
@@ -37,11 +37,16 @@
     font-size: 30px;
 }
 
+.sumtitle{
+    width: 95%;
+    margin: 20px auto 10px; /* top, left and right, bottom */
+    font-size: 22px;
+}
 
 .summary{
     display: grid;
     grid-template-columns: auto auto auto auto;
-    margin: 20px auto;
+    margin: 3px auto;
     width: 96%;
 }
 
@@ -63,29 +68,33 @@
 .ts{
     background-color:mediumturquoise;
     padding: 27px;
-    margin: 10px;
+    margin: 5px;
     border-radius: 18px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
 }
 
 .tp{
     background-color:lightgreen;
     padding: 27px;
-    margin: 10px;
+    margin: 5px;
     border-radius: 18px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
 }
 
 .em{
     background-color:rgb(236, 236, 180);
     padding: 27px;
-    margin: 10px;
+    margin: 5px;
     border-radius: 18px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
 }
 
 .ls{
     background-color:rgb(250, 168, 168);
     padding: 27px;
-    margin: 10px;
+    margin: 5px;
     border-radius: 18px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
 }
 
 .sumRow{
@@ -93,6 +102,67 @@
     align-items: center;
     gap: 10px;
 }
+
+.mostSold{
+    width: 95%;
+    margin: 35px auto;
+}
+
+.mostSold h2{
+    margin-bottom: 20px;
+    font-size: 22px;
+}
+
+.topbox{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); /* autofit for responsivness without media query*/
+    gap: 25px;
+}
+
+.top-med-card{
+    padding: 25px;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+    transition: 0.3s ease;
+}
+
+.top-med-card:hover{
+    transform: translateY(-5px);
+}
+
+.top-med-card .material-icons{
+    font-size: 38px;
+    color: black;
+}
+
+.top-med-card h3{
+    margin-bottom: 8px;
+}
+
+.top-med-card p{
+    font-size: 15px;
+}
+
+
+.top-med-card:nth-child(1){
+    background-color: mediumturquoise;
+}
+
+.top-med-card:nth-child(2){
+    background-color: lightgreen;
+}
+
+.top-med-card:nth-child(3){
+    background-color: rgb(236, 236, 180);
+}
+
+.top-med-card:nth-child(4){
+    background-color: rgb(250, 168, 168);
+}
+
 
 .alerts{
     width: 95%;
