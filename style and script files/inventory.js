@@ -1,80 +1,16 @@
-<<<<<<< HEAD
 let supplies = [];
 let currentMedicineIndex = -1;
-=======
-
-
-
-(function seedInventory() {
-    if (localStorage.getItem("pharmacySupplies")) return; 
-
-    const hardcoded = [
-        { name: "Paracetamol", category: "Pain Relief", costPrice: 15, sellingPrice: 25, stock: 120, minStock: 20, expiryDate: "2027-06-01" },
-        { name: "Ibuprofen", category: "Pain Relief", costPrice: 25, sellingPrice: 40, stock: 80, minStock: 15, expiryDate: "2027-08-15" },
-        { name: "Diclofenac", category: "Pain Relief", costPrice: 35, sellingPrice: 55, stock: 60, minStock: 10, expiryDate: "2028-01-10" },
-        { name: "Amoxicillin", category: "Antibiotics", costPrice: 45, sellingPrice: 65, stock: 90, minStock: 15, expiryDate: "2027-03-20" },
-        { name: "Azithromycin", category: "Antibiotics", costPrice: 60, sellingPrice: 85, stock: 50, minStock: 10, expiryDate: "2027-09-05" },
-        { name: "Ciprofloxacin", category: "Antibiotics", costPrice: 50, sellingPrice: 70, stock: 40, minStock: 10, expiryDate: "2028-02-14" },
-        { name: "Nasal Spray", category: "Cold & Flu", costPrice: 28, sellingPrice: 45, stock: 55, minStock: 10, expiryDate: "2027-04-18" },
-        { name: "Vitamin C Tablets", category: "Cold & Flu", costPrice: 18, sellingPrice: 30, stock: 100, minStock: 20, expiryDate: "2028-07-22" },
-        { name: "Cough Syrup", category: "Cold & Flu", costPrice: 20, sellingPrice: 35, stock: 6, minStock: 15, expiryDate: "2025-05-30" },
-        { name: "Metformin", category: "Diabetes", costPrice: 25, sellingPrice: 40, stock: 60, minStock: 12, expiryDate: "2027-12-01" },
-        { name: "Glucose Test Strips", category: "Diabetes", costPrice: 55, sellingPrice: 80, stock: 35, minStock: 10, expiryDate: "2027-05-15" },
-        { name: "Insulin", category: "Diabetes", costPrice: 100, sellingPrice: 150, stock: 5, minStock: 8, expiryDate: "2025-06-01" },
-        { name: "Amlodipine", category: "Heart", costPrice: 35, sellingPrice: 55, stock: 45, minStock: 10, expiryDate: "2028-03-08" },
-        { name: "Atenolol", category: "Heart", costPrice: 28, sellingPrice: 45, stock: 50, minStock: 10, expiryDate: "2027-11-20" },
-        { name: "Nitroglycerin", category: "Heart", costPrice: 60, sellingPrice: 90, stock: 3, minStock: 8, expiryDate: "2025-07-15" },
-        { name: "Omeprazole", category: "Stomach", costPrice: 30, sellingPrice: 50, stock: 70, minStock: 15, expiryDate: "2027-07-14" },
-        { name: "Antacids", category: "Stomach", costPrice: 12, sellingPrice: 20, stock: 90, minStock: 20, expiryDate: "2028-01-25" },
-        { name: "ORS Packets", category: "Stomach", costPrice: 8, sellingPrice: 15, stock: 110, minStock: 25, expiryDate: "2027-10-10" },
-        { name: "Salbutamol Inhaler", category: "Respiratory", costPrice: 80, sellingPrice: 120, stock: 30, minStock: 8, expiryDate: "2027-06-18" },
-        { name: "Nebulizer Solution", category: "Respiratory", costPrice: 50, sellingPrice: 75, stock: 40, minStock: 10, expiryDate: "2027-02-28" },
-        { name: "Syringes", category: "Supplies", costPrice: 5, sellingPrice: 10, stock: 300, minStock: 50, expiryDate: "2030-01-01" },
-        { name: "Bandages", category: "Supplies", costPrice: 12, sellingPrice: 20, stock: 200, minStock: 40, expiryDate: "2030-06-01" },
-        { name: "Alcohol Swabs", category: "Supplies", costPrice: 8, sellingPrice: 15, stock: 250, minStock: 50, expiryDate: "2029-12-01" },
-        { name: "Surgical Mask Box", category: "Supplies", costPrice: 40, sellingPrice: 60, stock: 150, minStock: 30, expiryDate: "2029-08-15" },
-        { name: "Surgical Gloves", category: "Supplies", costPrice: 28, sellingPrice: 45, stock: 180, minStock: 30, expiryDate: "2030-03-20" },
-        { name: "IV Fluids", category: "Emergency", costPrice: 55, sellingPrice: 85, stock: 40, minStock: 10, expiryDate: "2027-08-30" },
-        { name: "Oxygen Mask", category: "Emergency", costPrice: 70, sellingPrice: 110, stock: 25, minStock: 8, expiryDate: "2030-01-15" },
-        { name: "Epinephrine Injection", category: "Emergency", costPrice: 140, sellingPrice: 200, stock: 2, minStock: 5, expiryDate: "2025-08-01" },
-        { name: "Multivitamins", category: "Vitamins", costPrice: 45, sellingPrice: 70, stock: 85, minStock: 15, expiryDate: "2028-05-10" },
-        { name: "Vitamin D", category: "Vitamins", costPrice: 35, sellingPrice: 55, stock: 90, minStock: 15, expiryDate: "2028-09-22" },
-        { name: "Omega-3 Capsules", category: "Vitamins", costPrice: 65, sellingPrice: 95, stock: 60, minStock: 12, expiryDate: "2028-11-30" },
-        { name: "Diapers", category: "Baby Care", costPrice: 80, sellingPrice: 120, stock: 50, minStock: 10, expiryDate: "2030-01-01" },
-        { name: "Pediatric Syrup", category: "Baby Care", costPrice: 25, sellingPrice: 40, stock: 65, minStock: 12, expiryDate: "2027-04-05" },
-        { name: "Baby Formula", category: "Baby Care", costPrice: 120, sellingPrice: 180, stock: 4, minStock: 8, expiryDate: "2025-09-10" },
-    ];
-
-    localStorage.setItem("pharmacySupplies", JSON.stringify(hardcoded)); // intialize data 
-})();
-
-let supplies = []; //(Array) elly beykon feh kol el data bta3t el adweya (el esm, el se3r, el kamya).
-//  bn3mlo fady f el awal 3ashan ne7ot feh el data b3d kda sawa' mn el LocalStorage aw mn el Seed function
-let currentMedicineIndex = -1; // aw 3allama bn3rf beeha e7na wa2fen 3ala anhy dowa' f el table delwa2ty.
-//bnkhaleeh -1 f el awal 3ashan de m3naha (Empty selection), ya3ny lsa makhtarnash dowa' ne3ml 3aleh "Add stock" aw ay modification.
->>>>>>> 48dc2a55f05d6884a04bfe49b677ad5044c71492
 
 function calculateSellingPrice(cost) {
     return (cost * 1.20).toFixed(2);
 }
 
-<<<<<<< HEAD
 function loadInventoryData() {
     const saved = localStorage.getItem("suppliesStock");
     supplies = saved ? JSON.parse(saved) : [];
 }
 function saveInventoryData() {
     localStorage.setItem("suppliesStock", JSON.stringify(supplies));
-=======
-function loadInventoryData() {  
-    const saved = localStorage.getItem("pharmacySupplies"); 
-    supplies = saved ? JSON.parse(saved) : [];
-} /// de el function elly btrga3 el data mn el "Memory" bta3t el browser 3ashan el system "yeftker" 
-// el adweya elly mawgouda awel ma t-fta7 elpage.
-
-function saveInventoryData() { // da function bta5od el data elly fe variable supplies w bt7otha fe localStorage 3ashan tkon mawgoda lma n3ml reload lel saf7a.
-    localStorage.setItem("pharmacySupplies", JSON.stringify(supplies));
->>>>>>> 48dc2a55f05d6884a04bfe49b677ad5044c71492
 }
 
 function updateSummaryCards() { 

@@ -6,6 +6,9 @@ window.onload = function() {
     if(document.getElementById("cart")) {
         renderCart();
     }
+    if (sessionStorage.getItem("admin") === "true") {
+    showAlert("Admins cannot access the Sales page.");
+}
 }
 let supplies = JSON.parse(localStorage.getItem("suppliesStock")) || [];
 
