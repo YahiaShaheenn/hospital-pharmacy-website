@@ -329,7 +329,7 @@ function showRefundItems(saleIndex) {
 
         let alreadyRefunded = item.refundedQty || 0;
         let remaining = item.qty - alreadyRefunded;
-        if (remaining <= 0) continue;
+        if (remaining <= 0) continue;  // Skip if all are already refunded
 
         hasRefundable = true;
         itemsDiv.innerHTML += `
@@ -340,7 +340,7 @@ function showRefundItems(saleIndex) {
             </div>
         `;
     }
-
+// Show or hide confirm button based on whether there are refundable items
     if (!hasRefundable) {
         document.getElementById("refund-confirm-btn").style.display = "none";
     } else {
