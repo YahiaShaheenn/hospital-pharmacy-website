@@ -72,7 +72,6 @@ function searchmed() {
         results.innerHTML = "<p>No medicine found.</p>";
     }
 }
-
 function addToCart(i) {
     if (supplies[i].stock <= 0) {
         showAlert("This item is out of stock!");
@@ -82,6 +81,10 @@ function addToCart(i) {
     let item = supplies[i];
     for (let j = 0; j < cart.length; j++) {
         if (cart[j].name === item.name) {
+            if (cart[j].qty >= supplies[i].stock) {
+                showAlert("No more stock available for " + item.name + "!");
+                return;
+            }
             cart[j].qty++;
             renderCart();
             return;
@@ -170,24 +173,9 @@ function checkout() {
         }
     }
 
-    let lowStockWarnings = [];
-    for (let j = 0; j < cart.length; j++) {
-        for (let i = 0; i < supplies.length; i++) {
-            if (supplies[i].name === cart[j].name) {
-                supplies[i].stock -= cart[j].qty;
-                if (supplies[i].stock < supplies[i].minStock) {
-                    lowStockWarnings.push(supplies[i].name);
-                }
-                break;
-            }
-        }
-    }
+    
 
     localStorage.setItem("suppliesStock", JSON.stringify(supplies.map(s => s.stock)));
-
-    if (lowStockWarnings.length > 0) {
-        showAlert("Low stock warning: " + lowStockWarnings.join(", "));
-    }
 
     let paymentmethod = paymentinput.value;
     generateReceipt(paymentmethod);
