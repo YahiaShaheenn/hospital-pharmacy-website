@@ -183,9 +183,13 @@ let sortedMedicines = Object.entries(medicineSales).sort(function(a, b) {
     return b[1] - a[1];
 });
 
+
+
+const mostSoldSection = document.querySelector(".mostSold");
+
 if (sortedMedicines.length === 0) {
 
-    topMedsBox.innerHTML = "<p>No medicines sold today.</p>";
+    mostSoldSection.style.display = "none";
 
 } else {
 
