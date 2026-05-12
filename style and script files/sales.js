@@ -93,12 +93,12 @@ function addToCart(i) {   // add selected medicine to cart
                 showAlert("No more stock available for " + item.name + "!"); //makes sure you can't add more to cart than available in stock
                 return;
             }
-            cart[j].qty++;
+            cart[j].qty++;   //update cart without adding duplicate entry
             renderCart();
             return;
         }
     }
-    cart.push({ name: item.name, price: item.sellingPrice, qty: 1 });
+    cart.push({ name: item.name, price: item.sellingPrice, qty: 1 });   // if item not already in cart add it 
     renderCart();
 }
 
@@ -159,13 +159,13 @@ function decreaseQty(j) {
 }
 
 function removeItem(j) {   // remove item from cart entirely
-    cart.splice(j, 1);
+    cart.splice(j, 1); 
     renderCart();
 }
 
 function checkout() {
     if (cart.length === 0) {
-        showAlert("Your cart is empty!");                                     //// validate cart and payment method then decrement stock and generate receipt
+        showAlert("Your cart is empty!");                                     // validate cart and payment method then decrement stock and generate receipt
         return;
     }
     let paymentinput = document.querySelector('input[name="payment"]:checked');
@@ -329,7 +329,7 @@ function showRefundItems(saleIndex) {
 
         let alreadyRefunded = item.refundedQty || 0;
         let remaining = item.qty - alreadyRefunded;
-        if (remaining <= 0) continue;
+        if (remaining <= 0) continue;                // Skip if all are already refunded
 
         hasRefundable = true;
         itemsDiv.innerHTML += `
@@ -340,7 +340,7 @@ function showRefundItems(saleIndex) {
             </div>
         `;
     }
-
+// Show or hide confirm button based on whether there are refundable items
     if (!hasRefundable) {
         document.getElementById("refund-confirm-btn").style.display = "none";
     } else {
@@ -358,13 +358,13 @@ function processRefund(saleIndex) {
     let anyRefunded = false;
 
     for (let j = 0; j < sale.items.length; j++) {
-        let input = document.getElementById("refund-qty-" + j);
-        if (!input) continue;
+        let input = document.getElementById("refund-qty-" + j);  
+        if (!input) continue;                                 // skip items that have no more quantinty left or not refundable 
         let qty = parseInt(input.value);
-        if (isNaN(qty) || qty <= 0) continue;
+        if (isNaN(qty) || qty <= 0) continue; //ski[p if no quantity entered or invalid input
 
-        let alreadyRefunded = sale.items[j].refundedQty || 0;
-        let remaining = sale.items[j].qty - alreadyRefunded;
+        let alreadyRefunded = sale.items[j].refundedQty || 0;  
+        let remaining = sale.items[j].qty - alreadyRefunded;    
         if (qty > remaining) {
             showAlert("Refund quantity exceeds available for " + sale.items[j].name);
             return;
@@ -377,7 +377,7 @@ function processRefund(saleIndex) {
             }
         }
 
-        sale.items[j].refundedQty = alreadyRefunded + qty;
+        sale.items[j].refundedQty = alreadyRefunded + qty;    // Update refunded quantity 
         anyRefunded = true;
     }
 
@@ -388,7 +388,7 @@ function processRefund(saleIndex) {
 
     salesHistory[saleIndex] = sale;
     localStorage.setItem("salesHistory", JSON.stringify(salesHistory));
-    localStorage.setItem("suppliesStock", JSON.stringify(supplies.map(s => s.stock)));
+    localStorage.setItem("suppliesStock", JSON.stringify(supplies.map(s => s.stock)));   // Save updated sales history and stock to localStorage
     closeRefund();
     showAlert("Refund processed successfully!");
 }
