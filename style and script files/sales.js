@@ -1,4 +1,13 @@
-// 1. Static Data Definition
+window.onload = function() {
+    if(!sessionStorage.getItem("currentDoctor")) {
+        window.location.href = "LogIn.html";
+        alert("Please log in to access the Sales.");
+    }
+    if(document.getElementById("cart")) {
+        renderCart();
+    }
+}
+
 const supplies = [
     { name: "Paracetamol", category: "Pain Relief", costPrice: 15, sellingPrice: 25, stock: 120, minStock: 20, expiryDate: "2027-06-01", refundable: true },
     { name: "Ibuprofen", category: "Pain Relief", costPrice: 25, sellingPrice: 40, stock: 80, minStock: 15, expiryDate: "2027-08-15", refundable: true },
@@ -36,55 +45,191 @@ const supplies = [
     { name: "Cough Syrup", category: "Cold & Flu", costPrice: 20, sellingPrice: 35, stock: 6, minStock: 15, expiryDate: "2025-05-30", refundable: true },
 ];
 
-let currentMedicineIndex = -1;
-
-// 2. Table Render Function
-function displayTable(data) {
-    const tableBody = document.getElementById("inventory_table_body");
-    tableBody.innerHTML = "";
-
-    // Sort: Problematic at bottom (Healthy 0, Low Stock 1, Expired 2)
-    const sortedData = [...data].sort((a, b) => {
-        const getScore = (m) => {
-            if (new Date(m.expiryDate) < new Date()) return 2; 
-            if (m.stock <= m.minStock) return 1;              
-            return 0;                                         
-        };
-        return getScore(a) - getScore(b); 
-    });
-
-    sortedData.forEach((med) => {
-        const isExp = new Date(med.expiryDate) < new Date();
-        const isLow = med.stock <= med.minStock;
-        const indexInSupplies = supplies.findIndex(s => s.name === med.name);
-
-        tableBody.innerHTML += `
-            <tr class="${isExp ? 'expired_row' : (isLow ? 'lowstock_row' : '')}">
-                <td><strong>${med.name}</strong></td>
-                <td>${med.category}</td>
-                <td>${med.stock}</td>
-                <td>${med.minStock}</td>
-                <td>${med.expiryDate}</td>
-                <td>${med.costPrice} EGP</td>
-                <td><strong>${med.sellingPrice} EGP</strong></td>
-                <td>
-                    ${isExp ? '<span class="material-icons" style="color:red">cancel</span>' : 
-                    (isLow ? '<span class="material-icons" style="color:orange">warning</span>' : 
-                    '<span class="material-icons" style="color:green">check_circle</span>')}
-                </td>
-                <td>
-                    <button class="btn_add" onclick="openTransactionModal(${indexInSupplies})">Add</button>
-                    <button class="btn_delete" onclick="deleteMedicine(${indexInSupplies})">Delete</button>
-                </td>
-            </tr>`;
-    });
+let savedStock = JSON.parse(localStorage.getItem("suppliesStock"));
+if (savedStock) {
+    for (let i = 0; i < supplies.length; i++) {
+        supplies[i].stock = savedStock[i];
+    }
 }
 
-// 3. Search and Summary logic
-function searchMedicine() {
-    const query = document.getElementById("searchInput").value.toLowerCase();
-    const filtered = supplies.filter(med => med.name.toLowerCase().includes(query));
-    displayTable(filtered);
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+function searchmed() {
+    let input = document.getElementById("searchInput").value.toLowerCase();
+    let results = document.getElementById("searchResults");
+    results.innerHTML = "";
+
+    for (let i = 0; i < supplies.length; i++) {
+        if (supplies[i].name.toLowerCase().includes(input)) {
+            results.innerHTML += `
+                <div class="medicine-result">
+                    <p><strong>${supplies[i].name}</strong></p>
+                    <p>Price: ${supplies[i].sellingPrice} EGP</p>
+                    <button onclick="addToCart(${i})">Add to Cart</button>
+                </div>
+            `;
+        }
+    }
+
+    if (results.innerHTML === "") {
+        results.innerHTML = "<p>No medicine found.</p>";
+    }
+}
+
+function addToCart(i) {
+    if (supplies[i].stock <= 0) {
+        showAlert("This item is out of stock!");
+        return;
+    }
+    if (new Date(supplies[i].expiryDate) < new Date()) {
+        showAlert(supplies[i].name + " is expired and cannot be sold!");
+        return;
+    }
+
+    let item = supplies[i];
+    for (let j = 0; j < cart.length; j++) {
+        if (cart[j].name === item.name) {
+            if (cart[j].qty >= supplies[i].stock) {
+                showAlert("No more stock available for " + item.name + "!");
+                return;
+            }
+            cart[j].qty++;
+            renderCart();
+            return;
+        }
+    }
+    cart.push({ name: item.name, price: item.sellingPrice, qty: 1 });
+    renderCart();
+}
+
+function renderCart() {
+    localStorage.setItem("cart", JSON.stringify(cart));
+    let cartDiv = document.getElementById("cart");
+    cartDiv.innerHTML = "";
+    let total = 0;
+    for (let j = 0; j < cart.length; j++) {
+        let subtotal = cart[j].price * cart[j].qty;
+        total += subtotal;
+        cartDiv.innerHTML += `
+            <div class="cart-item">
+                <p><strong>${cart[j].name}</strong></p>
+                <p>Price: ${cart[j].price} EGP | Subtotal: ${subtotal} EGP</p>
+                <div class="qty-controls">
+                    <button onclick="decreaseQty(${j})">-</button>
+                    <span>${cart[j].qty}</span>
+                    <button onclick="increaseQty(${j})">+</button>
+                    <button class="remove-btn" onclick="removeItem(${j})">Remove</button>
+                </div>
+            </div>
+        `;
+    }
+    if (cart.length > 0) {
+        cartDiv.innerHTML += `<h3>Total: ${total} EGP</h3>`;
+    }
+    if (cart.length > 0) {
+        document.getElementById("cart-title").style.display = "flex";
+        document.getElementById("payment-section").style.display = "block";
+    } else {
+        document.getElementById("cart-title").style.display = "none";
+        document.getElementById("payment-section").style.display = "none";
+    }
+}
+
+function increaseQty(j) {
+    for (let i = 0; i < supplies.length; i++) {
+        if (supplies[i].name === cart[j].name) {
+            if (cart[j].qty >= supplies[i].stock) {
+                showAlert("No more stock available for " + cart[j].name + "!");
+                return;
+            }
+            break;
+        }
+    }
+    cart[j].qty++;
+    renderCart();
+}
+
+function decreaseQty(j) {
+    if (cart[j].qty > 1) {
+        cart[j].qty--;
+    } else {
+        cart.splice(j, 1);
+    }
+    renderCart();
+}
+
+function removeItem(j) {
+    cart.splice(j, 1);
+    renderCart();
+}
+
+function checkout() {
+    if (cart.length === 0) {
+        showAlert("Your cart is empty!");
+        return;
+    }
+    let paymentinput = document.querySelector('input[name="payment"]:checked');
+    if (paymentinput === null) {
+        showAlert("Please select a payment method!");
+        return;
+    }
+
+    for (let j = 0; j < cart.length; j++) {
+        for (let i = 0; i < supplies.length; i++) {
+            if (supplies[i].name === cart[j].name) {
+                supplies[i].stock -= cart[j].qty;
+                break;
+            }
+        }
+    }
+
+    localStorage.setItem("suppliesStock", JSON.stringify(supplies.map(s => s.stock)));
+    generateReceipt(paymentinput.value);
+}
+
+function generateReceipt(paymentmethod) {
+    let sellerName = sessionStorage.getItem("currentDoctor");
+    let now = new Date();
+    let time = now.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" });
+    let date = now.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" });
+
+    let total = 0;
+    let itemsHTML = "";
+    for (let j = 0; j < cart.length; j++) {
+        let subtotal = cart[j].price * cart[j].qty;
+        total += subtotal;
+        itemsHTML += `<p>${cart[j].name} x${cart[j].qty} = ${subtotal} EGP</p>`;
+    }
+
+    document.getElementById("receipt-content").innerHTML = `
+        <h3>Receipt</h3>
+        <p>${date} | ${time}</p>
+        <p>Seller: ${sellerName}</p>
+        <hr>
+        ${itemsHTML}
+        <hr>
+        <h4>Total: ${total} EGP</h4>
+        <p>Payment: ${paymentmethod}</p>
+        <p>Thank you!</p>
+    `;
+    document.getElementById("receipt-bg").style.display = "flex";
+
+    let sale = {
+        date: date,
+        time: time,
+        timestamp: now.getTime(),
+        items: cart.slice(),
+        total: total,
+        payment: paymentmethod,
+        seller: sellerName
+    };
+    let salesHistory = JSON.parse(localStorage.getItem("salesHistory")) || [];
+    salesHistory.push(sale);
+    localStorage.setItem("salesHistory", JSON.stringify(salesHistory));
+
+    cart = [];
+    renderCart();
+    document.querySelector('input[name="payment"]:checked').checked = false;
 }
 
 function resetSearch() {

@@ -174,7 +174,7 @@
     transform: translateY(-2px);
 }
 
-/* Receipt */
+/* receipt */
 #receipt-bg {
     display: none;
     position: fixed;
@@ -272,7 +272,7 @@
     background-color: #2f7f8a;
 }
 
-/* Panel Title */
+
 .panel-title {
     display: flex;
     align-items: center;
@@ -293,7 +293,7 @@
     }
 }
 
-/* Refund */
+/* refund */
 .refund-header {
     display: flex;
     align-items: center;
