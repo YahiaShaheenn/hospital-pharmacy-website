@@ -6,8 +6,8 @@
 
 // Load and display doctors list
 function loadDoctorsList() {
-    const doctors = JSON.parse(localStorage.getItem("doctors")) || [];
-    const doctorsList = document.getElementById("doctorsList");
+    const doctors = JSON.parse(localStorage.getItem("doctors")) || []; // Get doctors list from localStorage, or use empty array if not found
+    const doctorsList = document.getElementById("doctorsList"); 
 
     doctorsList.innerHTML = ""; // Clear the list
 
@@ -23,7 +23,7 @@ function loadDoctorsList() {
 
         doctorItem.innerHTML = `
         <div class="doctor-info">
-            <p class="username">Username: ${doctor.username}</p>
+            <p class="username">Username: ${doctor.username}</p> <!-- the dollar sign is used to insert the value of doctor.username into the string -->
             
         </div>
         <div class="doctor-actions">
