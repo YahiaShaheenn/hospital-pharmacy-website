@@ -1,57 +1,8 @@
-window.onload = function () {
-    loadInventoryData();
-    updateSummaryCards();
-    displayTable(supplies);
-};
-
-let currentMedicineIndex = -1;
 let supplies = [];
+let currentMedicineIndex = -1;
 
-// AUTO-PRICE LOGIC: Adds 20% profit
 function calculateSellingPrice(cost) {
-    return (cost * 1.20).toFixed(2); 
-}
-
-// DELETE MEDICINE
-function deleteMedicine(index) {
-    if (confirm("Are you sure you want to remove this medicine?")) {
-        supplies.splice(index, 1);
-        saveInventoryData();
-        displayTable(supplies);
-        updateSummaryCards();
-    }
-}
-
-// REGISTER NEW MEDICINE
-function addNewMedicine() {
-    const name = document.getElementById("new_name").value;
-    const cat = document.getElementById("new_category").value;
-    const cost = parseFloat(document.getElementById("new_cost").value);
-    const min = parseInt(document.getElementById("new_min").value) || 10;
-    const exp = document.getElementById("new_expiry").value;
-
-    if (!name || isNaN(cost) || !exp) return alert("Fill in Name, Price, and Expiry!");
-
-    const newEntry = {
-        name: name,
-        category: cat,
-        costPrice: cost,
-        sellingPrice: calculateSellingPrice(cost),
-        stock: 0, 
-        minStock: min,
-        expiryDate: exp
-    };
-
-    supplies.push(newEntry);
-    saveInventoryData();
-    displayTable(supplies);
-    updateSummaryCards();
-    
-    // Clear inputs
-    document.getElementById("new_name").value = "";
-    document.getElementById("new_cost").value = "";
-    document.getElementById("new_min").value = "";
-    document.getElementById("new_expiry").value = "";
+    return (cost * 1.20).toFixed(2);
 }
 
 function loadInventoryData() {
@@ -70,19 +21,18 @@ function updateSummaryCards() {
     document.getElementById("expired_count").textContent = supplies.filter(s => new Date(s.expiryDate) < today).length;
 }
 
-// UPDATED: SORTS OK ITEMS TO TOP, PROBLEMS TO BOTTOM
 function displayTable(data) {
     const tableBody = document.getElementById("inventory_table_body");
     tableBody.innerHTML = "";
 
-    // Sorting Logic: OK (0) < Low Stock (1) < Expired (2)
+    // SORT: Healthy (0) -> Low Stock (1) -> Expired (2) at bottom
     const sortedData = [...data].sort((a, b) => {
         const getScore = (m) => {
-            if (new Date(m.expiryDate) < new Date()) return 2; // Expired is worst
-            if (m.stock <= m.minStock) return 1;              // Low stock is second
-            return 0;                                         // OK is best
+            if (new Date(m.expiryDate) < new Date()) return 2; 
+            if (m.stock <= m.minStock) return 1;              
+            return 0;                                         
         };
-        return getScore(a) - getScore(b);
+        return getScore(a) - getScore(b); 
     });
 
     sortedData.forEach((med) => {
@@ -99,7 +49,11 @@ function displayTable(data) {
                 <td>${med.expiryDate}</td>
                 <td>${med.costPrice} EGP</td>
                 <td><strong>${med.sellingPrice} EGP</strong></td>
-                <td>${isExp ? '❌ Expired' : (isLow ? '⚠️ Low' : '✅ OK')}</td>
+                <td>
+                    ${isExp ? '<span class="material-icons" style="color:red">cancel</span>' : 
+                    (isLow ? '<span class="material-icons" style="color:orange">warning</span>' : 
+                    '<span class="material-icons" style="color:green">check_circle</span>')}
+                </td>
                 <td>
                     <button class="btn_add" onclick="openTransactionModal(${indexInMain})">Add</button>
                     <button class="btn_delete" onclick="deleteMedicine(${indexInMain})">Delete</button>
@@ -110,13 +64,31 @@ function displayTable(data) {
 
 function searchMedicine() {
     const query = document.getElementById("searchInput").value.toLowerCase();
-    const filtered = supplies.filter(m => m.name.toLowerCase().includes(query));
+    const filtered = supplies.filter(med => med.name.toLowerCase().includes(query));
     displayTable(filtered);
 }
 
 function resetSearch() {
     document.getElementById("searchInput").value = "";
     displayTable(supplies);
+}
+
+function addNewMedicine() {
+    const name = document.getElementById("new_name").value;
+    const cat = document.getElementById("new_category").value;
+    const cost = parseFloat(document.getElementById("new_cost").value);
+    const stock = parseInt(document.getElementById("new_stock").value) || 0;
+    const min = parseInt(document.getElementById("new_min").value) || 10;
+    const exp = document.getElementById("new_expiry").value;
+
+    if (!name || isNaN(cost) || !exp) return alert("Fill in Name, Price, and Expiry!");
+
+    supplies.push({ name, category: cat, costPrice: cost, sellingPrice: calculateSellingPrice(cost), stock, minStock: min, expiryDate: exp });
+    saveInventoryData();
+    displayTable(supplies);
+    updateSummaryCards();
+    document.querySelectorAll('.new_med_grid input').forEach(i => i.value = "");
+    alert("New medicine added successfully!");
 }
 
 function openTransactionModal(index) {
@@ -126,18 +98,35 @@ function openTransactionModal(index) {
     document.getElementById("edit_modal").style.display = "flex";
 }
 
-function closeTransactionModal() { 
-    document.getElementById("edit_modal").style.display = "none"; 
+function closeTransactionModal() {
+    document.getElementById("edit_modal").style.display = "none";
 }
 
-function processTransaction(action) {
+function processTransaction() {
     const qty = parseInt(document.getElementById("edit_qty").value);
     if (isNaN(qty) || qty <= 0) return alert("Enter valid quantity!");
 
-    supplies[currentMedicineIndex].stock += qty;
-
+    const med = supplies[currentMedicineIndex];
+    med.stock += qty;
+    
     saveInventoryData();
-    updateSummaryCards();
     displayTable(supplies);
+    updateSummaryCards();
+    alert(`Success! Stock updated for ${med.name}.`);
     closeTransactionModal();
 }
+
+function deleteMedicine(index) {
+    if(confirm("Delete this medicine?")) {
+        supplies.splice(index, 1);
+        saveInventoryData();
+        displayTable(supplies);
+        updateSummaryCards();
+    }
+}
+
+window.onload = function() {
+    loadInventoryData();
+    updateSummaryCards();
+    displayTable(supplies);
+};
