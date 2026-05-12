@@ -37,6 +37,11 @@
     font-size: 30px;
 }
 
+.sumtitle{
+    width: 95%;
+    margin: 5px auto 1px; /* top, left and right, bottom */
+    font-size: 22px;
+}
 
 .summary{
     display: grid;
