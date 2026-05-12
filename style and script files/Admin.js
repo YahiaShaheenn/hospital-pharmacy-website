@@ -1,25 +1,27 @@
-sessionStorage.setItem("admin", true); // Mark that admin is logged in
-sessionStorage.setItem("currentDoctor", "Admin"); // Set current doctor to Admin for personalized messages
+
+    sessionStorage.setItem("admin", true); // Mark that admin is logged in
+    sessionStorage.setItem("currentDoctor", "Admin"); // Set current doctor to Admin for personalized messages
+    setButtonVisibility(); // Update button visibility
 
 
 // Load and display doctors list
 function loadDoctorsList() {
     const doctors = JSON.parse(localStorage.getItem("doctors")) || [];
     const doctorsList = document.getElementById("doctorsList");
-    
+
     doctorsList.innerHTML = ""; // Clear the list
-    
+
     if (doctors.length === 0) {
         document.getElementById("noDoctorsMessage").textContent = "No doctors added yet";
     }
-    
-    for (let i = 0; i < doctors.length; i++) {
-    const doctor = doctors[i];
 
-    const doctorItem = document.createElement("div");
-    doctorItem.className = "doctor-item";
-    
-    doctorItem.innerHTML = `
+    for (let i = 0; i < doctors.length; i++) {
+        const doctor = doctors[i];
+
+        const doctorItem = document.createElement("div");
+        doctorItem.className = "doctor-item";
+
+        doctorItem.innerHTML = `
         <div class="doctor-info">
             <p class="username">Username: ${doctor.username}</p>
             
@@ -30,8 +32,8 @@ function loadDoctorsList() {
         </div>
     `;
 
-    doctorsList.appendChild(doctorItem);
-}
+        doctorsList.appendChild(doctorItem);
+    }
 }
 // Edit doctor by index
 let currentEditIndex = null;
@@ -67,7 +69,7 @@ function saveEditedDoctor() {
 document.getElementById("saveEditBtn").addEventListener("click", saveEditedDoctor);
 
 // Move focus to password field when Enter is pressed in username field
-document.getElementById("editUsername").addEventListener("keypress", function(e) {
+document.getElementById("editUsername").addEventListener("keypress", function (e) {
     if (e.key === "Enter") {
         e.preventDefault();
         document.getElementById("editPassword").focus(); // Move focus to password field    
@@ -75,7 +77,7 @@ document.getElementById("editUsername").addEventListener("keypress", function(e)
 });
 
 // Save when Enter is pressed in password field
-document.getElementById("editPassword").addEventListener("keypress", function(e) {
+document.getElementById("editPassword").addEventListener("keypress", function (e) {
     if (e.key === "Enter") {
         e.preventDefault();
         saveEditedDoctor();
@@ -85,7 +87,7 @@ document.getElementById("editPassword").addEventListener("keypress", function(e)
 
 
 // Close popup without saving (cancel)
-document.getElementById("closePopupBtn").addEventListener("click", function() {
+document.getElementById("closePopupBtn").addEventListener("click", function () {
     document.getElementById("editPopup").style.display = "none";
 });
 
@@ -94,11 +96,11 @@ document.getElementById("closePopupBtn").addEventListener("click", function() {
 // Delete doctor by index
 function deleteDoctor(index) {
 
-    const doctors =JSON.parse(localStorage.getItem("doctors")) || [];
+    const doctors = JSON.parse(localStorage.getItem("doctors")) || [];
 
     doctors.splice(index, 1); // Remove 1 doctor at the specified index
 
-    localStorage.setItem("doctors",JSON.stringify(doctors));
+    localStorage.setItem("doctors", JSON.stringify(doctors));
 
     loadDoctorsList();
 }
@@ -109,7 +111,7 @@ document.addEventListener("DOMContentLoaded", loadDoctorsList);
 // Update list after adding a doctor
 document.getElementById("AddDoctorForm").addEventListener("submit", function (e) {
     e.preventDefault();
-    
+
     const doctorUsername = document.getElementById("AddDoctorUsername").value;
     const doctorPassword = document.getElementById("AddDoctorPassword").value;
     const doctors = JSON.parse(localStorage.getItem("doctors")) || [];
@@ -118,13 +120,13 @@ document.getElementById("AddDoctorForm").addEventListener("submit", function (e)
         username: doctorUsername,
         password: doctorPassword
     });
-    
+
     localStorage.setItem("doctors", JSON.stringify(doctors));
-    
+
     // Clear form and show success
     document.getElementById("AddDoctorForm").reset();
     document.getElementById("message").textContent = "Doctor added successfully!";
     setTimeout(() => document.getElementById("message").textContent = "", 3000);
-    
+
     loadDoctorsList(); // Refresh the list
 });
