@@ -37,7 +37,7 @@ dateElement.textContent = today.toLocaleDateString("en-US", {
 
 
 
-let salesHistory = JSON.parse(localStorage.getItem("salesHistory")) || []; // if not use empty array
+let salesHistory = JSON.parse(localStorage.getItem("salesHistory")) || []; // if no sales use empty array
 
 const todayDate = dateElement.textContent;
 
