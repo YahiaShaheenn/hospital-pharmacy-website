@@ -186,7 +186,25 @@ topbar.innerHTML = `
 
 document.body.insertBefore(topbar, document.body.firstChild);
 
-window.onload = function() {
+// Function to set button visibility based on admin status
+function setButtonVisibility() {
+    isAdmin = sessionStorage.getItem("admin") === "true";
+    if (isAdmin) {
+        document.getElementById("logout").style.display = "none";
+        document.getElementById("profileLink").style.display = "block";
+        document.getElementById("manageDoctorsBtn").style.display = "block";
+    }
+    else {
+        document.getElementById("logout").style.display = "block";
+        document.getElementById("profileLink").style.display = "none";
+        document.getElementById("manageDoctorsBtn").style.display = "none";
+    }
+}
+
+// Set initial visibility
+setButtonVisibility();
+
+window.addEventListener('load', function () {
     let footer = document.createElement("div");
     footer.className = "footer";
     footer.innerHTML = `
@@ -194,13 +212,4 @@ window.onload = function() {
         <p>© ${new Date().getFullYear()} All Rights Reserved</p>
     `;
     document.body.appendChild(footer);
-}
-
-
- isAdmin = sessionStorage.getItem("admin") === "true";
-
-
-document.getElementById("manageDoctorsBtn").style.display = isAdmin ? "block" : "none";
-document.getElementById("profileLink").style.display = isAdmin ? "block" : "none";
-document.getElementById("logout").style.display = isAdmin    ? "none" : "block";
-
+});
