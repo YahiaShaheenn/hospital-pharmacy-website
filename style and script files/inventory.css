@@ -167,7 +167,6 @@ th, td {
     border-bottom: 1px solid #eee;
 }
 
-/* Action Buttons */
 .btn_add {
     background-color: #409fa8;
     color: white;
@@ -176,7 +175,6 @@ th, td {
     border-radius: 20px;
     font-weight: bold;
     cursor: pointer;
-    transition: transform 0.2s;
 }
 
 .btn_delete {
@@ -188,11 +186,6 @@ th, td {
     font-weight: bold;
     cursor: pointer;
     margin-left: 5px;
-    transition: transform 0.2s;
-}
-
-.btn_add:hover, .btn_delete:hover {
-    transform: scale(1.05);
 }
 
 .lowstock_row td {
