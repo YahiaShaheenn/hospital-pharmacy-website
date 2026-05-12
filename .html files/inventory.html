@@ -3,19 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Al-Shifaa | Inventory Management</title>
+    <title>Inventory</title>
     <link rel="stylesheet" href="../style and script files/inventory.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=ADLaM Display">
 </head>
 <body>
 
-    <!-- FULL-WIDTH HEADER -->
-    <header class="main_header">
-        <h1>Al-Shifaa</h1>
-    </header>
+    <!-- Dynamic Layout Header -->
+    <script src="../style and script files/layout.js"></script>
 
     <main class="inventory_container">
-        
+
         <!-- REGISTER NEW MEDICINE FORM -->
         <section class="form_section">
             <h3>Add New Medicine to System</h3>
@@ -38,6 +37,10 @@
                 <div class="input_group">
                     <label>Buying Price (EGP)</label>
                     <input type="number" id="new_cost" placeholder="0.00">
+                </div>
+                <div class="input_group">
+                    <label>Initial Stock</label>
+                    <input type="number" id="new_stock" placeholder="0">
                 </div>
                 <div class="input_group">
                     <label>Min Stock Limit</label>
@@ -104,9 +107,32 @@
             <label>Quantity to add:</label>
             <input type="number" id="edit_qty" placeholder="0">
             <div class="edit_buttons">
-                <button class="add_btn" onclick="processTransaction('add')">Add to Stock ➕</button>
+                <button class="add_btn" onclick="processTransaction()">Add to Stock ➕</button>
+                <button class="cancel_btn" onclick="closeTransactionModal()">Cancel</button>
             </div>
-            <button class="cancel_btn" onclick="closeTransactionModal()">Cancel</button>
+        </div>
+    </div>
+
+    <!-- RECEIPT MODAL -->
+    <div id="receipt_modal" class="modal_overlay">
+        <div class="modal_content receipt_box">
+            <div class="receipt_header">
+                <h2>AL-SHIFAA PHARMACY</h2>
+                <p>Transaction Receipt</p>
+            </div>
+            <hr>
+            <div class="receipt_body">
+                <p><strong>Date:</strong> <span id="rec_date"></span></p>
+                <p><strong>Medicine:</strong> <span id="rec_name"></span></p>
+                <p><strong>Quantity:</strong> <span id="rec_qty"></span></p>
+                <p><strong>Unit Price:</strong> <span id="rec_price"></span> EGP</p>
+                <hr>
+                <h3 class="total_line">Total: <span id="rec_total"></span> EGP</h3>
+            </div>
+            <div class="receipt_footer">
+                <button class="print_btn" onclick="window.print()">Print Receipt 🖨️</button>
+                <button class="close_btn" onclick="closeReceipt()">Close</button>
+            </div>
         </div>
     </div>
 
