@@ -17,7 +17,7 @@ body {
     padding: 20px;
 }
 
-/* FORM SECTION (Register Medicine) */
+/* FORM SECTION */
 .form_section {
     background: white;
     padding: 30px;
@@ -57,7 +57,7 @@ input, select {
 }
 
 .add_new_btn {
-     grid-column: 1 / -1; /*tb2a button elly feha "Add new medicine" t3ml span lel 6 columns wakden line kamel lwa7dhom */
+    grid-column: 1 / -1; 
     background: #4CAF50;
     color: white;
     padding: 15px;
@@ -99,7 +99,7 @@ input, select {
 .danger_card { border-left-color: #f44336; }
 .danger_card p { color: #f44336; }
 
-/* SEARCH SECTION (image_9c76c0.png) */
+/* SEARCH SECTION */
 .search_section {
     background: white;
     padding: 20px;
@@ -113,7 +113,7 @@ input, select {
 }
 
 #searchInput {
-    flex: 1; /*y3ni yakhod kol el space elly mawgod 3ando w y5aleeh flexible 3ashan ytb2a m3a el screen size. */
+    flex: 1; 
     border: 2px solid #409fa8;
     border-radius: 8px;
     padding: 12px;
@@ -231,7 +231,6 @@ th, td {
     border-radius: 10px;
     cursor: pointer;
 }
-
 
 .expired_row { background-color: rgba(244, 67, 54, 0.08); }
 .lowstock_row { background-color: rgba(255, 152, 0, 0.08); }
