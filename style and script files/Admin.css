@@ -180,6 +180,10 @@
     color: #999;
 }
 
+#AddDoctorForm {
+    width: 76%;
+}
+
 .popup {
     display: none;
     position: fixed;
