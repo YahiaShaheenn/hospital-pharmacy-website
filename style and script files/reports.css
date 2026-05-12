@@ -2,24 +2,82 @@
     box-sizing: border-box;
     margin: 0;
     padding: 0;
+    font-family: 'ADLaM Display', sans-serif;
 }
 
-.reports_container{
+.reports_container {
     width: 95%;
     margin: 30px auto;
 }
 
-.statistics_section{
+/* =========================
+   REPORT CHOICE SECTION
+========================= */
 
-    display: flex;
-    gap: 20px;
-    margin-bottom: 20px ;
-    flex-wrap: wrap;
-
+.hidden {
+    display: none;
 }
 
-.statistic_card{
+.reports_choice {
+    background: rgba(255, 255, 255, 0.45);
+    width: 80%;
+    margin: 40px auto;
+    padding: 55px 30px;
+    text-align: center;
+    border-radius: 18px;
+}
 
+.reports_choice h2 {
+    margin-bottom: 10px;
+    color: rgb(47, 127, 138);
+}
+
+.reports_choice p {
+    margin-bottom: 25px;
+    font-weight: bold;
+    color: black;
+}
+
+.choice_buttons {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+}
+
+.choice_buttons button {
+    padding: 12px 22px;
+    border: none;
+    border-radius: 8px;
+    background-color: rgb(63, 138, 153);
+    color: white;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.choice_buttons button:hover {
+    background-color: #2f7f8a;
+    transform: translateY(-2px);
+}
+
+.report_container {
+    width: 100%;
+}
+
+/* =========================
+   STATISTICS CARDS
+========================= */
+
+.statistics_section {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.statistic_card {
     flex: 1;
     min-width: 220px;
     background-color: white;
@@ -31,36 +89,37 @@
     margin-left: 20px;
     margin-right: 20px;
     text-align: center;
-
-
 }
 
-.statistic_card h3{
-
+.statistic_card h3 {
     margin-bottom: 10px;
     color: #444;
-
 }
 
-.statistic_card p{
-
+.statistic_card p {
     font-size: 22px;
     font-weight: bold;
     color: rgb(63, 138, 153);
-
 }
 
-.page_title{
+/* =========================
+   PAGE TITLE
+========================= */
+
+.page_title {
     margin-bottom: 20px;
 }
 
-.page_title h2{
+.page_title h2 {
     color: rgb(63, 138, 153);
     margin-bottom: 5px;
 }
 
+/* =========================
+   FILTERS
+========================= */
 
-.filters_section{
+.filters_section {
     background-color: rgba(255, 255, 255, 0.9);
     padding: 25px;
     border-radius: 18px;
@@ -70,73 +129,64 @@
     box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
     border-left: 5px solid rgb(63, 138, 153);
     border-right: 5px solid rgb(63, 138, 153);
-
 }
 
-.filters_section h3{
-
-    margin-bottom: 15px;
-
+.filters_section h3 {
+    margin-bottom: 20px;
 }
 
-.filters{
-
+.filters {
     display: flex;
-    gap: 15px;
+    gap: 20px;
     flex-wrap: wrap;
-    align-items: end;
-
+    align-items: flex-end;
 }
 
-.filter_box{
-
+.filter_box {
     display: flex;
     flex-direction: column;
 }
 
-.filter_box label{
-    
-    margin-bottom: 5px;
+.filter_box label {
+    margin-bottom: 8px;
     font-weight: bold;
-
+    font-size: 16px;
 }
 
 .filter_box input,
-.filter_box select{
+.filter_box select {
+    height: 55px;
     padding: 12px;
-    width: 220px;
+    width: 280px;
     border: 1px solid #ccc;
     border-radius: 10px;
     font-size: 15px;
+    background-color: white;
 }
 
-.filters button{
-
-    padding: 10px 16px;
+.filters button {
+    height: 48px;
+    padding: 0 22px;
     border: none;
-    border-radius: 6px;
+    border-radius: 8px;
     background-color: rgb(63, 138, 153);
     color: white;
     cursor: pointer;
-
+    font-weight: bold;
+    font-size: 15px;
+    transition: 0.3s;
 }
 
-.filters button:hover{
+.filters button:hover {
     background-color: #2f7f8a;
     transform: translateY(-2px);
 }
 
-tbody tr:nth-child(even){
+/* =========================
+   TABLE
+========================= */
 
-    background-color: #f9f9f9;
-
-}
-
-tbody tr:hover{
-    background-color: #f1f1f1;
-}
-
-.table_section{
+.table_section {
     background-color: rgba(255, 255, 255, 0.92);
     padding: 25px;
     border-radius: 18px;
@@ -149,43 +199,48 @@ tbody tr:hover{
     margin-bottom: 20px;
 }
 
-table{
-
-    width: 100%;
-    border-collapse: collapse;
-
+.table_section h3 {
+    margin-bottom: 15px;
 }
 
-thead{
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
 
+thead {
     background-color: rgb(63, 138, 153);
     color: white;
-
 }
 
 th,
-td{
+td {
     padding: 15px;
     text-align: center;
     border-bottom: 1px solid #ddd;
     font-size: 15px;
 }
 
-tbody tr:hover{
+tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
 
+tbody tr:hover {
     background-color: #f1f1f1;
-    
-} 
+}
 
-.actions_section{
+/* =========================
+   ACTION BUTTONS
+========================= */
+
+.actions_section {
     display: flex;
     gap: 15px;
     justify-content: flex-end;
     margin-top: 20px;
-
 }
 
-.actions_section button{
+.actions_section button {
     padding: 12px 20px;
     border: none;
     border-radius: 10px;
@@ -197,22 +252,154 @@ tbody tr:hover{
     margin-right: 20px;
     border-left: 5px solid rgb(244, 247, 247);
     border-right: 5px solid rgb(212, 230, 234);
+    transition: 0.3s;
 }
 
-.actions_section button:hover{
+.actions_section button:hover {
     background-color: #2f7f8a;
     transform: translateY(-2px);
 }
 
+/* =========================
+   PRINT STYLE
+========================= */
+
 @media print {
-    .TopBar,
-    .footer,
+
+    body * {
+        visibility: hidden;
+    }
+
+    .reports_choice,
     .filters_section,
-    .statistics_section,
-    .summary_cards,
-    .statistic_card,
     .actions_section,
-    .page_title {
-        display: none;
+    .TopBar,
+    .top_bar,
+    .nav,
+    .navigation_bar,
+    .profile,
+    .profile-icon,
+    .footer,
+    .summary_cards {
+        display: none !important;
+    }
+
+    body.print-sales #sales_report_container,
+    body.print-sales #sales_report_container * {
+        visibility: visible;
+    }
+
+    body.print-inventory #inventory_report_container,
+    body.print-inventory #inventory_report_container * {
+        visibility: visible;
+    }
+
+    body.print-sales #sales_report_container,
+    body.print-inventory #inventory_report_container {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+    }
+
+    body.print-sales .statistics_section {
+        display: flex !important;
+        justify-content: center;
+        gap: 12px;
+        margin: 0 0 20px 0;
+        padding: 0;
+        visibility: visible;
+        flex-wrap: nowrap;
+    }
+
+    body.print-sales .statistic_card {
+        width: 30%;
+        min-width: 0;
+        margin: 0;
+        padding: 12px;
+        box-shadow: none;
+        border: 1px solid #999;
+        border-left: 4px solid rgb(63, 138, 153);
+        border-right: 4px solid rgb(63, 138, 153);
+        border-radius: 8px;
+        text-align: center;
+        background-color: white;
+        visibility: visible;
+    }
+
+    body.print-sales .statistic_card span {
+        display: none !important;
+    }
+
+    body.print-sales .statistic_card h3 {
+        font-size: 13px;
+        margin-bottom: 6px;
+        color: black;
+    }
+
+    body.print-sales .statistic_card p {
+        font-size: 14px;
+        font-weight: bold;
+        color: black;
+    }
+
+    .table_section {
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        box-shadow: none;
+        border: none;
+        background-color: white;
+        overflow: visible;
+    }
+
+    .table_section h3 {
+        text-align: center;
+        margin-bottom: 15px;
+        color: black;
+        font-size: 18px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 12px;
+    }
+
+    thead {
+        background-color: white;
+        color: black;
+    }
+
+    th,
+    td {
+        padding: 8px;
+        border: 1px solid #ccc;
+        text-align: center;
+        color: black;
+        font-size: 12px;
+    }
+
+    th {
+        font-weight: bold;
+        background-color: white;
+    }
+
+    tbody tr:nth-child(even) {
+        background-color: white;
+    }
+
+    tbody tr:hover {
+        background-color: white;
+    }
+
+    tr {
+        page-break-inside: avoid;
+    }
+
+    @page {
+        margin: 15mm;
     }
 }
