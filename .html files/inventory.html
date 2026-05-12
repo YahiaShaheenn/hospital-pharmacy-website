@@ -1,21 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inventory</title>
+    <title>Inventory Management</title>
     <link rel="stylesheet" href="../style and script files/inventory.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=ADLaM Display">
 </head>
-
 <body>
 
     <main class="inventory_container">
 
-    
-
+        <!-- 1. SUMMARY CARDS -->
         <section class="summary_cards">
             <div class="summary_card">
                 <h3>Total Items</h3>
@@ -31,6 +28,7 @@
             </div>
         </section>
 
+        <!-- 2. SEARCH & FILTER -->
         <section class="search_filter_section">
             <div class="search_filter">
                 <input type="text" id="searchInput" placeholder="Search medicine..." onkeydown="if(event.key==='Enter') searchMedicine()">
@@ -53,6 +51,7 @@
             </div>
         </section>
 
+        <!-- 3. ADVANCED INVENTORY TABLE -->
         <section class="table_section">
             <table>
                 <thead>
@@ -74,23 +73,49 @@
 
     </main>
 
-    <!-- Edit Stock Modal -->
-    <div id="edit_modal">
-        <div id="edit_box">
-            <h3>Update Stock</h3>
-            <p id="edit_medicine_name"></p>
-            <p>Current Stock: <span id="edit_current_stock"></span></p>
+    <!-- 4. SECURE TRANSACTION MODAL -->
+    <div id="edit_modal" class="modal_overlay">
+        <div id="edit_box" class="modal_content">
+            
+            <h3>Update Stock / Take</h3>
+            <p><strong>Medicine:</strong> <span id="edit_medicine_name"></span></p>
+            <p><strong>Current Stock:</strong> <span id="edit_current_stock"></span></p>
+            
+            <label>Quantity:</label>
             <input type="number" id="edit_qty" placeholder="Enter quantity">
-            <div class="edit_buttons">
-                <button onclick="updateStock('add')">Add Stock ➕</button>
-                <button class="remove_btn" onclick="updateStock('take')">Remove Stock ➖</button>
+            
+            <div class="modal_divider">
+                <p class="modal_note">* Required only when taking stock out:</p>
+                
+                <label>Doctor/Staff Name:</label>
+                <select id="modal-doctor">
+                    <option value="">-- Select a Doctor --</option>
+                    <option value="Dr. Mariam">Dr. Mariam</option>
+                    <option value="Dr. Amena">Dr. Amena</option>
+                    <option value="Dr. Maya">Dr. Maya</option>
+                    <option value="Dr. Lubna">Dr. Lubna</option>
+                    <option value="Dr. Yahia">Dr. Yahia</option>
+                </select>
+                
+                <label>Reason / Department:</label>
+                <select id="modal-reason">
+                    <option value="">-- Select a Reason --</option>
+                    <option value="Patient Prescription">Patient Prescription</option>
+                    <option value="Emergency Use">Emergency Use</option>
+                    <option value="Floor Stock / Ward Supply">Floor Stock / Ward Supply</option>
+                </select>
             </div>
-            <button class="close_btn" onclick="closeEditModal()">Close</button>
+
+            <div class="edit_buttons">
+                <button class="add_btn" onclick="processTransaction('add')">Add Stock ➕</button>
+                <button class="dispense_btn" onclick="processTransaction('take')">Take ➖</button>
+            </div>
+            
+            <button class="cancel_btn" onclick="closeTransactionModal()">Cancel</button>
         </div>
     </div>
 
     <script type="text/javascript" src="../style and script files/layout.js"></script>
-    <script type="text/javascript" src="../style and script files/sales.js"></script>
     <script type="text/javascript" src="../style and script files/inventory.js"></script>
 
 </body>
