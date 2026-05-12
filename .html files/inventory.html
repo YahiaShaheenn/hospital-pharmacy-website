@@ -3,23 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inventory Management</title>
+    <title>Al-Shifaa | Inventory Management</title>
     <link rel="stylesheet" href="../style and script files/inventory.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=ADLaM Display">
 </head>
 <body>
 
-    <main class="inventory_container">
+    <!-- FULL-WIDTH HEADER -->
+    <header class="main_header">
+        <h1>Al-Shifaa</h1>
+    </header>
 
-        <!-- 1. SUMMARY CARDS -->
+    <main class="inventory_container">
+        
+        <!-- REGISTER NEW MEDICINE FORM -->
+        <section class="form_section">
+            <h3>Add New Medicine to System</h3>
+            <div class="new_med_grid">
+                <div class="input_group">
+                    <label>Medicine Name</label>
+                    <input type="text" id="new_name" placeholder="Enter name">
+                </div>
+                <div class="input_group">
+                    <label>Category</label>
+                    <select id="new_category">
+                        <option value="Pain Relief">Pain Relief</option>
+                        <option value="Antibiotics">Antibiotics</option>
+                        <option value="Cold & Flu">Cold & Flu</option>
+                        <option value="Diabetes">Diabetes</option>
+                        <option value="Heart">Heart</option>
+                        <option value="Supplies">Supplies</option>
+                    </select>
+                </div>
+                <div class="input_group">
+                    <label>Buying Price (EGP)</label>
+                    <input type="number" id="new_cost" placeholder="0.00">
+                </div>
+                <div class="input_group">
+                    <label>Min Stock Limit</label>
+                    <input type="number" id="new_min" placeholder="10">
+                </div>
+                <div class="input_group">
+                    <label>Expiry Date</label>
+                    <input type="date" id="new_expiry">
+                </div>
+                <button class="add_new_btn" onclick="addNewMedicine()">Register New Medicine</button>
+            </div>
+        </section>
+
+        <!-- SUMMARY CARDS -->
         <section class="summary_cards">
             <div class="summary_card">
                 <h3>Total Items</h3>
                 <p id="total_items">0</p>
             </div>
             <div class="summary_card warning_card">
-                <h3>Low Stock Items</h3>
+                <h3>Low Stock</h3>
                 <p id="low_stock_count">0</p>
             </div>
             <div class="summary_card danger_card">
@@ -28,30 +67,15 @@
             </div>
         </section>
 
-        <!-- 2. SEARCH & FILTER -->
-        <section class="search_filter_section">
-            <div class="search_filter">
-                <input type="text" id="searchInput" placeholder="Search medicine..." onkeydown="if(event.key==='Enter') searchMedicine()">
-                <select id="categoryFilter">
-                    <option value="">All Categories</option>
-                    <option value="Pain Relief">Pain Relief</option>
-                    <option value="Antibiotics">Antibiotics</option>
-                    <option value="Cold & Flu">Cold & Flu</option>
-                    <option value="Diabetes">Diabetes</option>
-                    <option value="Heart">Heart</option>
-                    <option value="Stomach">Stomach</option>
-                    <option value="Respiratory">Respiratory</option>
-                    <option value="Supplies">Supplies</option>
-                    <option value="Emergency">Emergency</option>
-                    <option value="Vitamins">Vitamins</option>
-                    <option value="Baby Care">Baby Care</option>
-                </select>
-                <button onclick="searchMedicine()">Search</button>
-                <button onclick="resetSearch()">Reset</button>
+        <!-- SEARCH SECTION -->
+        <section class="search_section">
+            <div class="search_bar_group">
+                <input type="text" id="searchInput" placeholder="Search medicine..." onkeyup="searchMedicine()">
+                <button class="reset_btn" onclick="resetSearch()">Reset View</button>
             </div>
         </section>
 
-        <!-- 3. ADVANCED INVENTORY TABLE -->
+        <!-- INVENTORY TABLE -->
         <section class="table_section">
             <table>
                 <thead>
@@ -61,8 +85,8 @@
                         <th>Stock</th>
                         <th>Min Stock</th>
                         <th>Expiry Date</th>
-                        <th>Cost Price</th>
-                        <th>Selling Price</th>
+                        <th>Buying Price</th>
+                        <th>Selling Price (Auto)</th>
                         <th>Status</th>
                         <th>Actions</th>
                     </tr>
@@ -70,53 +94,22 @@
                 <tbody id="inventory_table_body"></tbody>
             </table>
         </section>
-
     </main>
 
-    <!-- 4. SECURE TRANSACTION MODAL -->
+    <!-- REFILL MODAL -->
     <div id="edit_modal" class="modal_overlay">
-        <div id="edit_box" class="modal_content">
-            
-            <h3>Update Stock / Take</h3>
+        <div class="modal_content">
+            <h3>Refill Stock</h3>
             <p><strong>Medicine:</strong> <span id="edit_medicine_name"></span></p>
-            <p><strong>Current Stock:</strong> <span id="edit_current_stock"></span></p>
-            
-            <label>Quantity:</label>
-            <input type="number" id="edit_qty" placeholder="Enter quantity">
-            
-            <div class="modal_divider">
-                <p class="modal_note">* Required only when taking stock out:</p>
-                
-                <label>Doctor/Staff Name:</label>
-                <select id="modal-doctor">
-                    <option value="">-- Select a Doctor --</option>
-                    <option value="Dr. Mariam">Dr. Mariam</option>
-                    <option value="Dr. Amena">Dr. Amena</option>
-                    <option value="Dr. Maya">Dr. Maya</option>
-                    <option value="Dr. Lubna">Dr. Lubna</option>
-                    <option value="Dr. Yahia">Dr. Yahia</option>
-                </select>
-                
-                <label>Reason / Department:</label>
-                <select id="modal-reason">
-                    <option value="">-- Select a Reason --</option>
-                    <option value="Patient Prescription">Patient Prescription</option>
-                    <option value="Emergency Use">Emergency Use</option>
-                    <option value="Floor Stock / Ward Supply">Floor Stock / Ward Supply</option>
-                </select>
-            </div>
-
+            <label>Quantity to add:</label>
+            <input type="number" id="edit_qty" placeholder="0">
             <div class="edit_buttons">
-                <button class="add_btn" onclick="processTransaction('add')">Add Stock ➕</button>
-                <button class="dispense_btn" onclick="processTransaction('take')">Take ➖</button>
+                <button class="add_btn" onclick="processTransaction('add')">Add to Stock ➕</button>
             </div>
-            
             <button class="cancel_btn" onclick="closeTransactionModal()">Cancel</button>
         </div>
     </div>
 
-    <script type="text/javascript" src="../style and script files/layout.js"></script>
-    <script type="text/javascript" src="../style and script files/inventory.js"></script>
-
+    <script src="../style and script files/inventory.js"></script>
 </body>
 </html>
