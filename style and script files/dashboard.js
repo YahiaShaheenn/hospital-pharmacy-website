@@ -42,6 +42,8 @@ let salesHistory = JSON.parse(localStorage.getItem("salesHistory")) || [];
 
 const todayDate = dateElement.textContent;
 
+
+// Filter sales history to get today's sales, sales history gowaha date w total 
 let todaySales = salesHistory.filter(function(sale) {
     return sale.date === todayDate;
 });
@@ -50,6 +52,7 @@ let todaySales = salesHistory.filter(function(sale) {
 
 let totalSales = 0;
 
+// Calculate total sales for today
 for (let i = 0; i < todaySales.length; i++) {
     totalSales += todaySales[i].total;
 }
@@ -57,10 +60,11 @@ for (let i = 0; i < todaySales.length; i++) {
 
 let totalProfit = 0;
 
-todaySales.forEach(function (sale) {
-    sale.items.forEach(function (item) {
+// Calculate total profit for today
+todaySales.forEach(function (sale) {  // Loop through each sale
+    sale.items.forEach(function (item) { // Loop through each item in the sale
         for (let i = 0; i < supplies.length; i++) {
-            if (supplies[i].name === item.name) {
+            if (supplies[i].name === item.name) {  //check if the suppply name matches the item name, sales.item fiha el sold cart items
                 let profit = (supplies[i].sellingPrice - supplies[i].costPrice) * item.qty;
                 totalProfit += profit;
                 break;
@@ -74,7 +78,7 @@ todaySales.forEach(function (sale) {
 let expiredMedicines = [];
 
 for (let i = 0; i < supplies.length; i++) {
-    if (new Date(supplies[i].expiryDate) < new Date()) {
+    if (new Date(supplies[i].expiryDate) < new Date()) { 
         expiredMedicines.push(supplies[i]);
     }
 }
@@ -89,8 +93,7 @@ for (let i = 0; i < supplies.length; i++) {
 }
 
 
-// document.getElementById("totalsales").textContent = totalSales + " EGP";
-// document.getElementById("totalprofit").textContent = totalProfit + " EGP";
+
 document.getElementById("expmeds").textContent = expiredMedicines.length;
 document.getElementById("lowstock").textContent = lowStockMedicines.length;
 
