@@ -32,13 +32,14 @@ function loadDoctorsList() {
         </div>
     `;
 
-        doctorsList.appendChild(doctorItem);
+        doctorsList.appendChild(doctorItem); 
     }
 }
+
 // Edit doctor by index
 let currentEditIndex = null;
 function editDoctor(index) {
-    const doctors = JSON.parse(localStorage.getItem("doctors")) || [];
+    const doctors = JSON.parse(localStorage.getItem("doctors")) || []; // turns the JSON string back into a JavaScript array, or uses an empty array if no doctors are found
 
     const doctor = doctors[index];
 
@@ -98,7 +99,7 @@ function deleteDoctor(index) {
 
     const doctors = JSON.parse(localStorage.getItem("doctors")) || [];
 
-    doctors.splice(index, 1); // Remove 1 doctor at the specified index
+    doctors.splice(index, 1); // Remove 1 doctor at the specified index and doesnt leave empty space
 
     localStorage.setItem("doctors", JSON.stringify(doctors));
 
@@ -106,7 +107,7 @@ function deleteDoctor(index) {
 }
 
 // Load doctors list when page loads
-document.addEventListener("DOMContentLoaded", loadDoctorsList);
+document.addEventListener("DOMContentLoaded", loadDoctorsList); //DOMContentLoaded event is fired when the initial HTML document has been completely loaded and parsed, without waiting for stylesheets, images, and subframes to finish loading. This means that the loadDoctorsList function will be called as soon as the HTML is ready, ensuring that the doctors list is displayed immediately when the page loads.
 
 // Update list after adding a doctor
 document.getElementById("AddDoctorForm").addEventListener("submit", function (e) {
@@ -119,14 +120,17 @@ document.getElementById("AddDoctorForm").addEventListener("submit", function (e)
     doctors.push({
         username: doctorUsername,
         password: doctorPassword
-    });
+    }); 
 
     localStorage.setItem("doctors", JSON.stringify(doctors));
 
     // Clear form and show success
     document.getElementById("AddDoctorForm").reset();
     document.getElementById("message").textContent = "Doctor added successfully!";
-    setTimeout(() => document.getElementById("message").textContent = "", 3000);
+    setTimeout(() => document.getElementById("message").textContent = "", 3000); // Clear message after 3 seconds
 
     loadDoctorsList(); // Refresh the list
+    if (doctors.length > 0) {
+        document.getElementById("noDoctorsMessage").textContent = ""; // Clear "No doctors" message if there are now doctors in the list
+    }
 });
