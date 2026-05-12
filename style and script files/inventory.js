@@ -1,8 +1,8 @@
 
 
-// SEED: Pre-fill inventory from hardcoded sales data if empty
+
 (function seedInventory() {
-    if (localStorage.getItem("pharmacySupplies")) return; // already has data, skip
+    if (localStorage.getItem("pharmacySupplies")) return; 
 
     const hardcoded = [
         { name: "Paracetamol", category: "Pain Relief", costPrice: 15, sellingPrice: 25, stock: 120, minStock: 20, expiryDate: "2027-06-01" },
@@ -41,54 +41,60 @@
         { name: "Baby Formula", category: "Baby Care", costPrice: 120, sellingPrice: 180, stock: 4, minStock: 8, expiryDate: "2025-09-10" },
     ];
 
-    localStorage.setItem("pharmacySupplies", JSON.stringify(hardcoded));
+    localStorage.setItem("pharmacySupplies", JSON.stringify(hardcoded)); // intialize data 
 })();
 
-let supplies = [];
-let currentMedicineIndex = -1;
+let supplies = []; //(Array) elly beykon feh kol el data bta3t el adweya (el esm, el se3r, el kamya).
+//  bn3mlo fady f el awal 3ashan ne7ot feh el data b3d kda sawa' mn el LocalStorage aw mn el Seed function
+let currentMedicineIndex = -1; // aw 3allama bn3rf beeha e7na wa2fen 3ala anhy dowa' f el table delwa2ty.
+//bnkhaleeh -1 f el awal 3ashan de m3naha (Empty selection), ya3ny lsa makhtarnash dowa' ne3ml 3aleh "Add stock" aw ay modification.
 
 function calculateSellingPrice(cost) {
     return (cost * 1.20).toFixed(2);
 }
 
-function loadInventoryData() {
-    const saved = localStorage.getItem("pharmacySupplies");
+function loadInventoryData() {  
+    const saved = localStorage.getItem("pharmacySupplies"); 
     supplies = saved ? JSON.parse(saved) : [];
-}
+} /// de el function elly btrga3 el data mn el "Memory" bta3t el browser 3ashan el system "yeftker" 
+// el adweya elly mawgouda awel ma t-fta7 elpage.
 
-function saveInventoryData() {
+function saveInventoryData() { // da function bta5od el data elly fe variable supplies w bt7otha fe localStorage 3ashan tkon mawgoda lma n3ml reload lel saf7a.
     localStorage.setItem("pharmacySupplies", JSON.stringify(supplies));
 }
 
-function updateSummaryCards() {
+function updateSummaryCards() { 
     const today = new Date();
-    document.getElementById("total_items").textContent = supplies.length;
-    document.getElementById("low_stock_count").textContent = supplies.filter(s => s.stock <= s.minStock).length;
-    document.getElementById("expired_count").textContent = supplies.filter(s => new Date(s.expiryDate) < today).length;
+    document.getElementById("total_items").textContent = supplies.length; 
+    document.getElementById("low_stock_count").textContent = supplies.filter(s => s.stock <= s.minStock).length; 
+    // bya5od el data w bt3ml filter 3ashan t3raf te3raf el adweya elly stock beta3ha a2al aw yesawe el minimum stock w bt7sb 3addhom.
+    document.getElementById("expired_count").textContent = supplies.filter(s => new Date(s.expiryDate) < today).length; 
 }
 
-function displayTable(data) {
-    const tableBody = document.getElementById("inventory_table_body");
+function displayTable(data) { 
+    const tableBody = document.getElementById("inventory_table_body"); 
     tableBody.innerHTML = "";
 
-    // SORT: Healthy (0) -> Low Stock (1) -> Expired (2) at bottom
-    const sortedData = [...data].sort((a, b) => {
-        const getScore = (m) => {
+
+    const sortedData = [...data].sort((a, b) => {  
+        const getScore = (m) => { 
             if (new Date(m.expiryDate) < new Date()) return 2; 
             if (m.stock <= m.minStock) return 1;              
             return 0;                                         
         };
         return getScore(a) - getScore(b); 
     });
+    //btrtb adweya 3ashan el adweya el(expired) aw el(low stock) tban akher el table.
 
-    sortedData.forEach((med) => {
-        const indexInMain = supplies.indexOf(med);
+    sortedData.forEach((med) => {  //bn loop 3la el data 3shan nshof kol dwa makano fen 
+    // w nshof hal howa expired aw low stock w n7ot el class bta3 el row 3ala hasab el status bta3 el dawa
+        const indexInMain = supplies.indexOf(med); 
         const isExp = new Date(med.expiryDate) < new Date();
         const isLow = med.stock <= med.minStock;
         
         tableBody.innerHTML += `
             <tr class="${isExp ? 'expired_row' : (isLow ? 'lowstock_row' : '')}">
-                <td><strong>${med.name}</strong></td>
+                <td><strong>${med.name}</strong></td> 
                 <td>${med.category}</td>
                 <td>${med.stock}</td>
                 <td>${med.minStock}</td>
@@ -105,16 +111,16 @@ function displayTable(data) {
                     <button class="btn_delete" onclick="deleteMedicine(${indexInMain})">Delete</button>
                 </td>
             </tr>`;
-    });
+    }); //bn3ml add kol dawa fe row 3ala hasab el status bta3o w bn7ot el icons bta3 el status kaman
 }
 
-function searchMedicine() {
+function searchMedicine() { 
     const query = document.getElementById("searchInput").value.toLowerCase();
     const filtered = supplies.filter(med => med.name.toLowerCase().includes(query));
     displayTable(filtered);
 }
 
-function resetSearch() {
+function resetSearch() {  //reset button
     document.getElementById("searchInput").value = "";
     displayTable(supplies);
 }
@@ -135,18 +141,18 @@ function addNewMedicine() {
     updateSummaryCards();
     document.querySelectorAll('.new_med_grid input').forEach(i => i.value = "");
     alert("New medicine added successfully!");
-}
+} //hena b2a lma b3ml add l medicine gded de bt3mlha save w bt upddate el cards w kda
 
 function openTransactionModal(index) {
     currentMedicineIndex = index;
     document.getElementById("edit_medicine_name").textContent = supplies[index].name;
     document.getElementById("edit_qty").value = "";
     document.getElementById("edit_modal").style.display = "flex";
-}
+} //di el function elly btefta7 el "Modal" 3ashan t3ml "Add" le stock gdeda mn dawa'
 
 function closeTransactionModal() {
     document.getElementById("edit_modal").style.display = "none";
-}
+} //bt2fel el modal
 
 function processTransaction() {
     const qty = parseInt(document.getElementById("edit_qty").value);
@@ -160,7 +166,7 @@ function processTransaction() {
     updateSummaryCards();
     alert(`Success! Stock updated for ${med.name}.`);
     closeTransactionModal();
-}
+} //el function de bta5od el rakam elly katbto fel modal, btzwdo 3al doawa elly ekhtarto, w btsave el data el gdeda w t2fel el modal
 
 function deleteMedicine(index) {
     if(confirm("Delete this medicine?")) {
