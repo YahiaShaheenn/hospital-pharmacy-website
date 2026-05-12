@@ -1,6 +1,4 @@
-/* =========================================
-   BASE STYLES
-   ========================================= */
+/* RESET & BASE STYLES */
 * {
     box-sizing: border-box;
     margin: 0;
@@ -8,119 +6,149 @@
 }
 
 body {
-    font-family: 'ADLaM Display', sans-serif, system-ui;
-    background-color: #B2EBF2; 
+    font-family: 'ADLaM Display', sans-serif;
+    background-color: #B2EBF2;
     color: #333;
-    padding: 20px;
+    padding-bottom: 40px;
+    margin: 0;
+}
+
+/* HEADER STYLE */
+.main_header {
+    background-color: #409fa8;
+    width: 100%;
+    padding: 20px 0;
+    text-align: center;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.main_header h1 {
+    color: #000;
+    font-size: 2.8rem;
+    margin: 0;
 }
 
 .inventory_container {
     max-width: 1300px;
     margin: 0 auto;
+    padding: 0 20px;
 }
 
-/* =========================================
-   SUMMARY CARDS (3-Column Layout)
-   ========================================= */
+/* FORM SECTION */
+.form_section {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    margin-bottom: 25px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.new_med_grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 15px;
+}
+
+.input_group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+input, 
+select {
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-family: inherit;
+    width: 100%;
+    outline: none;
+}
+
+.add_new_btn {
+    grid-column: 1 / -1;
+    background: #4CAF50;
+    color: white;
+    padding: 15px;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* SEARCH SECTION */
+.search_section {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 25px;
+}
+
+.search_bar_group {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+#searchInput {
+    flex: 1;
+    border: 2px solid #409fa8;
+}
+
+.reset_btn {
+    padding: 12px 25px;
+    background-color: #7f8c8d;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* SUMMARY CARDS */
 .summary_cards {
     display: grid;
-    grid-template-columns: repeat(3, 1fr); 
+    grid-template-columns: repeat(3, 1fr);
     gap: 20px;
     margin-bottom: 30px;
 }
 
 .summary_card {
-    background-color: white;
-    padding: 25px 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
     text-align: center;
-    border-left: 6px solid #409fa8;
-    transition: transform 0.2s ease-in-out;
-}
-
-.summary_card:hover {
-    transform: translateY(-5px);
-}
-
-.summary_card h3 {
-    font-size: 1.2rem;
-    color: #555;
-    margin-bottom: 10px;
+    border-left: 8px solid #409fa8;
 }
 
 .summary_card p {
-    font-size: 2.5rem;
+    font-size: 2.2rem;
     font-weight: bold;
     color: #409fa8;
 }
 
-.warning_card { border-left-color: #FF9800; }
-.warning_card p { color: #FF9800; }
-
-.danger_card { border-left-color: #f44336; }
-.danger_card p { color: #f44336; }
-
-/* =========================================
-   SEARCH & FILTER SECTION
-   ========================================= */
-.search_filter_section {
-    background-color: white;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-    margin-bottom: 30px;
+.warning_card {
+    border-left-color: #FF9800;
 }
 
-.search_filter {
-    display: flex;
-    gap: 15px;
-    align-items: center;
+.warning_card p {
+    color: #FF9800;
 }
 
-.search_filter input[type="text"],
-.search_filter select {
-    flex: 1;
-    padding: 12px 15px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    font-family: inherit;
-    font-size: 1rem;
-    outline: none;
+.danger_card {
+    border-left-color: #f44336;
 }
 
-.search_filter input[type="text"]:focus,
-.search_filter select:focus {
-    border-color: #409fa8;
-    box-shadow: 0 0 5px rgba(64, 159, 168, 0.3);
+.danger_card p {
+    color: #f44336;
 }
 
-.search_filter button {
-    padding: 12px 25px;
-    background-color: #409fa8;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: bold;
-    font-size: 1rem;
-    transition: background-color 0.2s;
-    font-family: inherit;
-}
-
-.search_filter button:hover { background-color: #317d85; }
-.search_filter button:last-child { background-color: #7f8c8d; }
-.search_filter button:last-child:hover { background-color: #636e72; }
-
-/* =========================================
-   ADVANCED TABLE SECTION
-   ========================================= */
+/* TABLE & BUTTONS */
 .table_section {
-    background-color: white;
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    background: white;
+    border-radius: 12px;
     overflow: hidden;
-    overflow-x: auto;
 }
 
 table {
@@ -130,63 +158,53 @@ table {
 }
 
 thead {
-    background-color: #409fa8;
+    background: #409fa8;
     color: white;
 }
 
-th {
+th, td {
     padding: 18px 15px;
-    font-weight: normal;
-    letter-spacing: 0.5px;
-}
-
-td {
-    padding: 15px;
     border-bottom: 1px solid #eee;
-    color: #444;
 }
 
-tbody tr:hover { background-color: #f4fbfc; }
-
-td button {
-    padding: 8px 15px;
+.btn_add {
     background-color: #409fa8;
     color: white;
+    padding: 8px 12px;
     border: none;
-    border-radius: 5px;
-    cursor: pointer;
+    border-radius: 20px;
     font-weight: bold;
-    transition: background-color 0.2s;
-    font-family: inherit;
+    cursor: pointer;
 }
 
-td button:hover { background-color: #317d85; }
-
-/* Table specific state styling */
-.lowstock_row td { background-color: rgba(255, 152, 0, 0.1); }
-.lowstock_row:hover td { background-color: rgba(255, 152, 0, 0.2) !important; }
-
-.expired_row td { background-color: rgba(244, 67, 54, 0.1); }
-.expired_row:hover td { background-color: rgba(244, 67, 54, 0.2) !important; }
-
-.empty_table_cell {
-    text-align: center;
-    padding: 30px;
-    color: #666;
-    font-size: 1.1rem;
+.btn_delete {
+    background-color: #f44336;
+    color: white;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-left: 5px;
 }
 
-/* =========================================
-   MODAL STYLES
-   ========================================= */
+.lowstock_row td {
+    background: rgba(255, 152, 0, 0.08);
+}
+
+.expired_row td {
+    background: rgba(244, 67, 54, 0.08);
+}
+
+/* MODAL */
 .modal_overlay {
-    display: none; 
+    display: none;
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.6);
     justify-content: center;
     align-items: center;
     z-index: 1000;
@@ -194,93 +212,26 @@ td button:hover { background-color: #317d85; }
 
 .modal_content {
     background: white;
-    padding: 25px;
-    border-radius: 8px;
-    width: 350px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-.modal_content h3 {
-    margin-top: 0;
-    margin-bottom: 15px;
-    color: #333;
-}
-
-.modal_content label {
-    display: block;
-    margin-top: 15px;
-    font-weight: bold;
-    color: #555;
-    font-size: 0.9rem;
-}
-
-/* Combined styling for input and select elements */
-.modal_content input,
-.modal_content select {
-    width: 100%;
-    padding: 10px;
-    margin-top: 5px;
-    box-sizing: border-box;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-family: inherit;
-    background-color: white; 
-}
-
-.modal_content input:focus,
-.modal_content select:focus {
-    border-color: #409fa8;
-    outline: none;
-    box-shadow: 0 0 5px rgba(64, 159, 168, 0.3);
-}
-
-.modal_divider {
-    margin-top: 20px;
-    padding-top: 15px;
-    border-top: 1px solid #eee;
-}
-
-.modal_note {
-    font-size: 0.85em;
-    color: #777;
-    margin-bottom: 10px;
-}
-
-.edit_buttons {
-    display: flex;
-    gap: 10px;
-    margin-top: 20px;
-}
-
-.edit_buttons button, .cancel_btn {
-    padding: 12px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-weight: bold;
-    font-family: inherit;
-    transition: opacity 0.2s;
-}
-
-.edit_buttons button:hover, .cancel_btn:hover {
-    opacity: 0.85;
+    padding: 30px;
+    border-radius: 15px;
+    width: 380px;
 }
 
 .add_btn {
-    flex: 1;
-    background-color: #4CAF50; 
+    width: 100%;
+    background: #4CAF50;
     color: white;
-}
-
-.dispense_btn {
-    flex: 1;
-    background-color: #f44336; 
-    color: white;
+    padding: 14px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
 }
 
 .cancel_btn {
     width: 100%;
     margin-top: 10px;
-    background-color: #e0e0e0;
-    color: #333;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #888;
 }
