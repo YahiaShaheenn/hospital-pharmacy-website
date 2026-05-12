@@ -7,19 +7,56 @@ window.onload = function () {
 let currentMedicineIndex = -1;
 let supplies = [];
 
-// Realistic Data: Low Stock and Expired are different items
-const defaultSupplies = [
-    { name: "Paracetamol", category: "Pain Relief", costPrice: 15, sellingPrice: 25, stock: 120, minStock: 20, expiryDate: "2024-06-01" }, 
-    { name: "Amoxicillin", category: "Antibiotics", costPrice: 45, sellingPrice: 65, stock: 15, minStock: 15, expiryDate: "2027-03-20" }, 
-    { name: "Insulin", category: "Diabetes", costPrice: 100, sellingPrice: 150, stock: 5, minStock: 8, expiryDate: "2027-06-01" }, 
-    { name: "Nitroglycerin", category: "Heart", costPrice: 60, sellingPrice: 90, stock: 3, minStock: 8, expiryDate: "2028-07-15" }, 
-    { name: "Ibuprofen", category: "Pain Relief", costPrice: 25, sellingPrice: 40, stock: 80, minStock: 15, expiryDate: "2027-08-15" }
-    // ... add others as needed
-];
+// AUTO-PRICE LOGIC: Adds 20% profit
+function calculateSellingPrice(cost) {
+    return (cost * 1.20).toFixed(2); 
+}
+
+// DELETE MEDICINE
+function deleteMedicine(index) {
+    if (confirm("Are you sure you want to remove this medicine?")) {
+        supplies.splice(index, 1);
+        saveInventoryData();
+        displayTable(supplies);
+        updateSummaryCards();
+    }
+}
+
+// REGISTER NEW MEDICINE
+function addNewMedicine() {
+    const name = document.getElementById("new_name").value;
+    const cat = document.getElementById("new_category").value;
+    const cost = parseFloat(document.getElementById("new_cost").value);
+    const min = parseInt(document.getElementById("new_min").value) || 10;
+    const exp = document.getElementById("new_expiry").value;
+
+    if (!name || isNaN(cost) || !exp) return alert("Fill in Name, Price, and Expiry!");
+
+    const newEntry = {
+        name: name,
+        category: cat,
+        costPrice: cost,
+        sellingPrice: calculateSellingPrice(cost),
+        stock: 0, 
+        minStock: min,
+        expiryDate: exp
+    };
+
+    supplies.push(newEntry);
+    saveInventoryData();
+    displayTable(supplies);
+    updateSummaryCards();
+    
+    // Clear inputs
+    document.getElementById("new_name").value = "";
+    document.getElementById("new_cost").value = "";
+    document.getElementById("new_min").value = "";
+    document.getElementById("new_expiry").value = "";
+}
 
 function loadInventoryData() {
-    let saved = localStorage.getItem("pharmacySupplies");
-    supplies = saved ? JSON.parse(saved) : defaultSupplies;
+    const saved = localStorage.getItem("pharmacySupplies");
+    supplies = saved ? JSON.parse(saved) : [];
 }
 
 function saveInventoryData() {
@@ -27,83 +64,77 @@ function saveInventoryData() {
 }
 
 function updateSummaryCards() {
-    let low = supplies.filter(s => s.stock <= s.minStock).length;
-    let exp = supplies.filter(s => new Date(s.expiryDate) < new Date()).length;
+    const today = new Date();
     document.getElementById("total_items").textContent = supplies.length;
-    document.getElementById("low_stock_count").textContent = low;
-    document.getElementById("expired_count").textContent = exp;
+    document.getElementById("low_stock_count").textContent = supplies.filter(s => s.stock <= s.minStock).length;
+    document.getElementById("expired_count").textContent = supplies.filter(s => new Date(s.expiryDate) < today).length;
 }
 
+// UPDATED: SORTS OK ITEMS TO TOP, PROBLEMS TO BOTTOM
 function displayTable(data) {
-    let tableBody = document.getElementById("inventory_table_body");
+    const tableBody = document.getElementById("inventory_table_body");
     tableBody.innerHTML = "";
 
-    // Sort: OK first, then Warnings, then Expired at the very bottom
-    let sorted = [...data].sort((a, b) => {
-        let score = (m) => (new Date(m.expiryDate) < new Date() ? 2 : (m.stock <= m.minStock ? 1 : 0));
-        return score(a) - score(b);
+    // Sorting Logic: OK (0) < Low Stock (1) < Expired (2)
+    const sortedData = [...data].sort((a, b) => {
+        const getScore = (m) => {
+            if (new Date(m.expiryDate) < new Date()) return 2; // Expired is worst
+            if (m.stock <= m.minStock) return 1;              // Low stock is second
+            return 0;                                         // OK is best
+        };
+        return getScore(a) - getScore(b);
     });
 
-    sorted.forEach(med => {
-        let isExp = new Date(med.expiryDate) < new Date();
-        let isLow = med.stock <= med.minStock;
-        let rowClass = isExp ? "expired_row" : (isLow ? "lowstock_row" : "");
-        let status = isExp ? "❌ Expired" : (isLow ? "⚠️ Low Stock" : "✅ OK");
-
+    sortedData.forEach((med) => {
+        const indexInMain = supplies.indexOf(med);
+        const isExp = new Date(med.expiryDate) < new Date();
+        const isLow = med.stock <= med.minStock;
+        
         tableBody.innerHTML += `
-            <tr class="${rowClass}">
+            <tr class="${isExp ? 'expired_row' : (isLow ? 'lowstock_row' : '')}">
                 <td><strong>${med.name}</strong></td>
                 <td>${med.category}</td>
                 <td>${med.stock}</td>
                 <td>${med.minStock}</td>
                 <td>${med.expiryDate}</td>
                 <td>${med.costPrice} EGP</td>
-                <td>${med.sellingPrice} EGP</td>
-                <td>${status}</td>
-                <td><button onclick="openTransactionModal(${supplies.indexOf(med)})">Take / Update</button></td>
+                <td><strong>${med.sellingPrice} EGP</strong></td>
+                <td>${isExp ? '❌ Expired' : (isLow ? '⚠️ Low' : '✅ OK')}</td>
+                <td>
+                    <button class="btn_add" onclick="openTransactionModal(${indexInMain})">Add</button>
+                    <button class="btn_delete" onclick="deleteMedicine(${indexInMain})">Delete</button>
+                </td>
             </tr>`;
     });
 }
 
+function searchMedicine() {
+    const query = document.getElementById("searchInput").value.toLowerCase();
+    const filtered = supplies.filter(m => m.name.toLowerCase().includes(query));
+    displayTable(filtered);
+}
+
+function resetSearch() {
+    document.getElementById("searchInput").value = "";
+    displayTable(supplies);
+}
+
 function openTransactionModal(index) {
     currentMedicineIndex = index;
-    const med = supplies[index];
-    document.getElementById("edit_medicine_name").textContent = med.name;
-    document.getElementById("edit_current_stock").textContent = med.stock;
-    
-    // Clear all inputs and selections
+    document.getElementById("edit_medicine_name").textContent = supplies[index].name;
     document.getElementById("edit_qty").value = "";
-    document.getElementById("modal-doctor").value = "";
-    document.getElementById("modal-reason").value = "";
-    
     document.getElementById("edit_modal").style.display = "flex";
 }
 
-function closeTransactionModal() { document.getElementById("edit_modal").style.display = "none"; }
-
-function logTransactionToHistory(medName, type, qty, amount, person) {
-    let history = JSON.parse(localStorage.getItem("pharmacyTransactions")) || [];
-    history.push({ date: new Date().toISOString(), medicine: medName, type: type === 'take' ? "Take" : "Add Stock", quantity: qty, amount: amount, person: person });
-    localStorage.setItem("pharmacyTransactions", JSON.stringify(history));
+function closeTransactionModal() { 
+    document.getElementById("edit_modal").style.display = "none"; 
 }
 
 function processTransaction(action) {
-    let qty = parseInt(document.getElementById("edit_qty").value);
-    let doctor = document.getElementById("modal-doctor").value;
-    let reason = document.getElementById("modal-reason").value;
-    let med = supplies[currentMedicineIndex];
+    const qty = parseInt(document.getElementById("edit_qty").value);
+    if (isNaN(qty) || qty <= 0) return alert("Enter valid quantity!");
 
-    if (isNaN(qty) || qty <= 0) return alert("Enter valid quantity.");
-    if (action === 'take' && (!doctor || !reason)) return alert("Select Doctor and Reason.");
-
-    if (action === 'add') {
-        med.stock += qty;
-        logTransactionToHistory(med.name, 'add', qty, qty * med.costPrice, "Owner");
-    } else {
-        if (qty > med.stock) return alert("Not enough stock.");
-        med.stock -= qty;
-        logTransactionToHistory(med.name, 'take', qty, qty * med.sellingPrice, doctor);
-    }
+    supplies[currentMedicineIndex].stock += qty;
 
     saveInventoryData();
     updateSummaryCards();
