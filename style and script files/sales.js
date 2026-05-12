@@ -1,11 +1,11 @@
 window.onload = function() {
 if(!sessionStorage.getItem("currentDoctor")) {
-
    window.location.href = "LogIn.html";
    alert("Please log in to access the Sales.");
+}
+renderCart();
+}
 
-}
-}
 const supplies = [
 { name: "Paracetamol", category: "Pain Relief", costPrice: 15, sellingPrice: 25, stock: 120, minStock: 20, expiryDate: "2027-06-01" },
 { name: "Ibuprofen", category: "Pain Relief", costPrice: 25, sellingPrice: 40, stock: 80, minStock: 15, expiryDate: "2027-08-15" },
@@ -41,27 +41,27 @@ const supplies = [
 { name: "Epinephrine Injection", category: "Emergency", costPrice: 140, sellingPrice: 200, stock: 2, minStock: 5, expiryDate: "2025-08-01" },
 { name: "Baby Formula", category: "Baby Care", costPrice: 120, sellingPrice: 180, stock: 4, minStock: 8, expiryDate: "2025-09-10" },
 { name: "Cough Syrup", category: "Cold & Flu", costPrice: 20, sellingPrice: 35, stock: 6, minStock: 15, expiryDate: "2025-05-30" },
-]; //cards of supplies with all the details
+];
 
 let savedStock = JSON.parse(localStorage.getItem("suppliesStock"));
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
 if (savedStock) {
-    for (let i = 0; i < supplies.length; i++) {  // saves the stock in local storage so it doesn't reset when you refresh the page
+    for (let i = 0; i < supplies.length; i++) {
         supplies[i].stock = savedStock[i];
     }
 }
 
-function searchmed(){  //search function
-    let input = document.getElementById("searchInput").value.toLowerCase(); // read it either lowercase or uppercase
-    let results= document.getElementById("searchResults");
-     results.innerHTML = "";
+function searchmed() {
+    let input = document.getElementById("searchInput").value.toLowerCase();
+    let results = document.getElementById("searchResults");
+    results.innerHTML = "";
 
     for (let i = 0; i < supplies.length; i++) {
-        if (supplies[i].name.toLowerCase().includes(input)) {      //can seearch the supply if you added a few letters and gives suggestions
+        if (supplies[i].name.toLowerCase().includes(input)) {
             results.innerHTML += `
                 <div class="medicine-result">
                     <p><strong>${supplies[i].name}</strong></p>
                     <p>Price: ${supplies[i].sellingPrice} EGP</p>
-                    <p>Stock: ${supplies[i].stock}</p>
                     <button onclick="addToCart(${i})">Add to Cart</button>
                 </div>
             `;
@@ -69,35 +69,34 @@ function searchmed(){  //search function
     }
 
     if (results.innerHTML === "") {
-        results.innerHTML = "<p>No medicine found.</p>"; // if no med is found
+        results.innerHTML = "<p>No medicine found.</p>";
     }
 }
-let cart=[];  //empty cart
-function addToCart(i){
+
+function addToCart(i) {
     if (supplies[i].stock <= 0) {
-       showAlert("This item is out of stock!") //checks if the stock is 0
+        showAlert("This item is out of stock!");
         return;
     }
-     
-    let item=supplies[i];
-    for(let j=0;j<cart.length; j++){
-        if(cart[j].name ===item.name){
+
+    let item = supplies[i];
+    for (let j = 0; j < cart.length; j++) {
+        if (cart[j].name === item.name) {
             cart[j].qty++;
-             supplies[i].stock--;  //dec qty if med is found from stock and if alr in cart
             renderCart();
-            searchmed();
             return;
-        }}
-supplies[i].stock--; //if item not alr in cart it adds it
-cart.push({
-    name:item.name,
-    price: item.sellingPrice,
-    qty:1
-});
-renderCart();
-searchmed();
+        }
+    }
+    cart.push({
+        name: item.name,
+        price: item.sellingPrice,
+        qty: 1
+    });
+    renderCart();
 }
+
 function renderCart() {
+    localStorage.setItem("cart", JSON.stringify(cart));
     let cartDiv = document.getElementById("cart");
     cartDiv.innerHTML = "";
     let total = 0;
@@ -105,91 +104,102 @@ function renderCart() {
         let subtotal = cart[j].price * cart[j].qty;
         total += subtotal;
 
-       cartDiv.innerHTML += `
-    <div class="cart-item">
-        <p><strong>${cart[j].name}</strong></p>
-        <p>Price: ${cart[j].price} EGP | Subtotal: ${subtotal} EGP</p>
-        <div class="qty-controls">
-            <button onclick="decreaseQty(${j})">-</button>
-            <span>${cart[j].qty}</span>
-            <button onclick="increaseQty(${j})">+</button>
-            <button  class="remove-btn" onclick="removeItem(${j})">Remove</button>
-        </div>
-    </div>
-`;
+        cartDiv.innerHTML += `
+            <div class="cart-item">
+                <p><strong>${cart[j].name}</strong></p>
+                <p>Price: ${cart[j].price} EGP | Subtotal: ${subtotal} EGP</p>
+                <div class="qty-controls">
+                    <button onclick="decreaseQty(${j})">-</button>
+                    <span>${cart[j].qty}</span>
+                    <button onclick="increaseQty(${j})">+</button>
+                    <button class="remove-btn" onclick="removeItem(${j})">Remove</button>
+                </div>
+            </div>
+        `;
     }
-    if (cart.length > 0) { // if cart has items it shows total
-    cartDiv.innerHTML += `<h3>Total: ${total} EGP</h3>`;
-}
-if (cart.length > 0) { //payment section only shows if cart has items
+    if (cart.length > 0) {
+        cartDiv.innerHTML += `<h3>Total: ${total} EGP</h3>`;
+    }
+    if (cart.length > 0) {
+    document.getElementById("cart-title").style.display = "flex";
     document.getElementById("payment-section").style.display = "block";
 } else {
+    document.getElementById("cart-title").style.display = "none";
     document.getElementById("payment-section").style.display = "none";
 }
-localStorage.setItem("suppliesStock", JSON.stringify(supplies.map(s => s.stock))); //saves the stock in local storage so it doesn't reset when you refresh the page
 }
+
 function increaseQty(j) {
-    for (let i = 0; i < supplies.length; i++) {
-        if (supplies[i].name === cart[j].name) {
-            if (supplies[i].stock === 0) { // doesnt add below zero
-                showAlert("No more stock available!");
-                return;
-            }
-            supplies[i].stock--; 
-            break;
-        }
-    }
     cart[j].qty++;
     renderCart();
-    searchmed();
 }
+
 function decreaseQty(j) {
-    for (let i = 0; i < supplies.length; i++) {
-        if (supplies[i].name === cart[j].name) { 
-            supplies[i].stock++;
-            break;
-        }
-    }
     if (cart[j].qty > 1) {
         cart[j].qty--;
     } else {
-        cart.splice(j, 1);  // remove it it reached zero
+        cart.splice(j, 1);
     }
     renderCart();
-    searchmed();
 }
+
 function removeItem(j) {
-    for (let i = 0; i < supplies.length; i++) {
-        if (supplies[i].name === cart[j].name) {
-            supplies[i].stock += cart[j].qty; //restore the items that were in the cart
-            break;
-        }
-    }
     cart.splice(j, 1);
     renderCart();
-    searchmed();
 }
+
 function checkout() {
-    if (cart.length === 0) { // if cart is empty
-        showAlert("Your cart is empty!")
+    if (cart.length === 0) {
+        showAlert("Your cart is empty!");
         return;
     }
-    let paymentinput = document.querySelector('input[name="payment"]:checked'); //must select payment method 
+    let paymentinput = document.querySelector('input[name="payment"]:checked');
     if (paymentinput === null) {
-       showAlert("Please select a payment method!")
+        showAlert("Please select a payment method!");
         return;
+    }
+
+    for (let j = 0; j < cart.length; j++) {
+        for (let i = 0; i < supplies.length; i++) {
+            if (supplies[i].name === cart[j].name) {
+                if (cart[j].qty > supplies[i].stock) {
+                    showAlert("Not enough stock for " + cart[j].name + "!");
+                    return;
+                }
+            }
+        }
+    }
+
+    let lowStockWarnings = [];
+    for (let j = 0; j < cart.length; j++) {
+        for (let i = 0; i < supplies.length; i++) {
+            if (supplies[i].name === cart[j].name) {
+                supplies[i].stock -= cart[j].qty;
+                if (supplies[i].stock < supplies[i].minStock) {
+                    lowStockWarnings.push(supplies[i].name);
+                }
+                break;
+            }
+        }
+    }
+
+    localStorage.setItem("suppliesStock", JSON.stringify(supplies.map(s => s.stock)));
+
+    if (lowStockWarnings.length > 0) {
+        showAlert("Low stock warning: " + lowStockWarnings.join(", "));
     }
 
     let paymentmethod = paymentinput.value;
     generateReceipt(paymentmethod);
 }
+
 function generateReceipt(paymentmethod) {
-    let sellerName = sessionStorage.getItem("currentDoctor");  
-    let now = new Date(); // saves date
-    let time = now.toLocaleTimeString("en-US", { //saves time
-    hour: "2-digit",
-    minute: "2-digit"
-}); //saves time
+    let sellerName = sessionStorage.getItem("currentDoctor");
+    let now = new Date();
+    let time = now.toLocaleTimeString("en-US", {
+        hour: "2-digit",
+        minute: "2-digit"
+    });
     let date = now.toLocaleDateString("en-US", {
         weekday: "long",
         month: "long",
@@ -200,48 +210,51 @@ function generateReceipt(paymentmethod) {
     let total = 0;
     let itemsHTML = "";
 
-    for (let j = 0; j < cart.length; j++) {    //items showon in the receipt
+    for (let j = 0; j < cart.length; j++) {
         let subtotal = cart[j].price * cart[j].qty;
         total += subtotal;
         itemsHTML += `<p>${cart[j].name} x${cart[j].qty} = ${subtotal} EGP</p>`;
     }
-    
-   document.getElementById("modal-receipt").innerHTML = `  
-    <h3>Receipt</h3>
-    <p>${date} | ${time}</p>
-    <p>Seller: ${sellerName}</p>
-    <hr>
-    ${itemsHTML}
-    <hr>
-    <h4>Total: ${total} EGP</h4>
-    <p>Payment: ${paymentmethod}</p>
-    <p>Thank you!</p>
-`;
-//show modal
-document.getElementById("modal-overlay").style.display = "flex";
-let sale = {      //saves it
-    date: date,
-    time: time,
-    items: cart.slice(), 
-    total: total,
-    payment: paymentmethod,
-     seller: sellerName 
-};
-let salesHistory = JSON.parse(localStorage.getItem("salesHistory")) || []; //save sales in local storage
-salesHistory.push(sale);
-localStorage.setItem("salesHistory", JSON.stringify(salesHistory));
+
+    document.getElementById("modal-receipt").innerHTML = `
+        <h3>Receipt</h3>
+        <p>${date} | ${time}</p>
+        <p>Seller: ${sellerName}</p>
+        <hr>
+        ${itemsHTML}
+        <hr>
+        <h4>Total: ${total} EGP</h4>
+        <p>Payment: ${paymentmethod}</p>
+        <p>Thank you!</p>
+    `;
+
+    document.getElementById("modal-overlay").style.display = "flex";
+
+    let sale = {
+        date: date,
+        time: time,
+        items: cart.slice(),
+        total: total,
+        payment: paymentmethod,
+        seller: sellerName
+    };
+    let salesHistory = JSON.parse(localStorage.getItem("salesHistory")) || [];
+    salesHistory.push(sale);
+    localStorage.setItem("salesHistory", JSON.stringify(salesHistory));
 
     cart = [];
     renderCart();
 }
+
 function closeModal() {
     document.getElementById("modal-overlay").style.display = "none";
 }
+
 function showAlert(message) {
-    document.getElementById("alert-message").textContent = message; //popup alrets 
+    document.getElementById("alert-message").textContent = message;
     document.getElementById("alert-overlay").style.display = "flex";
 }
 
 function closeAlert() {
     document.getElementById("alert-overlay").style.display = "none";
-};
+}

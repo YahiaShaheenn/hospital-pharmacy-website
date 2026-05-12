@@ -24,7 +24,7 @@
 }
 
 .search-section input {
-    flex: 1;
+    width: 75%;
     padding: 10px;
     border-radius: 8px;
     border: 1px solid #2f7f8a;
@@ -60,7 +60,6 @@
 
 .medicine-result:hover {
     transform: translateY(-3px);
-    box-shadow: 0 6px 15px rgba(0,0,0,0.1);
 }
 
 .medicine-result p {
@@ -94,7 +93,6 @@
 .cart-item p {
     margin: 4px 0;
 }
-
 
 .qty-controls {
     display: flex;
@@ -195,7 +193,6 @@
     border-radius: 18px;
     width: 420px;
     text-align: center;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
 }
 
 #modal-box h3 {
@@ -230,6 +227,7 @@
     background-color: #2f7f8a;
     transform: translateY(-2px);
 }
+
 /* alert part modal*/
 #alert-overlay {
     display: none;
@@ -250,7 +248,6 @@
     border-radius: 18px;
     width: 350px;
     text-align: center;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
 }
 
 #alert-box p {
@@ -279,6 +276,7 @@
         grid-template-columns: 1fr;
     }
 }
+
 .panel-title {
     display: flex;
     align-items: center;
