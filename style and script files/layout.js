@@ -47,7 +47,7 @@ style.textContent = `
     margin-top: 10px;
     cursor: pointer;
     transition: 0.3s;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2); // first numer is horizontal offset, second is vertical offset, third is blur radius, and fourth is color
     border: none;
 }
 
@@ -58,7 +58,7 @@ style.textContent = `
 }
 
 body{
-   margin: 0;
+    margin: 0;
     padding: 0;
     background-color: powderblue;
     min-height: 100vh;

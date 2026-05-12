@@ -90,7 +90,7 @@ document.getElementById("lowstock").textContent = lowStockMedicines.length;
 
 const alertsContainer = document.getElementById("boxALERTS");
 
-alertsContainer.innerHTML = "";
+alertsContainer.innerHTML = ""; //clears html of the container before adding new alerts, so that we don't have duplicate alerts when we refresh the page
 
 for (let i = 0; i < expiredMedicines.length; i++) {
     createAlert(
