@@ -10,10 +10,6 @@
     margin: 30px auto;
 }
 
-/* =========================
-   REPORT CHOICE SECTION
-========================= */
-
 .hidden {
     display: none;
 }
@@ -66,10 +62,6 @@
     width: 100%;
 }
 
-/* =========================
-   STATISTICS CARDS
-========================= */
-
 .statistics_section {
     display: flex;
     gap: 20px;
@@ -89,6 +81,7 @@
     margin-left: 20px;
     margin-right: 20px;
     text-align: center;
+
 }
 
 .statistic_card h3 {
@@ -102,10 +95,6 @@
     color: rgb(63, 138, 153);
 }
 
-/* =========================
-   PAGE TITLE
-========================= */
-
 .page_title {
     margin-bottom: 20px;
 }
@@ -114,10 +103,6 @@
     color: rgb(63, 138, 153);
     margin-bottom: 5px;
 }
-
-/* =========================
-   FILTERS
-========================= */
 
 .filters_section {
     background-color: rgba(255, 255, 255, 0.9);
@@ -182,10 +167,6 @@
     transform: translateY(-2px);
 }
 
-/* =========================
-   TABLE
-========================= */
-
 .table_section {
     background-color: rgba(255, 255, 255, 0.92);
     padding: 25px;
@@ -229,9 +210,6 @@ tbody tr:hover {
     background-color: #f1f1f1;
 }
 
-/* =========================
-   ACTION BUTTONS
-========================= */
 
 .actions_section {
     display: flex;
@@ -259,10 +237,6 @@ tbody tr:hover {
     background-color: #2f7f8a;
     transform: translateY(-2px);
 }
-
-/* =========================
-   PRINT STYLE
-========================= */
 
 @media print {
 
