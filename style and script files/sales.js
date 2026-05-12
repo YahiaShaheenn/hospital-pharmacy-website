@@ -312,10 +312,12 @@ function showRefundItems(saleIndex) {
         `;
     }
 
-    if (!hasRefundable) {
-        itemsDiv.innerHTML = "<p>No refundable items in this sale.</p>";
-    }
-
+   if (!hasRefundable) {
+    itemsDiv.innerHTML = "<p>No refundable items in this sale.</p>";
+    document.getElementById("refund-confirm-btn").style.display = "none";
+} else {
+    document.getElementById("refund-confirm-btn").style.display = "block";
+}
     document.getElementById("refund-confirm-btn").setAttribute("onclick", `processRefund(${saleIndex})`);
     document.getElementById("refund-sales-view").style.display = "none";
     document.getElementById("refund-items-view").style.display = "block";
