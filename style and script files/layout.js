@@ -47,7 +47,7 @@ style.textContent = `
     margin-top: 10px;
     cursor: pointer;
     transition: 0.3s;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2); // first numer is horizontal offset, second is vertical offset, third is blur radius, and fourth is color
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2); // first number is horizontal offset, second is vertical offset, third is blur radius, and fourth is color
     border: none;
 }
 
