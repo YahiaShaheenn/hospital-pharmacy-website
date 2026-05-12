@@ -92,7 +92,7 @@ function displayTable(data) {
         const isExp = new Date(med.expiryDate) < new Date();
         const isLow = med.stock <= med.minStock;
         
-        tableBody.innerHTML += ` //bn add kol dawa fe row 3ala hasab el status bta3o w bn7ot el icons bta3 el status kaman.
+        tableBody.innerHTML += `
             <tr class="${isExp ? 'expired_row' : (isLow ? 'lowstock_row' : '')}">
                 <td><strong>${med.name}</strong></td> 
                 <td>${med.category}</td>
@@ -111,7 +111,7 @@ function displayTable(data) {
                     <button class="btn_delete" onclick="deleteMedicine(${indexInMain})">Delete</button>
                 </td>
             </tr>`;
-    });
+    }); //bn3ml add kol dawa fe row 3ala hasab el status bta3o w bn7ot el icons bta3 el status kaman
 }
 
 function searchMedicine() { 
