@@ -63,6 +63,13 @@ select:focus {
     background-color: white;
 }
 
+input[readonly] {
+    background-color: #eef7f8;
+    color: #409fa8;
+    font-weight: bold;
+    cursor: not-allowed;
+}
+
 .add_new_btn {
     grid-column: 1 / -1;
     background: #4CAF50;
