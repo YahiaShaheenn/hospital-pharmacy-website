@@ -14,12 +14,10 @@
 
 <body>
 
-    <!-- Dynamic Layout Header -->
     <script src="../style and script files/layout.js"></script>
 
     <main class="inventory_container">
 
-        <!-- MAIN FUNC OF INVENTORY: REGISTER BOUGHT MEDS -->
         <section class="form_section">
 
             <h3 style="color: #2c3e50; border-bottom: 2px solid #409fa8; padding-bottom: 10px;">
@@ -47,7 +45,7 @@
 
                 <div class="input_group">
                     <label>Quantity Bought</label>
-                    <input type="number" id="new_stock" placeholder="0">
+                    <input type="number" id="new_stock" placeholder="0" min="1" step="1">
                 </div>
 
                 <div class="input_group">
@@ -57,7 +55,7 @@
 
                 <div class="input_group">
                     <label>Buying Price (EGP)</label>
-                    <input type="number" id="new_cost" placeholder="0.00">
+                    <input type="number" id="new_cost" placeholder="0.00" min="0.01" step="0.01">
                 </div>
 
                 <div class="input_group">
@@ -82,7 +80,6 @@
 
         </section>
 
-        <!-- SUMMARY CARDS -->
         <section class="summary_cards">
 
             <div class="summary_card">
@@ -102,7 +99,6 @@
 
         </section>
 
-        <!-- SEARCH SECTION -->
         <section class="search_section">
 
             <div class="search_bar_group">
@@ -112,7 +108,6 @@
 
         </section>
 
-        <!-- INVENTORY TABLE -->
         <section class="table_section">
 
             <table>
@@ -122,8 +117,8 @@
                         <th>Medicine Name</th>
                         <th>Category</th>
                         <th>Total Stock</th>
-                        <th>Nearest Expiry</th>
-                        <th>Prices</th>
+                        <th>Nearest Valid Expiry</th>
+                        <th>Newest Price</th>
                         <th>Refundable?</th>
                         <th>Status</th>
                         <th>Actions</th>
@@ -138,42 +133,46 @@
 
     </main>
 
-   <!-- EDIT ALL BATCH PRICES MODAL -->
-<div id="edit_modal" class="modal_overlay">
+    <!-- EDIT NEWEST BATCH PRICE MODAL -->
+    <div id="edit_modal" class="modal_overlay">
 
-    <div class="modal_content" style="width: 500px;">
+        <div class="modal_content" style="width: 500px;">
 
-        <h3>Edit Medicine Price</h3>
+            <h3>Edit Newest Batch Price</h3>
 
-        <p style="margin-bottom: 15px;">
-            <strong>Medicine:</strong>
-            <span id="edit_medicine_name" style="color: #409fa8; font-size: 1.1em;"></span>
-        </p>
+            <p style="margin-bottom: 15px;">
+                <strong>Medicine:</strong>
+                <span id="edit_medicine_name" style="color: #409fa8; font-size: 1.1em;"></span>
+            </p>
 
-        <div class="new_med_grid" style="grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
+            <p style="margin-bottom: 15px; color: #7f8c8d; font-size: 0.9rem;">
+                This edits only the newest added batch, not all previous batches.
+            </p>
 
-            <div class="input_group">
-                <label>New Buying Price for All Batches</label>
-                <input type="number" id="edit_cost" placeholder="0.00">
+            <div class="new_med_grid" style="grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
+
+                <div class="input_group">
+                    <label>Buying Price for Newest Batch Only</label>
+                    <input type="number" id="edit_cost" placeholder="0.00" min="0.01" step="0.01">
+                </div>
+
+                <div class="input_group">
+                    <label>Auto Selling Price</label>
+                    <input type="text" id="edit_auto_selling" placeholder="Calculated automatically" readonly>
+                </div>
+
             </div>
 
-            <div class="input_group">
-                <label>Auto Selling Price</label>
-                <input type="text" id="edit_auto_selling" placeholder="Calculated automatically" readonly>
+            <div class="edit_buttons">
+                <button class="add_btn" onclick="processTransaction()">Save Price Changes</button>
+                <button class="cancel_btn" onclick="closeTransactionModal()">Cancel</button>
             </div>
 
-        </div>
-
-        <div class="edit_buttons">
-            <button class="add_btn" onclick="processTransaction()">Update All Batch Prices</button>
-            <button class="cancel_btn" onclick="closeTransactionModal()">Cancel</button>
         </div>
 
     </div>
 
-</div>
-
-    <!-- ADD NEW EXPIRY / PRICE BATCH MODAL -->
+    <!-- ADD NEW BATCH MODAL -->
     <div id="add_batch_modal" class="modal_overlay">
 
         <div class="modal_content" style="width: 500px;">
@@ -189,7 +188,7 @@
 
                 <div class="input_group">
                     <label>Stock Quantity</label>
-                    <input type="number" id="batch_stock" placeholder="0">
+                    <input type="number" id="batch_stock" placeholder="0" min="1" step="1">
                 </div>
 
                 <div class="input_group">
@@ -198,8 +197,8 @@
                 </div>
 
                 <div class="input_group">
-                    <label>Buying Price (EGP)</label>
-                    <input type="number" id="batch_cost" placeholder="0.00">
+                    <label>Buying Price for This Batch Only (EGP)</label>
+                    <input type="number" id="batch_cost" placeholder="0.00" min="0.01" step="0.01">
                 </div>
 
                 <div class="input_group">
@@ -256,7 +255,7 @@
 
     </div>
 
-    <!-- MESSAGE MODAL FOR SUCCESS / ERROR -->
+    <!-- MESSAGE MODAL -->
     <div id="message_modal" class="modal_overlay message_overlay">
 
         <div class="message_modal_content">

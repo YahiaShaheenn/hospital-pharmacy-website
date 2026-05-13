@@ -30,7 +30,6 @@ function saveInventoryData() {
 /* 
     Converts old data into the batch system.
     It merges medicines with the same name, category, and refund policy.
-    Different buying prices stay inside different batches.
 */
 function migrateOldInventoryData() {
     let mergedSupplies = [];
@@ -55,12 +54,14 @@ function migrateOldInventoryData() {
             medicineBatches = med.batches.map(function (batch) {
 
                 const batchCost = Number(batch.costPrice) || medicineCost;
+                const batchAddedAt = Number(batch.addedAt) || Date.now();
 
                 return {
                     stock: Number(batch.stock) || 0,
                     expiryDate: batch.expiryDate,
                     costPrice: batchCost,
-                    sellingPrice: batch.sellingPrice || calculateSellingPrice(batchCost)
+                    sellingPrice: batch.sellingPrice || calculateSellingPrice(batchCost),
+                    addedAt: batchAddedAt
                 };
 
             });
@@ -71,7 +72,8 @@ function migrateOldInventoryData() {
                 stock: Number(med.stock) || 0,
                 expiryDate: med.expiryDate,
                 costPrice: medicineCost,
-                sellingPrice: calculateSellingPrice(medicineCost)
+                sellingPrice: calculateSellingPrice(medicineCost),
+                addedAt: Date.now()
             });
 
         }
@@ -90,7 +92,8 @@ function migrateOldInventoryData() {
                         existingMedicine,
                         Number(batch.stock) || 0,
                         batch.expiryDate,
-                        Number(batch.costPrice) || medicineCost
+                        Number(batch.costPrice) || medicineCost,
+                        Number(batch.addedAt) || Date.now()
                     );
                 }
             });
@@ -115,7 +118,8 @@ function migrateOldInventoryData() {
                         newMedicine,
                         Number(batch.stock) || 0,
                         batch.expiryDate,
-                        Number(batch.costPrice) || medicineCost
+                        Number(batch.costPrice) || medicineCost,
+                        Number(batch.addedAt) || Date.now()
                     );
                 }
             });
@@ -158,16 +162,35 @@ function isExpiredDate(expiryDate) {
     return expiry < today;
 }
 
+/*
+    Main table status:
+    Expired only if ALL batches are expired.
+    If one batch is still valid, the medicine is not shown as expired.
+*/
 function hasExpiredBatch(med) {
-    if (!Array.isArray(med.batches)) {
+    if (!Array.isArray(med.batches) || med.batches.length === 0) {
         return isExpiredDate(med.expiryDate);
     }
 
-    return med.batches.some(function (batch) {
-        return isExpiredDate(batch.expiryDate);
+    const validBatches = med.batches.filter(function (batch) {
+        return batch.expiryDate;
     });
+
+    if (validBatches.length === 0) {
+        return false;
+    }
+
+    const hasNotExpiredBatch = validBatches.some(function (batch) {
+        return !isExpiredDate(batch.expiryDate);
+    });
+
+    return !hasNotExpiredBatch;
 }
 
+/*
+    Shows the nearest non-expired expiry date.
+    If all batches are expired, it shows the nearest expired date.
+*/
 function getNearestExpiry(med) {
     if (!Array.isArray(med.batches) || med.batches.length === 0) {
         return "No expiry";
@@ -181,7 +204,13 @@ function getNearestExpiry(med) {
         return "No expiry";
     }
 
-    const sortedBatches = [...validBatches].sort(function (a, b) {
+    const notExpiredBatches = validBatches.filter(function (batch) {
+        return !isExpiredDate(batch.expiryDate);
+    });
+
+    const batchesToUse = notExpiredBatches.length > 0 ? notExpiredBatches : validBatches;
+
+    const sortedBatches = [...batchesToUse].sort(function (a, b) {
         return new Date(a.expiryDate) - new Date(b.expiryDate);
     });
 
@@ -200,6 +229,7 @@ function consolidateBatches(med) {
     med.batches.forEach(function (batch) {
 
         const batchCost = Number(batch.costPrice) || Number(med.costPrice) || 0;
+        const batchAddedAt = Number(batch.addedAt) || Date.now();
 
         const existingBatch = mergedBatches.find(function (item) {
             return item.expiryDate === batch.expiryDate &&
@@ -208,12 +238,18 @@ function consolidateBatches(med) {
 
         if (existingBatch) {
             existingBatch.stock = Number(existingBatch.stock) + Number(batch.stock);
+
+            if (batchAddedAt > existingBatch.addedAt) {
+                existingBatch.addedAt = batchAddedAt;
+            }
+
         } else {
             mergedBatches.push({
                 stock: Number(batch.stock) || 0,
                 expiryDate: batch.expiryDate,
                 costPrice: batchCost,
-                sellingPrice: calculateSellingPrice(batchCost)
+                sellingPrice: calculateSellingPrice(batchCost),
+                addedAt: batchAddedAt
             });
         }
 
@@ -267,13 +303,30 @@ function getDifferentPriceCount(med) {
     return prices.length;
 }
 
-function addBatchToMedicine(med, stock, expiryDate, costPrice) {
+function getNewestBatch(med) {
+    if (!Array.isArray(med.batches) || med.batches.length === 0) {
+        return null;
+    }
+
+    let newestBatch = med.batches[0];
+
+    med.batches.forEach(function (batch) {
+        if ((Number(batch.addedAt) || 0) > (Number(newestBatch.addedAt) || 0)) {
+            newestBatch = batch;
+        }
+    });
+
+    return newestBatch;
+}
+
+function addBatchToMedicine(med, stock, expiryDate, costPrice, addedAt) {
     if (!Array.isArray(med.batches)) {
         med.batches = [];
     }
 
     const batchCost = Number(costPrice) || Number(med.costPrice) || 0;
     const batchSelling = calculateSellingPrice(batchCost);
+    const batchAddedAt = addedAt || Date.now();
 
     const existingBatch = med.batches.find(function (batch) {
         return batch.expiryDate === expiryDate &&
@@ -282,12 +335,14 @@ function addBatchToMedicine(med, stock, expiryDate, costPrice) {
 
     if (existingBatch) {
         existingBatch.stock = Number(existingBatch.stock) + Number(stock);
+        existingBatch.addedAt = batchAddedAt;
     } else {
         med.batches.push({
             stock: Number(stock),
             expiryDate: expiryDate,
             costPrice: batchCost,
-            sellingPrice: batchSelling
+            sellingPrice: batchSelling,
+            addedAt: batchAddedAt
         });
     }
 
@@ -338,12 +393,16 @@ function displayTable(data) {
         const indexInMain = supplies.indexOf(med);
 
         const totalStock = getTotalStock(med);
-        const nearestExpiry = getNearestExpiry(med);
+        const nearestValidExpiry = getNearestExpiry(med);
 
         const isExp = hasExpiredBatch(med);
         const isLow = totalStock <= med.minStock;
 
         const priceLevels = getDifferentPriceCount(med);
+        const newestBatch = getNewestBatch(med);
+
+        const newestCost = newestBatch ? Number(newestBatch.costPrice) : Number(med.costPrice);
+        const newestSelling = newestBatch ? newestBatch.sellingPrice || calculateSellingPrice(newestCost) : med.sellingPrice;
 
         let refundStatusHTML = "";
 
@@ -398,14 +457,14 @@ function displayTable(data) {
 
                 <td>${totalStock}</td>
 
-                <td>${nearestExpiry}</td>
+                <td>${nearestValidExpiry}</td>
 
                 <td>
                     <span style="color: #7f8c8d; font-size: 0.85em;">
-                        Highest Buy: ${med.costPrice} EGP
+                        Newest Buy: ${newestCost} EGP
                     </span>
                     <br>
-                    <strong>Sell: ${med.sellingPrice} EGP</strong>
+                    <strong>Newest Sell: ${newestSelling} EGP</strong>
                 </td>
 
                 <td>${refundStatusHTML}</td>
@@ -531,6 +590,28 @@ function setupAutoSellingPriceCalculation() {
     });
 }
 
+/* PREVENT NEGATIVE NUMBERS */
+
+function preventNegativeNumbers() {
+    const numberInputs = document.querySelectorAll('input[type="number"]');
+
+    numberInputs.forEach(function (input) {
+
+        input.addEventListener("keydown", function (event) {
+            if (event.key === "-" || event.key === "+" || event.key === "e") {
+                event.preventDefault();
+            }
+        });
+
+        input.addEventListener("input", function () {
+            if (Number(input.value) < 0) {
+                input.value = "";
+            }
+        });
+
+    });
+}
+
 /* ADD COMPLETELY NEW MEDICINE OR ADD SAME MEDICINE AS A BATCH */
 
 function addNewMedicine() {
@@ -647,7 +728,7 @@ function addNewMedicine() {
         showMessageModal(
             "success",
             "Batch Added Successfully",
-            "This medicine already exists, so the new stock was added under the same row. The selling price is based on the highest buying price."
+            "This medicine already exists, so the new stock was added under the same row."
         );
 
         return;
@@ -691,7 +772,7 @@ function addNewMedicine() {
     );
 }
 
-/* EDIT ALL BATCH PRICES */
+/* EDIT NEWEST BATCH PRICE ONLY */
 
 function openTransactionModal(index) {
     clearInputErrors();
@@ -699,11 +780,17 @@ function openTransactionModal(index) {
     currentMedicineIndex = index;
 
     const med = supplies[index];
+    const newestBatch = getNewestBatch(med);
 
     document.getElementById("edit_medicine_name").textContent = med.name;
 
-    document.getElementById("edit_cost").value = med.costPrice;
-    document.getElementById("edit_auto_selling").value = calculateSellingPrice(parseFloat(med.costPrice));
+    if (newestBatch) {
+        document.getElementById("edit_cost").value = newestBatch.costPrice;
+        document.getElementById("edit_auto_selling").value = newestBatch.sellingPrice;
+    } else {
+        document.getElementById("edit_cost").value = med.costPrice;
+        document.getElementById("edit_auto_selling").value = med.sellingPrice;
+    }
 
     document.getElementById("edit_modal").style.display = "flex";
 }
@@ -720,18 +807,13 @@ function processTransaction() {
 
     const costValue = costInput.value.trim();
 
-    let missingFields = [];
-
     if (costValue === "") {
-        missingFields.push("Buying Price");
         markInputError("edit_cost");
-    }
 
-    if (missingFields.length > 0) {
         showMessageModal(
             "error",
-            "Missing Required Fields",
-            missingFields.join(", ") + " required."
+            "Missing Required Field",
+            "Buying Price is required."
         );
 
         return;
@@ -752,16 +834,25 @@ function processTransaction() {
     }
 
     const med = supplies[currentMedicineIndex];
+    const newestBatch = getNewestBatch(med);
 
-    med.batches.forEach(function (batch) {
-        batch.costPrice = newCost;
-        batch.sellingPrice = calculateSellingPrice(newCost);
-    });
+    if (!newestBatch) {
+        showMessageModal(
+            "error",
+            "No Batch Found",
+            "There is no batch available to edit."
+        );
+
+        return;
+    }
+
+    newestBatch.costPrice = newCost;
+    newestBatch.sellingPrice = calculateSellingPrice(newCost);
+
+    autoSellingInput.value = newestBatch.sellingPrice;
 
     consolidateBatches(med);
     updateMedicineHighestPrice(med);
-
-    autoSellingInput.value = calculateSellingPrice(newCost);
 
     saveInventoryData();
 
@@ -774,7 +865,7 @@ function processTransaction() {
     showMessageModal(
         "success",
         "Price Updated Successfully",
-        med.name + " price has been updated for all current batches."
+        "Only the newest batch price was updated."
     );
 }
 
@@ -887,7 +978,7 @@ function processAddBatch() {
     showMessageModal(
         "success",
         "Batch Added Successfully",
-        "The new stock was added under the same medicine. The selling price is now based on the highest buying price."
+        "The new stock was added under the same medicine."
     );
 }
 
@@ -957,6 +1048,8 @@ window.onload = function () {
 
     setupAutoSellingPriceCalculation();
 };
+
+
 function importExcel() {
     let file = document.getElementById("excel-import").files[0];
     let reader = new FileReader();
@@ -1006,3 +1099,5 @@ function importExcel() {
     };
     reader.readAsArrayBuffer(file);
 }
+
+  
