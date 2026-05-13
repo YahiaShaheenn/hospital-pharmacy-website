@@ -213,20 +213,32 @@ if (sortedMedicines.length === 0) {
 
 let employeeTotals = {};
 
-salesHistory.forEach(function(sale){
+const now = new Date();
+const currentMonth = now.getMonth();
+const currentYear = now.getFullYear();
 
+let monthlySales = salesHistory.filter(function(sale) {
+    const saleDate = new Date(sale.date);
+    return saleDate.getMonth() === currentMonth && saleDate.getFullYear() === currentYear;
+});
+
+monthlySales.forEach(function(sale){
     let seller = sale.seller;
-
     if(employeeTotals[seller]){
         employeeTotals[seller] += sale.total;
     } else {
         employeeTotals[seller] = sale.total;
     }
-
 });
+
+const doctors = JSON.parse(localStorage.getItem("doctors")) || [];
 
 let sortedEmployees = Object.entries(employeeTotals).sort(function(a, b){
     return b[1] - a[1];
+}).filter(function([seller]) {
+    return doctors.some(function(doc) {
+        return doc.username === seller;
+    });
 });
 
 let employeeSection = document.getElementById("employeeMonthSection");
@@ -235,11 +247,8 @@ let employeeBox = document.getElementById("employeeMonthBox");
 employeeBox.innerHTML = "";
 
 if(sortedEmployees.length === 0){
-
     employeeSection.style.display = "none";
-
 } else {
-
     let topEmployee = sortedEmployees[0][0];
     let topSales = sortedEmployees[0][1];
 
