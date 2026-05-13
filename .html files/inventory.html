@@ -136,7 +136,42 @@
 
     </main>
 
-    <!-- ADD NEW BATCH MODAL -->
+   <!-- EDIT ALL BATCH PRICES MODAL -->
+<div id="edit_modal" class="modal_overlay">
+
+    <div class="modal_content" style="width: 500px;">
+
+        <h3>Edit Medicine Price</h3>
+
+        <p style="margin-bottom: 15px;">
+            <strong>Medicine:</strong>
+            <span id="edit_medicine_name" style="color: #409fa8; font-size: 1.1em;"></span>
+        </p>
+
+        <div class="new_med_grid" style="grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
+
+            <div class="input_group">
+                <label>New Buying Price for All Batches</label>
+                <input type="number" id="edit_cost" placeholder="0.00">
+            </div>
+
+            <div class="input_group">
+                <label>Auto Selling Price</label>
+                <input type="text" id="edit_auto_selling" placeholder="Calculated automatically" readonly>
+            </div>
+
+        </div>
+
+        <div class="edit_buttons">
+            <button class="add_btn" onclick="processTransaction()">Update All Batch Prices</button>
+            <button class="cancel_btn" onclick="closeTransactionModal()">Cancel</button>
+        </div>
+
+    </div>
+
+</div>
+
+    <!-- ADD NEW EXPIRY / PRICE BATCH MODAL -->
     <div id="add_batch_modal" class="modal_overlay">
 
         <div class="modal_content" style="width: 500px;">
@@ -161,7 +196,7 @@
                 </div>
 
                 <div class="input_group">
-                    <label>Buying Price for This Batch Only (EGP)</label>
+                    <label>Buying Price (EGP)</label>
                     <input type="number" id="batch_cost" placeholder="0.00">
                 </div>
 
