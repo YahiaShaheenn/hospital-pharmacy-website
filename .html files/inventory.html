@@ -21,7 +21,7 @@
         <section class="form_section">
 
             <h3 style="color: #2c3e50; border-bottom: 2px solid #409fa8; padding-bottom: 10px;">
-                Add New Medicine 
+                Add New Medicine
             </h3>
 
             <div class="new_med_grid" style="grid-template-columns: repeat(4, 1fr);">
@@ -74,8 +74,13 @@
                 <button class="add_new_btn" onclick="addNewMedicine()" style="grid-column: 1 / -1; margin-top: 15px;">
                     Add to Inventory Stock
                 </button>
+
                 <input type="file" id="excel-import" accept=".xlsx, .xls" style="display:none" onchange="importExcel()">
-                <button class="add_new_btn" onclick="document.getElementById('excel-import').click()">Import from Excel</button>
+
+                <button class="add_new_btn" onclick="document.getElementById('excel-import').click()">
+                    Import from Excel
+                </button>
+
             </div>
 
         </section>
