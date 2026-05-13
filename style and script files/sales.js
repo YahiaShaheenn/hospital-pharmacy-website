@@ -7,6 +7,7 @@ window.onload = function() {
         renderCart();
     }
     if (sessionStorage.getItem("admin") === "true") {
+         window.location.href = "dashboard.html";
     showAlert("Admins cannot access the Sales page.");
 }
 }
