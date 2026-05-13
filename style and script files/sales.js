@@ -38,6 +38,7 @@ function searchmed() {
             <div class="medicine-result">
                 <p><strong>${supplies[i].name}</strong></p>
                 <p>Price: ${supplies[i].sellingPrice} EGP</p>
+                <p>Stock: ${getAvailableStock(supplies[i])}</p>
                 <button onclick="addToCart(${i})">Add to Cart</button>
             </div>
         `;
@@ -48,10 +49,7 @@ function searchmed() {
     }
 }
 function addToCart(i) {
-    let availableStock = Array.isArray(supplies[i].batches)
-        ? supplies[i].batches.reduce(function(sum, b) { return sum + b.stock; }, 0)
-        : supplies[i].stock;
-
+   let availableStock = getAvailableStock(supplies[i]);
     if (availableStock <= 0) {
         showAlert("This item is out of stock!");
         return;
@@ -127,10 +125,7 @@ function renderCart() {                                          // render cart 
 function increaseQty(j) {
     for (let i = 0; i < supplies.length; i++) {
         if (supplies[i].name === cart[j].name) {
-            let availableStock = Array.isArray(supplies[i].batches)
-                ? supplies[i].batches.reduce(function(sum, b) { return sum + b.stock; }, 0)
-                : supplies[i].stock;
-
+            let availableStock = getAvailableStock(supplies[i]);
             if (cart[j].qty >= availableStock) {
                 showAlert("No more stock available for " + cart[j].name + "!");
                 return;
@@ -402,4 +397,17 @@ function processRefund(saleIndex) {
 
 function closeRefund() {
     document.getElementById("refund-bg").style.display = "none";
+}
+
+function getAvailableStock(supply) {
+    if (Array.isArray(supply.batches)) {
+        let total = 0;
+        for (let b = 0; b < supply.batches.length; b++) {
+            if (new Date(supply.batches[b].expiryDate) >= new Date()) {
+                total += supply.batches[b].stock;
+            }
+        }
+        return total;
+    }
+    return supply.stock;
 }
