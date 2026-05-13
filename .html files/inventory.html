@@ -1,13 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inventory</title>
+
     <link rel="stylesheet" href="../style and script files/inventory.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=ADLaM Display">
 </head>
+
 <body>
 
     <!-- Dynamic Layout Header -->
@@ -17,12 +20,18 @@
 
         <!-- MAIN FUNC OF INVENTORY: REGISTER BOUGHT MEDS -->
         <section class="form_section">
-            <h3 style="color: #2c3e50; border-bottom: 2px solid #409fa8; padding-bottom: 10px;">Log Bought Medicines (Main Inventory)</h3>
+
+            <h3 style="color: #2c3e50; border-bottom: 2px solid #409fa8; padding-bottom: 10px;">
+                Log Bought Medicines (Main Inventory)
+            </h3>
+
             <div class="new_med_grid" style="grid-template-columns: repeat(4, 1fr);">
+
                 <div class="input_group">
                     <label>Medicine Name</label>
                     <input type="text" id="new_name" placeholder="Enter name">
                 </div>
+
                 <div class="input_group">
                     <label>Category</label>
                     <select id="new_category">
@@ -34,24 +43,27 @@
                         <option value="Supplies">Supplies</option>
                     </select>
                 </div>
+
                 <div class="input_group">
                     <label>Quantity Bought</label>
                     <input type="number" id="new_stock" placeholder="0">
                 </div>
+
                 <div class="input_group">
                     <label>Expiry Date</label>
                     <input type="date" id="new_expiry">
                 </div>
+
                 <div class="input_group">
                     <label>Buying Price (EGP)</label>
                     <input type="number" id="new_cost" placeholder="0.00">
                 </div>
+
                 <div class="input_group">
-                    <label>Selling Price (EGP)</label>
-                    <input type="number" id="new_selling" placeholder="0.00">
+                    <label>Auto Selling Price (EGP)</label>
+                    <input type="text" id="new_auto_selling" placeholder="Calculated automatically" readonly>
                 </div>
-                
-                <!-- THE ONLY EXTRA OPTION: Refundable or Not -->
+
                 <div class="input_group">
                     <label>Refund Policy</label>
                     <select id="new_refundable">
@@ -60,37 +72,49 @@
                     </select>
                 </div>
 
-                <button class="add_new_btn" onclick="addNewMedicine()" style="grid-column: 1 / -1; margin-top: 15px;">Add to Inventory Stock</button>
+                <button class="add_new_btn" onclick="addNewMedicine()" style="grid-column: 1 / -1; margin-top: 15px;">
+                    Add to Inventory Stock
+                </button>
+
             </div>
+
         </section>
 
         <!-- SUMMARY CARDS -->
         <section class="summary_cards">
+
             <div class="summary_card">
                 <h3>Total Items</h3>
                 <p id="total_items">0</p>
             </div>
+
             <div class="summary_card warning_card">
                 <h3>Low Stock</h3>
                 <p id="low_stock_count">0</p>
             </div>
+
             <div class="summary_card danger_card">
                 <h3>Expired Items</h3>
                 <p id="expired_count">0</p>
             </div>
+
         </section>
 
         <!-- SEARCH SECTION -->
         <section class="search_section">
+
             <div class="search_bar_group">
                 <input type="text" id="searchInput" placeholder="Search medicine..." onkeyup="searchMedicine()">
                 <button class="reset_btn" onclick="resetSearch()">Reset View</button>
             </div>
+
         </section>
 
         <!-- INVENTORY TABLE -->
         <section class="table_section">
+
             <table>
+
                 <thead>
                     <tr>
                         <th>Medicine Name</th>
@@ -98,30 +122,119 @@
                         <th>Stock</th>
                         <th>Expiry Date</th>
                         <th>Prices (Buy/Sell)</th>
-                        <th>Refundable?</th> 
+                        <th>Refundable?</th>
                         <th>Status</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
+
                 <tbody id="inventory_table_body"></tbody>
+
             </table>
+
         </section>
+
     </main>
 
-    <!-- REFILL MODAL -->
+    <!-- EDIT PRICE MODAL -->
     <div id="edit_modal" class="modal_overlay">
-        <div class="modal_content">
-            <h3>Refill Stock</h3>
-            <p><strong>Medicine:</strong> <span id="edit_medicine_name"></span></p>
-            <label>Quantity to add:</label>
-            <input type="number" id="edit_qty" placeholder="0">
+
+        <div class="modal_content" style="width: 500px;">
+
+            <h3>Edit Medicine Price</h3>
+
+            <p style="margin-bottom: 15px;">
+                <strong>Medicine:</strong>
+                <span id="edit_medicine_name" style="color: #409fa8; font-size: 1.1em;"></span>
+            </p>
+
+            <div class="new_med_grid" style="grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
+
+                <div class="input_group">
+                    <label>Buying Price (EGP)</label>
+                    <input type="number" id="edit_cost" placeholder="0.00">
+                </div>
+
+                <div class="input_group">
+                    <label>Auto Selling Price (EGP)</label>
+                    <input type="text" id="edit_auto_selling" placeholder="Calculated automatically" readonly>
+                </div>
+
+            </div>
+
             <div class="edit_buttons">
-                <button class="add_btn" onclick="processTransaction()">Add to Stock ➕</button>
+                <button class="add_btn" onclick="processTransaction()">Save Price Changes</button>
                 <button class="cancel_btn" onclick="closeTransactionModal()">Cancel</button>
             </div>
+
         </div>
+
+    </div>
+
+    <!-- ADD SAME MEDICINE MODAL -->
+    <div id="add_same_modal" class="modal_overlay">
+
+        <div class="modal_content" style="width: 500px;">
+
+            <h3>Add Another Batch</h3>
+
+            <p style="margin-bottom: 15px;">
+                <strong>Medicine:</strong>
+                <span id="same_medicine_name" style="color: #409fa8; font-size: 1.1em;"></span>
+            </p>
+
+            <div class="new_med_grid" style="grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
+
+                <div class="input_group">
+                    <label>Stock Quantity</label>
+                    <input type="number" id="same_stock" placeholder="0">
+                </div>
+
+                <div class="input_group">
+                    <label>Expiry Date</label>
+                    <input type="date" id="same_expiry">
+                </div>
+
+                <div class="input_group">
+                    <label>Buying Price (EGP)</label>
+                    <input type="number" id="same_cost" placeholder="0.00">
+                </div>
+
+                <div class="input_group">
+                    <label>Auto Selling Price (EGP)</label>
+                    <input type="text" id="same_auto_selling" placeholder="Calculated automatically" readonly>
+                </div>
+
+            </div>
+
+            <div class="edit_buttons">
+                <button class="add_btn" onclick="processAddSameMedicine()">Add Batch</button>
+                <button class="cancel_btn" onclick="closeAddSameMedicineModal()">Cancel</button>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- MESSAGE MODAL FOR SUCCESS / ERROR -->
+    <div id="message_modal" class="modal_overlay message_overlay">
+
+        <div class="message_modal_content">
+
+            <span id="message_icon" class="material-icons message_icon">check_circle</span>
+
+            <h3 id="message_title">Message</h3>
+
+            <p id="message_text">Message text</p>
+
+            <button class="message_ok_btn" onclick="closeMessageModal()">OK</button>
+
+        </div>
+
     </div>
 
     <script src="../style and script files/inventory.js"></script>
+
 </body>
+
 </html>
