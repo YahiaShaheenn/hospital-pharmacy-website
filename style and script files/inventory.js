@@ -1,7 +1,9 @@
 let supplies = [];
+let inventoryHistory = JSON.parse(localStorage.getItem("inventoryHistory")) || [];
 
 let currentMedicineIndex = -1;
 let currentBatchMedicineIndex = -1;
+let currentDeleteMedicineIndex = -1;
 
 /* 
     Selling price is calculated automatically.
@@ -15,11 +17,7 @@ function normalizeName(name) {
     return name.trim().toLowerCase();
 }
 
-function isAdminUser() {
-    const role = localStorage.getItem("userRole");
-
-    return role === "admin";
-}
+isAdmin = sessionStorage.getItem("admin") === "true";
 
 function loadInventoryData() {
     const saved = localStorage.getItem("suppliesStock");
@@ -33,6 +31,37 @@ function loadInventoryData() {
 
 function saveInventoryData() {
     localStorage.setItem("suppliesStock", JSON.stringify(supplies));
+}
+
+function saveInventoryHistory() {
+    localStorage.setItem("inventoryHistory", JSON.stringify(inventoryHistory));
+}
+
+function formatInventoryEventTimestamp() {
+    const now = new Date();
+    return {
+        date: now.toISOString().split("T")[0],
+        time: now.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" })
+    };
+}
+
+function addInventoryHistoryEntry(name, category, quantity, expiryDate, costPrice) {
+    const seller = sessionStorage.getItem("currentDoctor") || "Unknown";
+    const timestamp = formatInventoryEventTimestamp();
+
+    inventoryHistory.push({
+        name: name,
+        category: category,
+        date: timestamp.date,
+        time: timestamp.time,
+        seller: seller,
+        expiryDate: expiryDate || "No expiry",
+        costPrice: Number(costPrice).toFixed(2),
+        quantity: Number(quantity),
+        totalPrice: (Number(costPrice) * Number(quantity)).toFixed(2)
+    });
+
+    saveInventoryHistory();
 }
 
 /* 
@@ -454,7 +483,7 @@ function displayTable(data) {
 
         let deleteButtonHTML = "";
 
-        if (isAdminUser() && hasAnyExpiredBatch(med)) {
+        if (isAdmin) {
             deleteButtonHTML = `
                 <button class="btn_delete" onclick="deleteExpiredMedicine(${indexInMain})">
                     Delete
@@ -743,6 +772,7 @@ function addNewMedicine() {
         }
 
         addBatchToMedicine(existingMedicine, stock, exp, cost);
+        addInventoryHistoryEntry(existingMedicine.name, existingMedicine.category, stock, exp, cost);
 
         saveInventoryData();
 
@@ -781,8 +811,8 @@ function addNewMedicine() {
     };
 
     addBatchToMedicine(newMedicine, stock, exp, cost);
-
     supplies.push(newMedicine);
+    addInventoryHistoryEntry(name, cat, stock, exp, cost);
 
     saveInventoryData();
 
@@ -998,6 +1028,7 @@ function processAddBatch() {
     autoSellingInput.value = newSelling;
 
     addBatchToMedicine(med, newStock, expiryValue, newCost);
+    addInventoryHistoryEntry(med.name, med.category, newStock, expiryValue, newCost);
 
     saveInventoryData();
 
@@ -1067,60 +1098,265 @@ function closeDetailsModal() {
     document.getElementById("details_modal").style.display = "none";
 }
 
-/* DELETE EXPIRED STOCK - ADMIN ONLY */
+/* DELETE MEDICINE STOCK - ADMIN ONLY */
 
 function deleteExpiredMedicine(index) {
-    if (!isAdminUser()) {
+    if (!isAdmin) {
         showMessageModal(
             "error",
             "Access Denied",
-            "Only admin can delete expired medicines."
+            "Only admin can delete medicine stock."
         );
 
         return;
     }
 
+    currentDeleteMedicineIndex = index;
     const med = supplies[index];
 
-    if (!hasAnyExpiredBatch(med)) {
+    if (hasAnyExpiredBatch(med)) {
+        const removedCount = removeExpiredBatchesFromMedicine(med);
+
+        if (!Array.isArray(med.batches) || getTotalStock(med) === 0) {
+            supplies.splice(index, 1);
+        } else {
+            consolidateBatches(med);
+            updateMedicineHighestPrice(med);
+        }
+
+        saveInventoryData();
+        displayTable(supplies);
+        updateSummaryCards();
+
         showMessageModal(
-            "error",
-            "Cannot Delete",
-            "This medicine does not have any expired batch."
+            "success",
+            "Expired Stock Removed",
+            removedCount > 0
+                ? removedCount + " expired unit(s) were removed from " + med.name + "."
+                : "Expired stock was removed from " + med.name + "."
         );
 
         return;
     }
 
-    const confirmDelete = confirm("Delete expired stock for this medicine?");
+    const totalStock = getTotalStock(med);
 
-    if (!confirmDelete) {
+    document.getElementById("delete_medicine_name").textContent = med.name;
+    document.getElementById("delete_total_stock").textContent = totalStock;
+    document.getElementById("delete_quantity").value = "";
+    document.getElementById("delete_batch_container").style.display = Array.isArray(med.batches) && med.batches.length > 0 ? "block" : "none";
+
+    populateDeleteBatchSelect(med);
+    updateDeleteBatchStockInfo();
+
+    document.getElementById("delete_modal").style.display = "flex";
+}
+
+function closeDeleteModal() {
+    document.getElementById("delete_modal").style.display = "none";
+}
+
+function removeExpiredBatchesFromMedicine(med) {
+    let removed = 0;
+
+    if (!Array.isArray(med.batches) || med.batches.length === 0) {
+        if (isExpiredDate(med.expiryDate)) {
+            removed = Number(med.stock) || 0;
+            med.stock = 0;
+        }
+        return removed;
+    }
+
+    const remainingBatches = [];
+
+    med.batches.forEach(function (batch) {
+        const batchStock = Number(batch.stock) || 0;
+        if (isExpiredDate(batch.expiryDate)) {
+            removed += batchStock;
+        } else {
+            remainingBatches.push(batch);
+        }
+    });
+
+    med.batches = remainingBatches;
+    return removed;
+}
+
+function populateDeleteBatchSelect(med) {
+    const batchSelect = document.getElementById("delete_batch_select");
+    batchSelect.innerHTML = "";
+
+    if (!Array.isArray(med.batches) || med.batches.length === 0) {
+        batchSelect.disabled = true;
         return;
     }
 
-    if (Array.isArray(med.batches)) {
-        med.batches = med.batches.filter(function (batch) {
-            return !isExpiredDate(batch.expiryDate);
-        });
+    med.batches.forEach(function (batch, batchIndex) {
+        const batchStock = Number(batch.stock) || 0;
+        const expiry = batch.expiryDate || "No expiry";
+        const cost = Number(batch.costPrice) || Number(med.costPrice) || 0;
+        const label = `Batch ${batchIndex + 1} — ${batchStock} unit(s) — ${expiry} — ${cost} EGP`;
+
+        const option = document.createElement("option");
+        option.value = batchIndex;
+        option.textContent = label;
+        batchSelect.appendChild(option);
+    });
+
+    batchSelect.disabled = false;
+}
+
+function updateDeleteBatchStockInfo() {
+    const med = supplies[currentDeleteMedicineIndex];
+    const batchSelect = document.getElementById("delete_batch_select");
+    const batchInfo = document.getElementById("delete_batch_info");
+
+    if (!med || !Array.isArray(med.batches) || med.batches.length === 0) {
+        batchInfo.textContent = "";
+        return;
     }
 
+    const batchIndex = parseInt(batchSelect.value, 10);
+    const batch = med.batches[batchIndex];
+
+    if (!batch) {
+        batchInfo.textContent = "";
+        return;
+    }
+
+    batchInfo.textContent = "Selected batch has " + (Number(batch.stock) || 0) + " unit(s).";
+}
+
+function removeQuantityFromBatch(med, batchIndex, quantityToRemove) {
     if (!Array.isArray(med.batches) || med.batches.length === 0) {
-        supplies.splice(index, 1);
+        med.stock = Math.max(0, (Number(med.stock) || 0) - quantityToRemove);
+        return;
+    }
+
+    const batch = med.batches[batchIndex];
+    if (!batch) {
+        return;
+    }
+
+    const batchStock = Number(batch.stock) || 0;
+    if (quantityToRemove >= batchStock) {
+        med.batches.splice(batchIndex, 1);
+    } else {
+        batch.stock = batchStock - quantityToRemove;
+    }
+}
+
+function removeStockFromMedicine(med, quantityToRemove) {
+    let remaining = quantityToRemove;
+
+    if (!Array.isArray(med.batches) || med.batches.length === 0) {
+        med.stock = Math.max(0, (Number(med.stock) || 0) - remaining);
+        return;
+    }
+
+    med.batches.sort(function (a, b) {
+        const expiryA = new Date(a.expiryDate).getTime() || 0;
+        const expiryB = new Date(b.expiryDate).getTime() || 0;
+        return expiryA - expiryB || (Number(a.addedAt) - Number(b.addedAt));
+    });
+
+    med.batches = med.batches.reduce(function (acc, batch) {
+        if (remaining <= 0) {
+            acc.push(batch);
+            return acc;
+        }
+
+        const batchStock = Number(batch.stock) || 0;
+
+        if (batchStock <= remaining) {
+            remaining -= batchStock;
+            return acc;
+        }
+
+        batch.stock = batchStock - remaining;
+        remaining = 0;
+        acc.push(batch);
+        return acc;
+    }, []);
+}
+
+function processDeleteMedicine() {
+    clearInputErrors();
+
+    const quantityInput = document.getElementById("delete_quantity");
+    const quantityValue = quantityInput.value.trim();
+
+    if (quantityValue === "") {
+        markInputError("delete_quantity");
+
+        showMessageModal(
+            "error",
+            "Missing Required Field",
+            "Quantity to remove is required."
+        );
+
+        return;
+    }
+
+    const quantity = parseInt(quantityValue, 10);
+    const med = supplies[currentDeleteMedicineIndex];
+
+    if (!med) {
+        showMessageModal(
+            "error",
+            "Invalid Medicine",
+            "Selected medicine could not be found."
+        );
+
+        return;
+    }
+
+    const batchSelect = document.getElementById("delete_batch_select");
+    const hasBatchSelection = !batchSelect.disabled && batchSelect.options.length > 0;
+    const selectedBatchIndex = hasBatchSelection ? parseInt(batchSelect.value, 10) : -1;
+
+    const selectedStock = hasBatchSelection && med.batches && med.batches[selectedBatchIndex]
+        ? Number(med.batches[selectedBatchIndex].stock) || 0
+        : getTotalStock(med);
+
+    if (isNaN(quantity) || quantity <= 0 || quantity > selectedStock) {
+        markInputError("delete_quantity");
+
+        showMessageModal(
+            "error",
+            "Invalid Quantity",
+            "Enter a quantity between 1 and " + selectedStock + "."
+        );
+
+        return;
+    }
+
+    const medicineName = med.name;
+    const removeAllFromBatch = hasBatchSelection && quantity === selectedStock;
+    const removeAll = !hasBatchSelection && quantity === getTotalStock(med);
+
+    if (hasBatchSelection) {
+        removeQuantityFromBatch(med, selectedBatchIndex, quantity);
+    } else {
+        removeStockFromMedicine(med, quantity);
+    }
+
+    if (!Array.isArray(med.batches) || getTotalStock(med) === 0) {
+        supplies.splice(currentDeleteMedicineIndex, 1);
     } else {
         consolidateBatches(med);
         updateMedicineHighestPrice(med);
     }
 
     saveInventoryData();
-
     displayTable(supplies);
-
     updateSummaryCards();
+    closeDeleteModal();
 
     showMessageModal(
         "success",
-        "Expired Stock Deleted",
-        "The expired stock was deleted successfully."
+        "Stock Removed",
+        quantity + " unit(s) removed from " + medicineName + " stock."
     );
 }
 
@@ -1172,6 +1408,7 @@ function importExcel() {
 
             if (existing) {
                 addBatchToMedicine(existing, stock, expiry, cost);
+                addInventoryHistoryEntry(existing.name, existing.category, stock, expiry, cost);
             } else {
                 const newMedicine = {
                     name: name,
@@ -1186,8 +1423,8 @@ function importExcel() {
                 };
 
                 addBatchToMedicine(newMedicine, stock, expiry, cost);
-
                 supplies.push(newMedicine);
+                addInventoryHistoryEntry(name, cat, stock, expiry, cost);
             }
         }
 

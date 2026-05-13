@@ -257,6 +257,47 @@
 
     </div>
 
+    <!-- DELETE STOCK MODAL -->
+    <div id="delete_modal" class="modal_overlay">
+
+        <div class="modal_content" style="width: 500px;">
+
+            <h3>Remove Stock Quantity</h3>
+
+            <p style="margin-bottom: 15px;">
+                <strong>Medicine:</strong>
+                <span id="delete_medicine_name" style="color: #409fa8; font-size: 1.1em;"></span>
+            </p>
+
+            <p style="margin-bottom: 15px; color: #7f8c8d; font-size: 0.9rem;">
+                Total stock available:
+                <strong><span id="delete_total_stock">0</span></strong>
+            </p>
+
+            <div class="new_med_grid" style="grid-template-columns: 1fr; gap: 15px; margin-bottom: 20px;">
+
+                <div class="input_group" id="delete_batch_container">
+                    <label>Select Batch</label>
+                    <select id="delete_batch_select" onchange="updateDeleteBatchStockInfo()"></select>
+                    <p id="delete_batch_info" style="margin-top: 8px; color: #7f8c8d; font-size: 0.9rem;"></p>
+                </div>
+
+                <div class="input_group">
+                    <label>Quantity to remove</label>
+                    <input type="number" id="delete_quantity" placeholder="0" min="1" step="1">
+                </div>
+
+            </div>
+
+            <div class="edit_buttons">
+                <button class="add_btn" onclick="processDeleteMedicine()">Remove Stock</button>
+                <button class="cancel_btn" onclick="closeDeleteModal()">Cancel</button>
+            </div>
+
+        </div>
+
+    </div>
+
     <!-- MESSAGE MODAL -->
     <div id="message_modal" class="modal_overlay message_overlay">
 

@@ -10,7 +10,7 @@ const inventoryTableBody = document.getElementById("inventory_report_body");
 //beta3et el medicine dropdown fe inventory report
 const inventoryNameFilter = document.getElementById("inventory_name_filter");
 const inventoryCategoryFilter = document.getElementById("inventory_category_filter");
-const stockFilter = document.getElementById("stock_filter");
+const inventorySellerFilter = document.getElementById("inventory_seller_filter");
 
 //el hanestakhdemhom fe functions : show/hide sales/inventory report
 const salesReportContainer = document.getElementById("sales_report_container");
@@ -19,10 +19,11 @@ const inventoryReportContainer = document.getElementById("inventory_report_conta
 //3ashan el data betetsagel fel local storage as text,fa benhawelha le array/objects be JSON.parse
 //law fady yeb2a yehotely array fadi 3ashan mayeb2ash error lama yeb2a fe loop 3aleh w mayetba3sh null
 let salesHistory = JSON.parse(localStorage.getItem("salesHistory")) || [];
+let inventoryHistory = JSON.parse(localStorage.getItem("inventoryHistory")) || [];
 
 //betebda2 be all data metsagela fel local storage, w ba3den betetghayar ma3 el filter
 let currentSalesData = salesHistory;
-let currentInventoryData = supplies;
+let currentInventoryData = inventoryHistory;
 
 //3ashan akhali max date fel input hwa today's date
 //toISOString bete3mel format date w time, fa ben split 3and T 3ashan nakhod el date bas
@@ -195,20 +196,18 @@ function displayInventoryReport(data) {
 
     data.forEach(function (item) {
 
-        let status = getStockStatus(item);
-
         inventoryTableBody.innerHTML += `
 
             <tr>
 
                 <td>${item.name}</td>
-                <td>${item.category}</td>
-                <td>${item.costPrice} EGP</td>
-                <td>${item.sellingPrice} EGP</td>
-                <td>${item.stock}</td>
-                <td>${item.minStock}</td>
+                <td>${item.date}</td>
+                <td>${item.time}</td>
+                <td>${item.seller}</td>
                 <td>${item.expiryDate}</td>
-                <td>${status}</td>
+                <td>${item.costPrice} EGP</td>
+                <td>${item.quantity}</td>
+                <td>${item.totalPrice} EGP</td>
 
             </tr>
         `;
@@ -222,13 +221,19 @@ function loadInventoryMedicineOptions() {
 
     inventoryNameFilter.innerHTML = `<option value="">All Medicines</option>`;
 
-    supplies.forEach(function (item) {
+    let names = [];
 
+    inventoryHistory.forEach(function (item) {
+        if (!names.includes(item.name)) {
+            names.push(item.name);
+        }
+    });
+
+    names.forEach(function (name) {
         inventoryNameFilter.innerHTML += `
 
-            <option value="${item.name}">${item.name}</option>
+            <option value="${name}">${name}</option>
         `;
-
     });
 
 }
@@ -241,7 +246,7 @@ function loadInventoryCategories() {
     //ba3mel empty array 3ashan a store feha el unique categories bas
     let categories = [];
 
-    supplies.forEach(function (item) {
+    inventoryHistory.forEach(function (item) {
 
         if (!categories.includes(item.category)) {
 
@@ -258,6 +263,27 @@ function loadInventoryCategories() {
             <option value="${category}">${category}</option>
         `;
 
+    });
+
+}
+
+function loadInventorySellerOptions() {
+
+    inventorySellerFilter.innerHTML = `<option value="">All Sellers</option>`;
+
+    let sellers = [];
+
+    inventoryHistory.forEach(function (item) {
+        if (!sellers.includes(item.seller)) {
+            sellers.push(item.seller);
+        }
+    });
+
+    sellers.forEach(function (seller) {
+        inventorySellerFilter.innerHTML += `
+
+            <option value="${seller}">${seller}</option>
+        `;
     });
 
 }
@@ -528,34 +554,15 @@ document.getElementById("inventory_filter_button").addEventListener("click", fun
     //bakhod el selected filter values
     const nameValue = inventoryNameFilter.value;
     const categoryValue = inventoryCategoryFilter.value;
-    const stockValue = stockFilter.value;
+    const sellerValue = inventorySellerFilter.value;
 
-    let filteredInventory = supplies.filter(function (item) {
+    let filteredInventory = inventoryHistory.filter(function (item) {
 
         let nameMatch = nameValue === "" || item.name === nameValue;
         let categoryMatch = categoryValue === "" || item.category === categoryValue;
+        let sellerMatch = sellerValue === "" || item.seller === sellerValue;
 
-        let stockMatch = true;
-
-        if (stockValue === "available") {
-
-            stockMatch = item.stock > item.minStock;
-
-        }
-
-        else if (stockValue === "low") {
-
-            stockMatch = item.stock > 0 && item.stock <= item.minStock;
-
-        }
-
-        else if (stockValue === "out") {
-
-            stockMatch = item.stock === 0;
-
-        }
-
-        return nameMatch && categoryMatch && stockMatch;
+        return nameMatch && categoryMatch && sellerMatch;
 
     });
 
@@ -570,9 +577,9 @@ document.getElementById("inventory_reset_button").addEventListener("click", func
 
     inventoryNameFilter.value = "";
     inventoryCategoryFilter.value = "";
-    stockFilter.value = "";
+    inventorySellerFilter.value = "";
 
-    currentInventoryData = supplies;
+    currentInventoryData = inventoryHistory;
 
     displayInventoryReport(currentInventoryData);
 
@@ -662,13 +669,11 @@ document.getElementById("inventory_export_button").addEventListener("click", fun
 
     }
 
-    let csv = "Medicine Name,Category,Cost Price,Selling Price,Stock,Minimum Stock,Expiry Date,Status\n";
+    let csv = "Medicine Name,Date,Time,Seller,Expiry Date,Buy Price,Quantity Added,Total Price\n";
 
     currentInventoryData.forEach(function (item) {
 
-        let status = getStockStatus(item);
-
-        csv += `${item.name},${item.category},${item.costPrice} EGP,${item.sellingPrice} EGP,${item.stock},${item.minStock},${item.expiryDate},${status}\n`;
+        csv += `${item.name},${item.date},${item.time},${item.seller},${item.expiryDate},${item.costPrice} EGP,${item.quantity},${item.totalPrice} EGP\n`;
 
     });
 
@@ -711,7 +716,8 @@ loadSellerOptions();
 
 loadInventoryMedicineOptions();
 loadInventoryCategories();
+loadInventorySellerOptions();
 
 displayReports(salesHistory);
 updateCards(salesHistory);
-displayInventoryReport(supplies);
+displayInventoryReport(inventoryHistory);
