@@ -208,3 +208,63 @@ if (sortedMedicines.length === 0) {
     }
 
 }
+
+
+
+let employeeTotals = {};
+
+salesHistory.forEach(function(sale){
+
+    let seller = sale.seller;
+
+    if(employeeTotals[seller]){
+        employeeTotals[seller] += sale.total;
+    } else {
+        employeeTotals[seller] = sale.total;
+    }
+
+});
+
+let sortedEmployees = Object.entries(employeeTotals).sort(function(a, b){
+    return b[1] - a[1];
+});
+
+let employeeSection = document.getElementById("employeeMonthSection");
+let employeeBox = document.getElementById("employeeMonthBox");
+
+employeeBox.innerHTML = "";
+
+if(sortedEmployees.length === 0){
+
+    employeeSection.style.display = "none";
+
+} else {
+
+    let topEmployee = sortedEmployees[0][0];
+    let topSales = sortedEmployees[0][1];
+
+    employeeBox.innerHTML = `
+        <div class="employee-month-card">
+
+            <div class="trophy-side">
+                <span class="material-icons trophy-icon">emoji_events</span>
+                <div class="shine"></div>
+            </div>
+
+            <div class="employee-info">
+                <p class="top-text">TOP PERFORMER</p>
+                <h1>${topEmployee}</h1>
+
+                <div class="sales-box">
+                    <span class="material-icons">payments</span>
+                    <p>Total Sales: ${topSales} EGP</p>
+                </div>
+            </div>
+
+            <div class="badge-side">
+                <div class="rank-circle">#1</div>
+            </div>
+
+        </div>
+    `;
+}
