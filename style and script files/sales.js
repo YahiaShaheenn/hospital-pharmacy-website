@@ -6,9 +6,9 @@ window.onload = function() {
     if(document.getElementById("cart")) {
         renderCart();
     }
-    if (sessionStorage.getItem("admin") === "true") {
-         window.location.href = "dashboard.html";
+    if (sessionStorage.getItem("admin") === "true" && document.getElementById("cart")) {
     showAlert("Admins cannot access the Sales page.");
+    document.getElementById("alert-popup").querySelector("button").setAttribute("onclick", "window.location.href='dashboard.html'; closeAlert();");
 }
 }
 let supplies = JSON.parse(localStorage.getItem("suppliesStock")) || [];
@@ -16,28 +16,37 @@ let supplies = JSON.parse(localStorage.getItem("suppliesStock")) || [];
 
 let cart = JSON.parse(localStorage.getItem("cart")) || []; //// restore cart from previous session
 
-function searchmed() {  // Search medicines by name and display results
-    let input = document.getElementById("searchInput").value.toLowerCase(); //searchs by partial name match
+function searchmed() {
+    let input = document.getElementById("searchInput").value.toLowerCase();
     let results = document.getElementById("searchResults");
     results.innerHTML = "";
 
-    for (let i = 0; i < supplies.length; i++) {    //loops the supply list 
+    let results_array = [];
+    for (let i = 0; i < supplies.length; i++) {
         if (supplies[i].name.toLowerCase().includes(input)) {
-            results.innerHTML += `
-                <div class="medicine-result">
-                    <p><strong>${supplies[i].name}</strong></p>  
-                    <p>Price: ${supplies[i].sellingPrice} EGP</p>
-                    <button onclick="addToCart(${i})">Add to Cart</button>
-                </div>
-            `;
+            results_array.push({ supply: supplies[i], index: i });
         }
+    }
+
+    results_array.sort(function(a, b) {
+        return new Date(a.supply.expiryDate) - new Date(b.supply.expiryDate);
+    });
+
+    for (let k = 0; k < results_array.length; k++) {
+        let i = results_array[k].index;
+        results.innerHTML += `
+            <div class="medicine-result">
+                <p><strong>${supplies[i].name}</strong></p>
+                <p>Price: ${supplies[i].sellingPrice} EGP</p>
+                <button onclick="addToCart(${i})">Add to Cart</button>
+            </div>
+        `;
     }
 
     if (results.innerHTML === "") {
         results.innerHTML = "<p>No medicine found.</p>";
     }
 }
-
 function addToCart(i) {   // add selected medicine to cart 
     if (supplies[i].stock <= 0) {
         showAlert("This item is out of stock!");   //checks if the item is out of stock before adding to cart
@@ -70,8 +79,8 @@ function renderCart() {                                          // render cart 
     cartDiv.innerHTML = "";
     let total = 0;
     for (let j = 0; j < cart.length; j++) {
-        let subtotal = cart[j].price * cart[j].qty;
-        total += subtotal;
+        let subtotal = (cart[j].price * cart[j].qty).toFixed(2);
+        total += parseFloat((cart[j].price * cart[j].qty).toFixed(2));
         cartDiv.innerHTML += `
             <div class="cart-item">
                 <p><strong>${cart[j].name}</strong></p>
@@ -86,7 +95,7 @@ function renderCart() {                                          // render cart 
         `;
     }
     if (cart.length > 0) {
-        cartDiv.innerHTML += `<h3>Total: ${total} EGP</h3>`;
+       cartDiv.innerHTML += `<h3>Total: ${total.toFixed(2)} EGP</h3>`;
     }
     if (cart.length > 0) {
         document.getElementById("cart-title").style.display = "flex";        //gets hidden when cart is empty and shows when there's at least 1 item in cart
@@ -158,8 +167,8 @@ function generateReceipt(paymentmethod) {
     let total = 0;
     let itemsHTML = "";
     for (let j = 0; j < cart.length; j++) {
-        let subtotal = cart[j].price * cart[j].qty;
-        total += subtotal;
+        let subtotal = (cart[j].price * cart[j].qty).toFixed(2);
+        total += parseFloat((cart[j].price * cart[j].qty).toFixed(2));
         itemsHTML += `<p>${cart[j].name} x${cart[j].qty} = ${subtotal} EGP</p>`;
     }
 
@@ -170,7 +179,7 @@ function generateReceipt(paymentmethod) {
         <hr>
         ${itemsHTML}
         <hr>
-        <h4>Total: ${total} EGP</h4>
+       <h4>Total: ${total.toFixed(2)} EGP</h4>
         <p>Payment: ${paymentmethod}</p>
         <p>Thank you!</p>
     `;
