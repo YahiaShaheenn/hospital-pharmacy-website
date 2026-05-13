@@ -1134,4 +1134,3 @@ function exportExcel() {
     XLSX.utils.book_append_sheet(workbook, worksheet, "Inventory");
     XLSX.writeFile(workbook, "pharmacy_inventory.xlsx");
 }
-  
