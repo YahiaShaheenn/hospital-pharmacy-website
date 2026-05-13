@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 (function seedInventory() {
     if (localStorage.getItem("pharmacySupplies")) return; 
 
@@ -21,28 +20,14 @@
 
 let supplies = []; 
 let currentMedicineIndex = -1; 
-=======
-let supplies = [];
-let currentMedicineIndex = -1;
-
-function calculateSellingPrice(cost) {
-    return (cost * 1.20).toFixed(2);
-}
->>>>>>> f4798f1367e8419ff13b8b06f097a287588e09ef
 
 function loadInventoryData() {
     const saved = localStorage.getItem("suppliesStock");
     supplies = saved ? JSON.parse(saved) : [];
-<<<<<<< HEAD
 } 
 
 function saveInventoryData() { 
     localStorage.setItem("pharmacySupplies", JSON.stringify(supplies));
-=======
-}
-function saveInventoryData() {
-    localStorage.setItem("suppliesStock", JSON.stringify(supplies));
->>>>>>> f4798f1367e8419ff13b8b06f097a287588e09ef
 }
 
 function updateSummaryCards() { 
