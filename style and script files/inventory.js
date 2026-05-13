@@ -1099,5 +1099,39 @@ function importExcel() {
     };
     reader.readAsArrayBuffer(file);
 }
+function exportExcel() {
+    let rows = [];
+    for (let i = 0; i < supplies.length; i++) {
+        let med = supplies[i];
+        if (Array.isArray(med.batches) && med.batches.length > 0) {
+            for (let j = 0; j < med.batches.length; j++) {
+                let batch = med.batches[j];
+                rows.push({
+                    "Name": med.name,
+                    "Category": med.category,
+                    "Cost Price": batch.costPrice,
+                    "Stock": batch.stock,
+                    "Min Stock": med.minStock,
+                    "Expiry Date": batch.expiryDate,
+                    "Refundable": med.refundable === "Refundable" ? "true" : "false"
+                });
+            }
+        } else {
+            rows.push({
+                "Name": med.name,
+                "Category": med.category,
+                "Cost Price": med.costPrice,
+                "Stock": med.stock,
+                "Min Stock": med.minStock,
+                "Expiry Date": med.expiryDate,
+                "Refundable": med.refundable === "Refundable" ? "true" : "false"
+            });
+        }
+    }
 
+    let worksheet = XLSX.utils.json_to_sheet(rows);
+    let workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Inventory");
+    XLSX.writeFile(workbook, "pharmacy_inventory.xlsx");
+}
   
