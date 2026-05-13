@@ -158,8 +158,8 @@ function updateCards(data) {
     });
 
     //textContent di 3ashan a change el visible text inside an element
-    document.getElementById("total_sales").textContent = totalSales + " EGP";
-    document.getElementById("total_profit").textContent = totalProfit + " EGP";
+    document.getElementById("total_sales").textContent = Math.round(totalSales) + " EGP";
+    document.getElementById("total_profit").textContent = Math.round(totalProfit) + " EGP";
     document.getElementById("total_sales_count").textContent = totalMedicinesSold;
 
 }
