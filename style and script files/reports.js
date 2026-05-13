@@ -167,29 +167,6 @@ function updateCards(data) {
 
 //inventory report functions
 
-function getStockStatus(item) {
-
-    if (item.stock === 0) {
-
-        return "Out of Stock";
-
-    }
-
-    else if (item.stock <= item.minStock) {
-
-        return "Low Stock";
-
-    }
-
-    else {
-
-        return "Available";
-
-    }
-
-}
-
-
 function displayInventoryReport(data) {
 
     inventoryTableBody.innerHTML = "";
@@ -224,16 +201,22 @@ function loadInventoryMedicineOptions() {
     let names = [];
 
     inventoryHistory.forEach(function (item) {
+
         if (!names.includes(item.name)) {
+
             names.push(item.name);
+
         }
+
     });
 
     names.forEach(function (name) {
+
         inventoryNameFilter.innerHTML += `
 
             <option value="${name}">${name}</option>
         `;
+
     });
 
 }
@@ -267,6 +250,7 @@ function loadInventoryCategories() {
 
 }
 
+
 function loadInventorySellerOptions() {
 
     inventorySellerFilter.innerHTML = `<option value="">All Sellers</option>`;
@@ -274,16 +258,22 @@ function loadInventorySellerOptions() {
     let sellers = [];
 
     inventoryHistory.forEach(function (item) {
+
         if (!sellers.includes(item.seller)) {
+
             sellers.push(item.seller);
+
         }
+
     });
 
     sellers.forEach(function (seller) {
+
         inventorySellerFilter.innerHTML += `
 
             <option value="${seller}">${seller}</option>
         `;
+
     });
 
 }
@@ -318,8 +308,8 @@ function parseInputDate(dateValue) {
 }
 
 
-//sale.date may be saved as "Tuesday, May 12, 2026" from your old sales code
-//or it may be saved as "2026-05-12" depending on storage
+//sale.date may be saved as "Tuesday, May 12, 2026"
+//or "2026-05-12" depending on storage
 function parseSaleDate(saleDateText) {
 
     if (!saleDateText) {
@@ -395,42 +385,74 @@ function parseSaleDate(saleDateText) {
 }
 
 
-//beygeeb end date based on duration
-function getEndDate(startDate, durationValue) {
+//beygeeb start w end beta3 el period based on selected date
+function getPeriodRange(selectedDate, durationValue) {
 
-    let endDate = new Date(startDate);
+    let startDate = new Date(selectedDate);
+    let endDate = new Date(selectedDate);
 
-    //exact date or daily: selected date only
+    // Exact date or daily: selected day only
     if (durationValue === "" || durationValue === "daily") {
 
-        endDate = new Date(startDate);
+        startDate = new Date(selectedDate);
+        endDate = new Date(selectedDate);
 
     }
 
-    //weekly: selected date + 6 days
+    // Weekly: full week containing selected date
+    // Sunday to Saturday
     else if (durationValue === "weekly") {
 
+        startDate = new Date(selectedDate);
+
+        // getDay(): Sunday = 0, Monday = 1, Tuesday = 2, ..., Saturday = 6
+        startDate.setDate(selectedDate.getDate() - selectedDate.getDay());
+
+        endDate = new Date(startDate);
         endDate.setDate(startDate.getDate() + 6);
 
     }
 
-    //monthly: selected date + 1 month - 1 day
+    // Monthly: full month containing selected date
     else if (durationValue === "monthly") {
 
-        endDate.setMonth(startDate.getMonth() + 1);
-        endDate.setDate(endDate.getDate() - 1);
+        startDate = new Date(
+            selectedDate.getFullYear(),
+            selectedDate.getMonth(),
+            1
+        );
+
+        endDate = new Date(
+            selectedDate.getFullYear(),
+            selectedDate.getMonth() + 1,
+            0
+        );
 
     }
 
-    //yearly: selected date + 1 year - 1 day
+    // Yearly: full year containing selected date
     else if (durationValue === "yearly") {
 
-        endDate.setFullYear(startDate.getFullYear() + 1);
-        endDate.setDate(endDate.getDate() - 1);
+        startDate = new Date(
+            selectedDate.getFullYear(),
+            0,
+            1
+        );
+
+        endDate = new Date(
+            selectedDate.getFullYear(),
+            11,
+            31
+        );
 
     }
 
-    return resetDateTime(endDate);
+    return {
+
+        startDate: resetDateTime(startDate),
+        endDate: resetDateTime(endDate)
+
+    };
 
 }
 
@@ -453,11 +475,11 @@ function checkDurationMatch(saleDateText, dateValue, durationValue) {
 
     }
 
-    const startDate = parseInputDate(dateValue);
+    const selectedDate = parseInputDate(dateValue);
 
-    const endDate = getEndDate(startDate, durationValue);
+    const range = getPeriodRange(selectedDate, durationValue);
 
-    return saleDate >= startDate && saleDate <= endDate;
+    return saleDate >= range.startDate && saleDate <= range.endDate;
 
 }
 
@@ -474,10 +496,10 @@ document.getElementById("filter_button").addEventListener("click", function () {
 
     const sellerValue = sellerFilter.value;
 
-    //law duration selected w mafish start date, stop before looping
+    //law duration selected w mafish date, stop
     if (dateValue === "" && durationValue !== "") {
 
-        alert("Please select a start date for the selected report duration.");
+        alert("Please select a date for the selected report duration.");
 
         return;
 
