@@ -56,6 +56,26 @@ function displayReports(data) {
     //3ashan mayetkararsh el old data
     tableBody.innerHTML = "";
 
+    // Sort data by date descending, then by time descending if dates are same
+    data.sort(function(a, b) {
+        const dateA = new Date(a.date);
+        const dateB = new Date(b.date);
+        const dateDiff = dateA - dateB;
+        if (dateDiff !== 0) return -dateDiff; // descending date
+        // Same date, sort by time descending (most recent first)
+        if (a.time && b.time) {
+            const timeA = new Date(a.date + ' ' + a.time);
+            const timeB = new Date(b.date + ' ' + b.time);
+            return timeB - timeA;
+        } else if (a.time) {
+            return -1;
+        } else if (b.time) {
+            return 1;
+        } else {
+            return 0;
+        }
+    });
+
     //da bey loop thru every sale fel data array
     data.forEach(function (sale) {
 
@@ -170,6 +190,26 @@ function updateCards(data) {
 function displayInventoryReport(data) {
 
     inventoryTableBody.innerHTML = "";
+
+    // Sort data by date descending, then by time descending if dates are same
+    data.sort(function(a, b) {
+        const dateA = new Date(a.date);
+        const dateB = new Date(b.date);
+        const dateDiff = dateA - dateB;
+        if (dateDiff !== 0) return -dateDiff; // descending date
+        // Same date, sort by time descending (most recent first)
+        if (a.time && b.time) {
+            const timeA = new Date(a.date + ' ' + a.time);
+            const timeB = new Date(b.date + ' ' + b.time);
+            return timeB - timeA;
+        } else if (a.time) {
+            return -1;
+        } else if (b.time) {
+            return 1;
+        } else {
+            return 0;
+        }
+    });
 
     data.forEach(function (item) {
 
