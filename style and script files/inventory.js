@@ -1,48 +1,16 @@
-<<<<<<< HEAD
-(function seedInventory() {
-    if (localStorage.getItem("pharmacySupplies")) return; 
-
-    // Realistic mix of Refundable and Non-Refundable medicines
-    const hardcoded = [
-        // --- REFUNDABLE (Normal Room Temp / Sealed) ---
-        { name: "Paracetamol 500mg", category: "Pain Relief", costPrice: 15, sellingPrice: 25, stock: 120, minStock: 20, expiryDate: "2027-06-01", refundable: "Refundable" },
-        { name: "Ibuprofen 400mg", category: "Pain Relief", costPrice: 25, sellingPrice: 40, stock: 80, minStock: 15, expiryDate: "2027-08-15", refundable: "Refundable" },
-        { name: "Amoxicillin 1g", category: "Antibiotics", costPrice: 45, sellingPrice: 65, stock: 90, minStock: 15, expiryDate: "2027-03-20", refundable: "Refundable" },
-        { name: "Cough Syrup", category: "Cold & Flu", costPrice: 20, sellingPrice: 35, stock: 45, minStock: 10, expiryDate: "2026-11-01", refundable: "Refundable" },
-        
-        // --- NON-REFUNDABLE (Fridge, Sterile, or Sensitive) ---
-        { name: "Insulin Mix (Vial)", category: "Diabetes", costPrice: 150, sellingPrice: 190, stock: 30, minStock: 10, expiryDate: "2026-10-10", refundable: "Non-Refundable" },
-        { name: "Sterile Eye Drops", category: "Supplies", costPrice: 30, sellingPrice: 45, stock: 50, minStock: 10, expiryDate: "2026-05-20", refundable: "Non-Refundable" },
-        { name: "Glycerin Suppositories", category: "Pain Relief", costPrice: 12, sellingPrice: 20, stock: 60, minStock: 15, expiryDate: "2027-01-15", refundable: "Non-Refundable" }
-    ];
-
-    localStorage.setItem("pharmacySupplies", JSON.stringify(hardcoded)); 
-})();
-
-let supplies = []; 
-let currentMedicineIndex = -1; 
-=======
 let supplies = [];
 let currentMedicineIndex = -1;
 
 function calculateSellingPrice(cost) {
     return (cost * 1.20).toFixed(2);
 }
->>>>>>> f4798f1367e8419ff13b8b06f097a287588e09ef
 
 function loadInventoryData() {
     const saved = localStorage.getItem("suppliesStock");
     supplies = saved ? JSON.parse(saved) : [];
-<<<<<<< HEAD
-} 
-
-function saveInventoryData() { 
-    localStorage.setItem("pharmacySupplies", JSON.stringify(supplies));
-=======
 }
 function saveInventoryData() {
     localStorage.setItem("suppliesStock", JSON.stringify(supplies));
->>>>>>> f4798f1367e8419ff13b8b06f097a287588e09ef
 }
 
 function updateSummaryCards() { 
