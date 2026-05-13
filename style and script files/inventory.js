@@ -3,25 +3,13 @@ let supplies = [];
 let currentMedicineIndex = -1;
 let currentAddMedicineIndex = -1;
 
-    // Realistic mix of Refundable and Non-Refundable medicines
-    const hardcoded = [
-        // --- REFUNDABLE (Normal Room Temp / Sealed) ---
-        { name: "Paracetamol 500mg", category: "Pain Relief", costPrice: 15, sellingPrice: 25, stock: 120, minStock: 20, expiryDate: "2027-06-01", refundable: "Refundable" },
-        { name: "Ibuprofen 400mg", category: "Pain Relief", costPrice: 25, sellingPrice: 40, stock: 80, minStock: 15, expiryDate: "2027-08-15", refundable: "Refundable" },
-        { name: "Amoxicillin 1g", category: "Antibiotics", costPrice: 45, sellingPrice: 65, stock: 90, minStock: 15, expiryDate: "2027-03-20", refundable: "Refundable" },
-        { name: "Cough Syrup", category: "Cold & Flu", costPrice: 20, sellingPrice: 35, stock: 45, minStock: 10, expiryDate: "2026-11-01", refundable: "Refundable" },
-        
-        // --- NON-REFUNDABLE (Fridge, Sterile, or Sensitive) ---
-        { name: "Insulin Mix (Vial)", category: "Diabetes", costPrice: 150, sellingPrice: 190, stock: 30, minStock: 10, expiryDate: "2026-10-10", refundable: "Non-Refundable" },
-        { name: "Sterile Eye Drops", category: "Supplies", costPrice: 30, sellingPrice: 45, stock: 50, minStock: 10, expiryDate: "2026-05-20", refundable: "Non-Refundable" },
-        { name: "Glycerin Suppositories", category: "Pain Relief", costPrice: 12, sellingPrice: 20, stock: 60, minStock: 15, expiryDate: "2027-01-15", refundable: "Non-Refundable" }
-    ];
-
-    localStorage.setItem("pharmacySupplies", JSON.stringify(hardcoded)); 
-})();
-
-let supplies = []; 
-let currentMedicineIndex = -1; 
+/* 
+    This function calculates the selling price automatically.
+    The selling price = buying price + 20% profit.
+*/
+function calculateSellingPrice(cost) {
+    return (cost * 1.20).toFixed(2);
+}
 
 function loadInventoryData() {
     const saved = localStorage.getItem("suppliesStock");
@@ -201,6 +189,36 @@ function setupInputErrorClearing() {
     });
 }
 
+/* AUTO SELLING PRICE DISPLAY */
+
+function updateAutoSellingPrice(costInputId, sellingDisplayId) {
+    const costValue = document.getElementById(costInputId).value.trim();
+    const sellingDisplay = document.getElementById(sellingDisplayId);
+
+    const cost = parseFloat(costValue);
+
+    if (costValue === "" || isNaN(cost) || cost <= 0) {
+        sellingDisplay.value = "";
+        return;
+    }
+
+    sellingDisplay.value = calculateSellingPrice(cost);
+}
+
+function setupAutoSellingPriceCalculation() {
+    document.getElementById("new_cost").addEventListener("input", function () {
+        updateAutoSellingPrice("new_cost", "new_auto_selling");
+    });
+
+    document.getElementById("edit_cost").addEventListener("input", function () {
+        updateAutoSellingPrice("edit_cost", "edit_auto_selling");
+    });
+
+    document.getElementById("same_cost").addEventListener("input", function () {
+        updateAutoSellingPrice("same_cost", "same_auto_selling");
+    });
+}
+
 /* ADD COMPLETELY NEW MEDICINE FROM TOP FORM */
 
 function addNewMedicine() {
@@ -211,7 +229,7 @@ function addNewMedicine() {
     const stockInput = document.getElementById("new_stock");
     const expiryInput = document.getElementById("new_expiry");
     const costInput = document.getElementById("new_cost");
-    const sellingInput = document.getElementById("new_selling");
+    const autoSellingInput = document.getElementById("new_auto_selling");
     const refundableInput = document.getElementById("new_refundable");
 
     const name = nameInput.value.trim();
@@ -219,7 +237,6 @@ function addNewMedicine() {
     const stockValue = stockInput.value.trim();
     const exp = expiryInput.value;
     const costValue = costInput.value.trim();
-    const sellingValue = sellingInput.value.trim();
     const isRefundable = refundableInput.value;
 
     let missingFields = [];
@@ -244,11 +261,6 @@ function addNewMedicine() {
         markInputError("new_cost");
     }
 
-    if (sellingValue === "") {
-        missingFields.push("Selling Price");
-        markInputError("new_selling");
-    }
-
     if (missingFields.length > 0) {
         showMessageModal(
             "error",
@@ -261,7 +273,6 @@ function addNewMedicine() {
 
     const stock = parseInt(stockValue);
     const cost = parseFloat(costValue);
-    const selling = parseFloat(sellingValue);
 
     if (isNaN(stock) || stock <= 0) {
         markInputError("new_stock");
@@ -287,17 +298,7 @@ function addNewMedicine() {
         return;
     }
 
-    if (isNaN(selling) || selling <= 0) {
-        markInputError("new_selling");
-
-        showMessageModal(
-            "error",
-            "Invalid Selling Price",
-            "Selling Price must be greater than 0."
-        );
-
-        return;
-    }
+    const selling = calculateSellingPrice(cost);
 
     const min = 10;
 
@@ -322,7 +323,7 @@ function addNewMedicine() {
     stockInput.value = "";
     expiryInput.value = "";
     costInput.value = "";
-    sellingInput.value = "";
+    autoSellingInput.value = "";
     refundableInput.selectedIndex = 0;
 
     showMessageModal(
@@ -344,7 +345,7 @@ function openTransactionModal(index) {
     document.getElementById("edit_medicine_name").textContent = med.name;
 
     document.getElementById("edit_cost").value = med.costPrice;
-    document.getElementById("edit_selling").value = med.sellingPrice;
+    document.getElementById("edit_auto_selling").value = calculateSellingPrice(parseFloat(med.costPrice));
 
     document.getElementById("edit_modal").style.display = "flex";
 }
@@ -357,21 +358,15 @@ function processTransaction() {
     clearInputErrors();
 
     const costInput = document.getElementById("edit_cost");
-    const sellingInput = document.getElementById("edit_selling");
+    const autoSellingInput = document.getElementById("edit_auto_selling");
 
     const costValue = costInput.value.trim();
-    const sellingValue = sellingInput.value.trim();
 
     let missingFields = [];
 
     if (costValue === "") {
         missingFields.push("Buying Price");
         markInputError("edit_cost");
-    }
-
-    if (sellingValue === "") {
-        missingFields.push("Selling Price");
-        markInputError("edit_selling");
     }
 
     if (missingFields.length > 0) {
@@ -385,7 +380,6 @@ function processTransaction() {
     }
 
     const newCost = parseFloat(costValue);
-    const newSelling = parseFloat(sellingValue);
 
     if (isNaN(newCost) || newCost <= 0) {
         markInputError("edit_cost");
@@ -399,22 +393,14 @@ function processTransaction() {
         return;
     }
 
-    if (isNaN(newSelling) || newSelling <= 0) {
-        markInputError("edit_selling");
-
-        showMessageModal(
-            "error",
-            "Invalid Selling Price",
-            "Selling Price must be greater than 0."
-        );
-
-        return;
-    }
+    const newSelling = calculateSellingPrice(newCost);
 
     const med = supplies[currentMedicineIndex];
 
     med.costPrice = newCost;
     med.sellingPrice = newSelling;
+
+    autoSellingInput.value = newSelling;
 
     saveInventoryData();
 
@@ -426,8 +412,8 @@ function processTransaction() {
 
     showMessageModal(
         "success",
-        "Prices Updated Successfully",
-        med.name + " buying and selling prices have been updated."
+        "Price Updated Successfully",
+        med.name + " buying price has been updated, and the selling price was calculated automatically."
     );
 }
 
@@ -446,7 +432,7 @@ function openAddSameMedicineModal(index) {
     document.getElementById("same_expiry").value = "";
 
     document.getElementById("same_cost").value = med.costPrice;
-    document.getElementById("same_selling").value = med.sellingPrice;
+    document.getElementById("same_auto_selling").value = calculateSellingPrice(parseFloat(med.costPrice));
 
     document.getElementById("add_same_modal").style.display = "flex";
 }
@@ -461,12 +447,11 @@ function processAddSameMedicine() {
     const stockInput = document.getElementById("same_stock");
     const expiryInput = document.getElementById("same_expiry");
     const costInput = document.getElementById("same_cost");
-    const sellingInput = document.getElementById("same_selling");
+    const autoSellingInput = document.getElementById("same_auto_selling");
 
     const stockValue = stockInput.value.trim();
     const expiryValue = expiryInput.value;
     const costValue = costInput.value.trim();
-    const sellingValue = sellingInput.value.trim();
 
     let missingFields = [];
 
@@ -485,11 +470,6 @@ function processAddSameMedicine() {
         markInputError("same_cost");
     }
 
-    if (sellingValue === "") {
-        missingFields.push("Selling Price");
-        markInputError("same_selling");
-    }
-
     if (missingFields.length > 0) {
         showMessageModal(
             "error",
@@ -502,7 +482,6 @@ function processAddSameMedicine() {
 
     const newStock = parseInt(stockValue);
     const newCost = parseFloat(costValue);
-    const newSelling = parseFloat(sellingValue);
 
     if (isNaN(newStock) || newStock <= 0) {
         markInputError("same_stock");
@@ -528,17 +507,9 @@ function processAddSameMedicine() {
         return;
     }
 
-    if (isNaN(newSelling) || newSelling <= 0) {
-        markInputError("same_selling");
+    const newSelling = calculateSellingPrice(newCost);
 
-        showMessageModal(
-            "error",
-            "Invalid Selling Price",
-            "Selling Price must be greater than 0."
-        );
-
-        return;
-    }
+    autoSellingInput.value = newSelling;
 
     const oldMed = supplies[currentAddMedicineIndex];
 
@@ -564,7 +535,7 @@ function processAddSameMedicine() {
     showMessageModal(
         "success",
         "Batch Added Successfully",
-        "Another batch of " + oldMed.name + " has been added to inventory."
+        "Another batch of " + oldMed.name + " has been added. Selling price was calculated automatically."
     );
 }
 
@@ -578,4 +549,6 @@ window.onload = function () {
     displayTable(supplies);
 
     setupInputErrorClearing();
+
+    setupAutoSellingPriceCalculation();
 };
