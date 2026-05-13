@@ -1,5 +1,6 @@
 let supplies = [];
 
+let currentMedicineIndex = -1;
 let currentBatchMedicineIndex = -1;
 
 /* 
@@ -414,8 +415,12 @@ function displayTable(data) {
                 <td>${statusHTML}</td>
 
                 <td>
+                    <button class="btn_edit" onclick="openTransactionModal(${indexInMain})">
+                        Edit
+                    </button>
+
                     <button class="btn_batch" onclick="openAddBatchModal(${indexInMain})">
-                        Add Batch
+                        Add
                     </button>
 
                     ${detailsButtonHTML}
@@ -517,6 +522,10 @@ function updateAutoSellingPrice(costInputId, sellingDisplayId) {
 function setupAutoSellingPriceCalculation() {
     document.getElementById("new_cost").addEventListener("input", function () {
         updateAutoSellingPrice("new_cost", "new_auto_selling");
+    });
+
+    document.getElementById("edit_cost").addEventListener("input", function () {
+        updateAutoSellingPrice("edit_cost", "edit_auto_selling");
     });
 
     document.getElementById("batch_cost").addEventListener("input", function () {
@@ -681,6 +690,93 @@ function addNewMedicine() {
         "success",
         "Medicine Added Successfully",
         name + " has been added to the inventory stock."
+    );
+}
+
+/* EDIT ALL BATCH PRICES */
+
+function openTransactionModal(index) {
+    clearInputErrors();
+
+    currentMedicineIndex = index;
+
+    const med = supplies[index];
+
+    document.getElementById("edit_medicine_name").textContent = med.name;
+
+    document.getElementById("edit_cost").value = med.costPrice;
+    document.getElementById("edit_auto_selling").value = calculateSellingPrice(parseFloat(med.costPrice));
+
+    document.getElementById("edit_modal").style.display = "flex";
+}
+
+function closeTransactionModal() {
+    document.getElementById("edit_modal").style.display = "none";
+}
+
+function processTransaction() {
+    clearInputErrors();
+
+    const costInput = document.getElementById("edit_cost");
+    const autoSellingInput = document.getElementById("edit_auto_selling");
+
+    const costValue = costInput.value.trim();
+
+    let missingFields = [];
+
+    if (costValue === "") {
+        missingFields.push("Buying Price");
+        markInputError("edit_cost");
+    }
+
+    if (missingFields.length > 0) {
+        showMessageModal(
+            "error",
+            "Missing Required Fields",
+            missingFields.join(", ") + " required."
+        );
+
+        return;
+    }
+
+    const newCost = parseFloat(costValue);
+
+    if (isNaN(newCost) || newCost <= 0) {
+        markInputError("edit_cost");
+
+        showMessageModal(
+            "error",
+            "Invalid Buying Price",
+            "Buying Price must be greater than 0."
+        );
+
+        return;
+    }
+
+    const med = supplies[currentMedicineIndex];
+
+    med.batches.forEach(function (batch) {
+        batch.costPrice = newCost;
+        batch.sellingPrice = calculateSellingPrice(newCost);
+    });
+
+    consolidateBatches(med);
+    updateMedicineHighestPrice(med);
+
+    autoSellingInput.value = calculateSellingPrice(newCost);
+
+    saveInventoryData();
+
+    displayTable(supplies);
+
+    updateSummaryCards();
+
+    closeTransactionModal();
+
+    showMessageModal(
+        "success",
+        "Price Updated Successfully",
+        med.name + " price has been updated for all current batches."
     );
 }
 
