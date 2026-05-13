@@ -95,8 +95,8 @@ if (todaySales.length === 0) {
     document.getElementById("totalsales").textContent = "No sales today";
     document.getElementById("totalprofit").textContent = "No profit today";
 } else {
-    document.getElementById("totalsales").textContent = totalSales + " EGP";
-    document.getElementById("totalprofit").textContent = totalProfit + " EGP";
+    document.getElementById("totalsales").textContent = Math.round(totalSales) + " EGP";
+    document.getElementById("totalprofit").textContent = Math.round(totalProfit) + " EGP";
 }
 
 
