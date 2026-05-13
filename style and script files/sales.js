@@ -201,6 +201,8 @@ function generateReceipt(paymentmethod) {
     cart = [];
     renderCart();
     document.querySelector('input[name="payment"]:checked').checked = false;   //payment is reset after checkout
+    document.getElementById("searchResults").innerHTML = "";
+    document.getElementById("searchInput").value = "";
 }
 
 function closeReceipt() {
