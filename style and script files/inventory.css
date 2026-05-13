@@ -225,9 +225,22 @@ td {
     transition: transform 0.2s;
 }
 
+.btn_delete {
+    background-color: #f44336;
+    color: white;
+    padding: 8px 14px;
+    border: none;
+    border-radius: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-left: 6px;
+    transition: transform 0.2s;
+}
+
 .btn_edit:hover,
 .btn_batch:hover,
-.btn_details:hover {
+.btn_details:hover,
+.btn_delete:hover {
     transform: scale(1.05);
 }
 
@@ -499,7 +512,8 @@ td {
 
     .btn_edit,
     .btn_batch,
-    .btn_details {
+    .btn_details,
+    .btn_delete {
         display: block;
         margin: 5px auto;
     }

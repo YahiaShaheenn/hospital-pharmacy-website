@@ -1,3 +1,5 @@
+let supplies = [];
+
 let currentMedicineIndex = -1;
 let currentBatchMedicineIndex = -1;
 
@@ -11,6 +13,12 @@ function calculateSellingPrice(cost) {
 
 function normalizeName(name) {
     return name.trim().toLowerCase();
+}
+
+function isAdminUser() {
+    const role = localStorage.getItem("userRole");
+
+    return role === "admin";
 }
 
 function loadInventoryData() {
@@ -165,7 +173,6 @@ function isExpiredDate(expiryDate) {
 /*
     Main table status:
     Expired only if ALL batches are expired.
-    If one batch is still valid, the medicine is not shown as expired.
 */
 function hasExpiredBatch(med) {
     if (!Array.isArray(med.batches) || med.batches.length === 0) {
@@ -188,8 +195,21 @@ function hasExpiredBatch(med) {
 }
 
 /*
+    Delete button:
+    True if there is at least one expired batch.
+*/
+function hasAnyExpiredBatch(med) {
+    if (!Array.isArray(med.batches) || med.batches.length === 0) {
+        return isExpiredDate(med.expiryDate);
+    }
+
+    return med.batches.some(function (batch) {
+        return isExpiredDate(batch.expiryDate);
+    });
+}
+
+/*
     Shows the nearest non-expired expiry date.
-    If all batches are expired, it shows the nearest expired date.
 */
 function getNearestExpiry(med) {
     if (!Array.isArray(med.batches) || med.batches.length === 0) {
@@ -432,6 +452,16 @@ function displayTable(data) {
             `;
         }
 
+        let deleteButtonHTML = "";
+
+        if (isAdminUser() && hasAnyExpiredBatch(med)) {
+            deleteButtonHTML = `
+                <button class="btn_delete" onclick="deleteExpiredMedicine(${indexInMain})">
+                    Delete
+                </button>
+            `;
+        }
+
         let batchInfoHTML = "";
 
         if (med.batches.length > 1) {
@@ -481,6 +511,8 @@ function displayTable(data) {
                     </button>
 
                     ${detailsButtonHTML}
+
+                    ${deleteButtonHTML}
                 </td>
 
             </tr>
@@ -1035,6 +1067,148 @@ function closeDetailsModal() {
     document.getElementById("details_modal").style.display = "none";
 }
 
+/* DELETE EXPIRED STOCK - ADMIN ONLY */
+
+function deleteExpiredMedicine(index) {
+    if (!isAdminUser()) {
+        showMessageModal(
+            "error",
+            "Access Denied",
+            "Only admin can delete expired medicines."
+        );
+
+        return;
+    }
+
+    const med = supplies[index];
+
+    if (!hasAnyExpiredBatch(med)) {
+        showMessageModal(
+            "error",
+            "Cannot Delete",
+            "This medicine does not have any expired batch."
+        );
+
+        return;
+    }
+
+    const confirmDelete = confirm("Delete expired stock for this medicine?");
+
+    if (!confirmDelete) {
+        return;
+    }
+
+    if (Array.isArray(med.batches)) {
+        med.batches = med.batches.filter(function (batch) {
+            return !isExpiredDate(batch.expiryDate);
+        });
+    }
+
+    if (!Array.isArray(med.batches) || med.batches.length === 0) {
+        supplies.splice(index, 1);
+    } else {
+        consolidateBatches(med);
+        updateMedicineHighestPrice(med);
+    }
+
+    saveInventoryData();
+
+    displayTable(supplies);
+
+    updateSummaryCards();
+
+    showMessageModal(
+        "success",
+        "Expired Stock Deleted",
+        "The expired stock was deleted successfully."
+    );
+}
+
+/* IMPORT FROM EXCEL */
+
+function importExcel() {
+    const file = document.getElementById("excel-import").files[0];
+
+    if (!file) {
+        return;
+    }
+
+    const reader = new FileReader();
+
+    reader.onload = function (e) {
+        const data = new Uint8Array(e.target.result);
+        const workbook = XLSX.read(data, { type: "array" });
+        const sheet = workbook.Sheets[workbook.SheetNames[0]];
+        const rows = XLSX.utils.sheet_to_json(sheet, { raw: false });
+
+        for (let i = 0; i < rows.length; i++) {
+            const row = rows[i];
+
+            const name = row["Name"] || "Unknown";
+            const cat = row["Category"] || "Supplies";
+            const cost = parseFloat(row["Cost Price"]) || 0;
+            const stock = parseInt(row["Stock"]) || 0;
+            const minStock = parseInt(row["Min Stock"]) || 10;
+            const expiry = row["Expiry Date"] || "2030-01-01";
+
+            let refundable = "Non-Refundable";
+
+            if (
+                row["Refundable"] === true ||
+                row["Refundable"] === "true" ||
+                row["Refundable"] === "Refundable" ||
+                row["Refundable"] === "Yes"
+            ) {
+                refundable = "Refundable";
+            }
+
+            if (cost <= 0 || stock <= 0) {
+                continue;
+            }
+
+            const existing = supplies.find(function (med) {
+                return normalizeName(med.name) === normalizeName(name);
+            });
+
+            if (existing) {
+                addBatchToMedicine(existing, stock, expiry, cost);
+            } else {
+                const newMedicine = {
+                    name: name,
+                    category: cat,
+                    costPrice: cost,
+                    sellingPrice: calculateSellingPrice(cost),
+                    stock: 0,
+                    minStock: minStock,
+                    expiryDate: "",
+                    refundable: refundable,
+                    batches: []
+                };
+
+                addBatchToMedicine(newMedicine, stock, expiry, cost);
+
+                supplies.push(newMedicine);
+            }
+        }
+
+        saveInventoryData();
+
+        displayTable(supplies);
+
+        updateSummaryCards();
+
+        showMessageModal(
+            "success",
+            "Import Complete",
+            "Medicines imported successfully from Excel."
+        );
+
+        document.getElementById("excel-import").value = "";
+    };
+
+    reader.readAsArrayBuffer(file);
+}
+
 /* PAGE LOAD */
 
 window.onload = function () {
@@ -1047,57 +1221,6 @@ window.onload = function () {
     setupInputErrorClearing();
 
     setupAutoSellingPriceCalculation();
+
+    preventNegativeNumbers();
 };
-
-
-function importExcel() {
-    let file = document.getElementById("excel-import").files[0];
-    let reader = new FileReader();
-    reader.onload = function(e) {
-        let data = new Uint8Array(e.target.result);
-        let workbook = XLSX.read(data, { type: "array" });
-        let sheet = workbook.Sheets[workbook.SheetNames[0]];
-        let rows = XLSX.utils.sheet_to_json(sheet, { raw: false });
-
-        for (let i = 0; i < rows.length; i++) {
-            let row = rows[i];
-            let name = row["Name"] || "Unknown";
-            let cat = row["Category"] || "General";
-            let cost = parseFloat(row["Cost Price"]) || 0;
-            let stock = parseInt(row["Stock"]) || 0;
-            let minStock = parseInt(row["Min Stock"]) || 10;
-            let expiry = row["Expiry Date"] || "2030-01-01";
-            let refundable = row["Refundable"] === "true" ? "Refundable" : "Non-Refundable";
-
-            let existing = supplies.find(function(med) {
-                return normalizeName(med.name) === normalizeName(name);
-            });
-
-            if (existing) {
-                addBatchToMedicine(existing, stock, expiry, cost);
-            } else {
-                let newMedicine = {
-                    name: name,
-                    category: cat,
-                    costPrice: cost,
-                    sellingPrice: calculateSellingPrice(cost),
-                    stock: 0,
-                    minStock: minStock,
-                    expiryDate: "",
-                    refundable: refundable,
-                    batches: []
-                };
-                addBatchToMedicine(newMedicine, stock, expiry, cost);
-                supplies.push(newMedicine);
-            }
-        }
-
-        saveInventoryData();
-        displayTable(supplies);
-        updateSummaryCards();
-        alert("Medicines imported successfully!");
-    };
-    reader.readAsArrayBuffer(file);
-}
-
-  
