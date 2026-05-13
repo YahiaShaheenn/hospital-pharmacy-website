@@ -84,7 +84,7 @@
         <section class="summary_cards">
 
             <div class="summary_card">
-                <h3>Total Items</h3>
+                <h3>Total Medicines</h3>
                 <p id="total_items">0</p>
             </div>
 
@@ -94,7 +94,7 @@
             </div>
 
             <div class="summary_card danger_card">
-                <h3>Expired Items</h3>
+                <h3>Expired Medicines</h3>
                 <p id="expired_count">0</p>
             </div>
 
@@ -119,9 +119,9 @@
                     <tr>
                         <th>Medicine Name</th>
                         <th>Category</th>
-                        <th>Stock</th>
-                        <th>Expiry Date</th>
-                        <th>Prices (Buy/Sell)</th>
+                        <th>Total Stock</th>
+                        <th>Nearest Expiry</th>
+                        <th>Prices</th>
                         <th>Refundable?</th>
                         <th>Status</th>
                         <th>Actions</th>
@@ -136,81 +136,119 @@
 
     </main>
 
-    <!-- EDIT PRICE MODAL -->
-    <div id="edit_modal" class="modal_overlay">
+   <!-- EDIT ALL BATCH PRICES MODAL -->
+<div id="edit_modal" class="modal_overlay">
 
-        <div class="modal_content" style="width: 500px;">
+    <div class="modal_content" style="width: 500px;">
 
-            <h3>Edit Medicine Price</h3>
+        <h3>Edit Medicine Price</h3>
 
-            <p style="margin-bottom: 15px;">
-                <strong>Medicine:</strong>
-                <span id="edit_medicine_name" style="color: #409fa8; font-size: 1.1em;"></span>
-            </p>
+        <p style="margin-bottom: 15px;">
+            <strong>Medicine:</strong>
+            <span id="edit_medicine_name" style="color: #409fa8; font-size: 1.1em;"></span>
+        </p>
 
-            <div class="new_med_grid" style="grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
+        <div class="new_med_grid" style="grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
 
-                <div class="input_group">
-                    <label>Buying Price (EGP)</label>
-                    <input type="number" id="edit_cost" placeholder="0.00">
-                </div>
-
-                <div class="input_group">
-                    <label>Auto Selling Price (EGP)</label>
-                    <input type="text" id="edit_auto_selling" placeholder="Calculated automatically" readonly>
-                </div>
-
+            <div class="input_group">
+                <label>New Buying Price for All Batches</label>
+                <input type="number" id="edit_cost" placeholder="0.00">
             </div>
 
-            <div class="edit_buttons">
-                <button class="add_btn" onclick="processTransaction()">Save Price Changes</button>
-                <button class="cancel_btn" onclick="closeTransactionModal()">Cancel</button>
+            <div class="input_group">
+                <label>Auto Selling Price</label>
+                <input type="text" id="edit_auto_selling" placeholder="Calculated automatically" readonly>
             </div>
 
         </div>
 
+        <div class="edit_buttons">
+            <button class="add_btn" onclick="processTransaction()">Update All Batch Prices</button>
+            <button class="cancel_btn" onclick="closeTransactionModal()">Cancel</button>
+        </div>
+
     </div>
 
-    <!-- ADD SAME MEDICINE MODAL -->
-    <div id="add_same_modal" class="modal_overlay">
+</div>
+
+    <!-- ADD NEW EXPIRY / PRICE BATCH MODAL -->
+    <div id="add_batch_modal" class="modal_overlay">
 
         <div class="modal_content" style="width: 500px;">
 
-            <h3>Add Another Batch</h3>
+            <h3>Add New Batch</h3>
 
             <p style="margin-bottom: 15px;">
                 <strong>Medicine:</strong>
-                <span id="same_medicine_name" style="color: #409fa8; font-size: 1.1em;"></span>
+                <span id="batch_medicine_name" style="color: #409fa8; font-size: 1.1em;"></span>
             </p>
 
             <div class="new_med_grid" style="grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
 
                 <div class="input_group">
                     <label>Stock Quantity</label>
-                    <input type="number" id="same_stock" placeholder="0">
+                    <input type="number" id="batch_stock" placeholder="0">
                 </div>
 
                 <div class="input_group">
                     <label>Expiry Date</label>
-                    <input type="date" id="same_expiry">
+                    <input type="date" id="batch_expiry">
                 </div>
 
                 <div class="input_group">
                     <label>Buying Price (EGP)</label>
-                    <input type="number" id="same_cost" placeholder="0.00">
+                    <input type="number" id="batch_cost" placeholder="0.00">
                 </div>
 
                 <div class="input_group">
                     <label>Auto Selling Price (EGP)</label>
-                    <input type="text" id="same_auto_selling" placeholder="Calculated automatically" readonly>
+                    <input type="text" id="batch_auto_selling" placeholder="Calculated automatically" readonly>
                 </div>
 
             </div>
 
             <div class="edit_buttons">
-                <button class="add_btn" onclick="processAddSameMedicine()">Add Batch</button>
-                <button class="cancel_btn" onclick="closeAddSameMedicineModal()">Cancel</button>
+                <button class="add_btn" onclick="processAddBatch()">Add Batch</button>
+                <button class="cancel_btn" onclick="closeAddBatchModal()">Cancel</button>
             </div>
+
+        </div>
+
+    </div>
+
+    <!-- DETAILS MODAL -->
+    <div id="details_modal" class="modal_overlay">
+
+        <div class="modal_content details_modal_content">
+
+            <h3>Batch Details</h3>
+
+            <p style="margin-bottom: 15px;">
+                <strong>Medicine:</strong>
+                <span id="details_medicine_name" style="color: #409fa8; font-size: 1.1em;"></span>
+            </p>
+
+            <p class="details_total">
+                Total Stock:
+                <span id="details_total_stock">0</span>
+            </p>
+
+            <table class="details_table">
+                <thead>
+                    <tr>
+                        <th>Batch</th>
+                        <th>Stock</th>
+                        <th>Expiry Date</th>
+                        <th>Buying Price</th>
+                        <th>Selling Price</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+
+                <tbody id="batch_details_body"></tbody>
+            </table>
+
+            <button class="cancel_btn details_close_btn" onclick="closeDetailsModal()">Close</button>
 
         </div>
 
