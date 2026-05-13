@@ -1,39 +1,313 @@
 let supplies = [];
 
 let currentMedicineIndex = -1;
-let currentAddMedicineIndex = -1;
+let currentBatchMedicineIndex = -1;
 
 /* 
-    This function calculates the selling price automatically.
-    The selling price = buying price + 20% profit.
+    Selling price is calculated automatically.
+    Selling price = buying price + 20% profit.
 */
 function calculateSellingPrice(cost) {
-    return (cost * 1.20).toFixed(2);
+    return (Number(cost) * 1.20).toFixed(2);
+}
+
+function normalizeName(name) {
+    return name.trim().toLowerCase();
 }
 
 function loadInventoryData() {
     const saved = localStorage.getItem("suppliesStock");
 
     supplies = saved ? JSON.parse(saved) : [];
+
+    migrateOldInventoryData();
+
+    saveInventoryData();
 }
 
 function saveInventoryData() {
     localStorage.setItem("suppliesStock", JSON.stringify(supplies));
 }
 
-function updateSummaryCards() {
-    const today = new Date();
+/* 
+    Converts old data into the batch system.
+    It merges medicines with the same name, category, and refund policy.
+    Different buying prices stay inside different batches.
+*/
+function migrateOldInventoryData() {
+    let mergedSupplies = [];
 
+    supplies.forEach(function (med) {
+
+        const medicineName = med.name || "";
+
+        if (medicineName.trim() === "") {
+            return;
+        }
+
+        const medicineCategory = med.category || "Supplies";
+        const medicineRefundable = med.refundable || "Refundable";
+        const medicineCost = Number(med.costPrice) || 0;
+        const medicineMinStock = med.minStock || 10;
+
+        let medicineBatches = [];
+
+        if (Array.isArray(med.batches) && med.batches.length > 0) {
+
+            medicineBatches = med.batches.map(function (batch) {
+
+                const batchCost = Number(batch.costPrice) || medicineCost;
+
+                return {
+                    stock: Number(batch.stock) || 0,
+                    expiryDate: batch.expiryDate,
+                    costPrice: batchCost,
+                    sellingPrice: batch.sellingPrice || calculateSellingPrice(batchCost)
+                };
+
+            });
+
+        } else {
+
+            medicineBatches.push({
+                stock: Number(med.stock) || 0,
+                expiryDate: med.expiryDate,
+                costPrice: medicineCost,
+                sellingPrice: calculateSellingPrice(medicineCost)
+            });
+
+        }
+
+        const existingMedicine = mergedSupplies.find(function (item) {
+            return normalizeName(item.name) === normalizeName(medicineName) &&
+                item.category === medicineCategory &&
+                item.refundable === medicineRefundable;
+        });
+
+        if (existingMedicine) {
+
+            medicineBatches.forEach(function (batch) {
+                if (batch.expiryDate) {
+                    addBatchToMedicine(
+                        existingMedicine,
+                        Number(batch.stock) || 0,
+                        batch.expiryDate,
+                        Number(batch.costPrice) || medicineCost
+                    );
+                }
+            });
+
+        } else {
+
+            const newMedicine = {
+                name: medicineName,
+                category: medicineCategory,
+                costPrice: medicineCost,
+                sellingPrice: calculateSellingPrice(medicineCost),
+                stock: 0,
+                minStock: medicineMinStock,
+                expiryDate: "",
+                refundable: medicineRefundable,
+                batches: []
+            };
+
+            medicineBatches.forEach(function (batch) {
+                if (batch.expiryDate) {
+                    addBatchToMedicine(
+                        newMedicine,
+                        Number(batch.stock) || 0,
+                        batch.expiryDate,
+                        Number(batch.costPrice) || medicineCost
+                    );
+                }
+            });
+
+            updateMedicineHighestPrice(newMedicine);
+
+            mergedSupplies.push(newMedicine);
+        }
+
+    });
+
+    supplies = mergedSupplies;
+}
+
+function getTotalStock(med) {
+    if (!Array.isArray(med.batches)) {
+        return Number(med.stock) || 0;
+    }
+
+    let total = 0;
+
+    med.batches.forEach(function (batch) {
+        total += Number(batch.stock) || 0;
+    });
+
+    return total;
+}
+
+function isExpiredDate(expiryDate) {
+    if (!expiryDate) {
+        return false;
+    }
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const expiry = new Date(expiryDate);
+    expiry.setHours(0, 0, 0, 0);
+
+    return expiry < today;
+}
+
+function hasExpiredBatch(med) {
+    if (!Array.isArray(med.batches)) {
+        return isExpiredDate(med.expiryDate);
+    }
+
+    return med.batches.some(function (batch) {
+        return isExpiredDate(batch.expiryDate);
+    });
+}
+
+function getNearestExpiry(med) {
+    if (!Array.isArray(med.batches) || med.batches.length === 0) {
+        return "No expiry";
+    }
+
+    const validBatches = med.batches.filter(function (batch) {
+        return batch.expiryDate;
+    });
+
+    if (validBatches.length === 0) {
+        return "No expiry";
+    }
+
+    const sortedBatches = [...validBatches].sort(function (a, b) {
+        return new Date(a.expiryDate) - new Date(b.expiryDate);
+    });
+
+    return sortedBatches[0].expiryDate;
+}
+
+function sortBatchesByExpiry(med) {
+    med.batches.sort(function (a, b) {
+        return new Date(a.expiryDate) - new Date(b.expiryDate);
+    });
+}
+
+function consolidateBatches(med) {
+    let mergedBatches = [];
+
+    med.batches.forEach(function (batch) {
+
+        const batchCost = Number(batch.costPrice) || Number(med.costPrice) || 0;
+
+        const existingBatch = mergedBatches.find(function (item) {
+            return item.expiryDate === batch.expiryDate &&
+                Number(item.costPrice) === batchCost;
+        });
+
+        if (existingBatch) {
+            existingBatch.stock = Number(existingBatch.stock) + Number(batch.stock);
+        } else {
+            mergedBatches.push({
+                stock: Number(batch.stock) || 0,
+                expiryDate: batch.expiryDate,
+                costPrice: batchCost,
+                sellingPrice: calculateSellingPrice(batchCost)
+            });
+        }
+
+    });
+
+    med.batches = mergedBatches;
+
+    sortBatchesByExpiry(med);
+}
+
+function updateMedicineHighestPrice(med) {
+    let highestCost = 0;
+
+    if (Array.isArray(med.batches) && med.batches.length > 0) {
+
+        med.batches.forEach(function (batch) {
+
+            const batchCost = Number(batch.costPrice) || 0;
+
+            if (batchCost > highestCost) {
+                highestCost = batchCost;
+            }
+
+        });
+
+    } else {
+        highestCost = Number(med.costPrice) || 0;
+    }
+
+    med.costPrice = highestCost;
+    med.sellingPrice = calculateSellingPrice(highestCost);
+    med.stock = getTotalStock(med);
+    med.expiryDate = getNearestExpiry(med);
+}
+
+function getDifferentPriceCount(med) {
+    if (!Array.isArray(med.batches)) {
+        return 1;
+    }
+
+    let prices = [];
+
+    med.batches.forEach(function (batch) {
+        const batchCost = Number(batch.costPrice) || Number(med.costPrice) || 0;
+
+        if (!prices.includes(batchCost)) {
+            prices.push(batchCost);
+        }
+    });
+
+    return prices.length;
+}
+
+function addBatchToMedicine(med, stock, expiryDate, costPrice) {
+    if (!Array.isArray(med.batches)) {
+        med.batches = [];
+    }
+
+    const batchCost = Number(costPrice) || Number(med.costPrice) || 0;
+    const batchSelling = calculateSellingPrice(batchCost);
+
+    const existingBatch = med.batches.find(function (batch) {
+        return batch.expiryDate === expiryDate &&
+            Number(batch.costPrice) === batchCost;
+    });
+
+    if (existingBatch) {
+        existingBatch.stock = Number(existingBatch.stock) + Number(stock);
+    } else {
+        med.batches.push({
+            stock: Number(stock),
+            expiryDate: expiryDate,
+            costPrice: batchCost,
+            sellingPrice: batchSelling
+        });
+    }
+
+    consolidateBatches(med);
+    updateMedicineHighestPrice(med);
+}
+
+function updateSummaryCards() {
     document.getElementById("total_items").textContent = supplies.length;
 
     document.getElementById("low_stock_count").textContent =
-        supplies.filter(function (s) {
-            return s.stock <= s.minStock;
+        supplies.filter(function (med) {
+            return getTotalStock(med) <= med.minStock;
         }).length;
 
     document.getElementById("expired_count").textContent =
-        supplies.filter(function (s) {
-            return new Date(s.expiryDate) < today;
+        supplies.filter(function (med) {
+            return hasExpiredBatch(med);
         }).length;
 }
 
@@ -45,11 +319,11 @@ function displayTable(data) {
     const sortedData = [...data].sort(function (a, b) {
 
         function getScore(medicine) {
-            if (new Date(medicine.expiryDate) < new Date()) {
+            if (hasExpiredBatch(medicine)) {
                 return 2;
             }
 
-            if (medicine.stock <= medicine.minStock) {
+            if (getTotalStock(medicine) <= medicine.minStock) {
                 return 1;
             }
 
@@ -61,10 +335,17 @@ function displayTable(data) {
 
     sortedData.forEach(function (med) {
 
+        updateMedicineHighestPrice(med);
+
         const indexInMain = supplies.indexOf(med);
 
-        const isExp = new Date(med.expiryDate) < new Date();
-        const isLow = med.stock <= med.minStock;
+        const totalStock = getTotalStock(med);
+        const nearestExpiry = getNearestExpiry(med);
+
+        const isExp = hasExpiredBatch(med);
+        const isLow = totalStock <= med.minStock;
+
+        const priceLevels = getDifferentPriceCount(med);
 
         let refundStatusHTML = "";
 
@@ -84,20 +365,46 @@ function displayTable(data) {
             statusHTML = '<span class="material-icons" style="color:green">check_circle</span>';
         }
 
+        let detailsButtonHTML = "";
+
+        if (med.batches.length > 1 || priceLevels > 1) {
+            detailsButtonHTML = `
+                <button class="btn_details" onclick="openDetailsModal(${indexInMain})">
+                    Details
+                </button>
+            `;
+        }
+
+        let batchInfoHTML = "";
+
+        if (med.batches.length > 1) {
+            batchInfoHTML = `<span class="batch_count">${med.batches.length} batches</span>`;
+        }
+
+        let priceInfoHTML = "";
+
+        if (priceLevels > 1) {
+            priceInfoHTML = `<span class="price_note">${priceLevels} buying prices</span>`;
+        }
+
         tableBody.innerHTML += `
             <tr class="${isExp ? 'expired_row' : (isLow ? 'lowstock_row' : '')}">
 
-                <td><strong>${med.name}</strong></td>
+                <td>
+                    <strong>${med.name}</strong>
+                    ${batchInfoHTML}
+                    ${priceInfoHTML}
+                </td>
 
                 <td>${med.category}</td>
 
-                <td>${med.stock}</td>
+                <td>${totalStock}</td>
 
-                <td>${med.expiryDate}</td>
+                <td>${nearestExpiry}</td>
 
                 <td>
                     <span style="color: #7f8c8d; font-size: 0.85em;">
-                        Buy: ${med.costPrice} EGP
+                        Highest Buy: ${med.costPrice} EGP
                     </span>
                     <br>
                     <strong>Sell: ${med.sellingPrice} EGP</strong>
@@ -108,8 +415,15 @@ function displayTable(data) {
                 <td>${statusHTML}</td>
 
                 <td>
-                    <button class="btn_edit" onclick="openTransactionModal(${indexInMain})">Edit</button>
-                    <button class="btn_same" onclick="openAddSameMedicineModal(${indexInMain})">Add</button>
+                    <button class="btn_edit" onclick="openTransactionModal(${indexInMain})">
+                        Edit
+                    </button>
+
+                    <button class="btn_batch" onclick="openAddBatchModal(${indexInMain})">
+                        Add
+                    </button>
+
+                    ${detailsButtonHTML}
                 </td>
 
             </tr>
@@ -214,12 +528,12 @@ function setupAutoSellingPriceCalculation() {
         updateAutoSellingPrice("edit_cost", "edit_auto_selling");
     });
 
-    document.getElementById("same_cost").addEventListener("input", function () {
-        updateAutoSellingPrice("same_cost", "same_auto_selling");
+    document.getElementById("batch_cost").addEventListener("input", function () {
+        updateAutoSellingPrice("batch_cost", "batch_auto_selling");
     });
 }
 
-/* ADD COMPLETELY NEW MEDICINE FROM TOP FORM */
+/* ADD COMPLETELY NEW MEDICINE OR ADD SAME MEDICINE AS A BATCH */
 
 function addNewMedicine() {
     clearInputErrors();
@@ -298,20 +612,66 @@ function addNewMedicine() {
         return;
     }
 
-    const selling = calculateSellingPrice(cost);
+    const existingMedicine = supplies.find(function (med) {
+        return normalizeName(med.name) === normalizeName(name);
+    });
+
+    if (existingMedicine) {
+
+        const sameCategory = existingMedicine.category === cat;
+        const sameRefundPolicy = existingMedicine.refundable === isRefundable;
+
+        if (!sameCategory || !sameRefundPolicy) {
+            showMessageModal(
+                "error",
+                "Medicine Already Exists",
+                "This medicine name already exists with a different category or refund policy."
+            );
+
+            return;
+        }
+
+        addBatchToMedicine(existingMedicine, stock, exp, cost);
+
+        saveInventoryData();
+
+        displayTable(supplies);
+
+        updateSummaryCards();
+
+        nameInput.value = "";
+        stockInput.value = "";
+        expiryInput.value = "";
+        costInput.value = "";
+        autoSellingInput.value = "";
+        refundableInput.selectedIndex = 0;
+
+        showMessageModal(
+            "success",
+            "Batch Added Successfully",
+            "This medicine already exists, so the new stock was added under the same row. The selling price is based on the highest buying price."
+        );
+
+        return;
+    }
 
     const min = 10;
 
-    supplies.push({
+    const newMedicine = {
         name: name,
         category: cat,
         costPrice: cost,
-        sellingPrice: selling,
-        stock: stock,
+        sellingPrice: calculateSellingPrice(cost),
+        stock: 0,
         minStock: min,
-        expiryDate: exp,
-        refundable: isRefundable
-    });
+        expiryDate: "",
+        refundable: isRefundable,
+        batches: []
+    };
+
+    addBatchToMedicine(newMedicine, stock, exp, cost);
+
+    supplies.push(newMedicine);
 
     saveInventoryData();
 
@@ -333,7 +693,7 @@ function addNewMedicine() {
     );
 }
 
-/* EDIT PRICE MODAL */
+/* EDIT ALL BATCH PRICES */
 
 function openTransactionModal(index) {
     clearInputErrors();
@@ -393,14 +753,17 @@ function processTransaction() {
         return;
     }
 
-    const newSelling = calculateSellingPrice(newCost);
-
     const med = supplies[currentMedicineIndex];
 
-    med.costPrice = newCost;
-    med.sellingPrice = newSelling;
+    med.batches.forEach(function (batch) {
+        batch.costPrice = newCost;
+        batch.sellingPrice = calculateSellingPrice(newCost);
+    });
 
-    autoSellingInput.value = newSelling;
+    consolidateBatches(med);
+    updateMedicineHighestPrice(med);
+
+    autoSellingInput.value = calculateSellingPrice(newCost);
 
     saveInventoryData();
 
@@ -413,41 +776,41 @@ function processTransaction() {
     showMessageModal(
         "success",
         "Price Updated Successfully",
-        med.name + " buying price has been updated, and the selling price was calculated automatically."
+        med.name + " price has been updated for all current batches."
     );
 }
 
-/* ADD ANOTHER BATCH OF THE SAME MEDICINE */
+/* ADD ANOTHER BATCH TO SAME MEDICINE ROW */
 
-function openAddSameMedicineModal(index) {
+function openAddBatchModal(index) {
     clearInputErrors();
 
-    currentAddMedicineIndex = index;
+    currentBatchMedicineIndex = index;
 
     const med = supplies[index];
 
-    document.getElementById("same_medicine_name").textContent = med.name;
+    document.getElementById("batch_medicine_name").textContent = med.name;
 
-    document.getElementById("same_stock").value = "";
-    document.getElementById("same_expiry").value = "";
+    document.getElementById("batch_stock").value = "";
+    document.getElementById("batch_expiry").value = "";
 
-    document.getElementById("same_cost").value = med.costPrice;
-    document.getElementById("same_auto_selling").value = calculateSellingPrice(parseFloat(med.costPrice));
+    document.getElementById("batch_cost").value = med.costPrice;
+    document.getElementById("batch_auto_selling").value = calculateSellingPrice(Number(med.costPrice));
 
-    document.getElementById("add_same_modal").style.display = "flex";
+    document.getElementById("add_batch_modal").style.display = "flex";
 }
 
-function closeAddSameMedicineModal() {
-    document.getElementById("add_same_modal").style.display = "none";
+function closeAddBatchModal() {
+    document.getElementById("add_batch_modal").style.display = "none";
 }
 
-function processAddSameMedicine() {
+function processAddBatch() {
     clearInputErrors();
 
-    const stockInput = document.getElementById("same_stock");
-    const expiryInput = document.getElementById("same_expiry");
-    const costInput = document.getElementById("same_cost");
-    const autoSellingInput = document.getElementById("same_auto_selling");
+    const stockInput = document.getElementById("batch_stock");
+    const expiryInput = document.getElementById("batch_expiry");
+    const costInput = document.getElementById("batch_cost");
+    const autoSellingInput = document.getElementById("batch_auto_selling");
 
     const stockValue = stockInput.value.trim();
     const expiryValue = expiryInput.value;
@@ -457,17 +820,17 @@ function processAddSameMedicine() {
 
     if (stockValue === "") {
         missingFields.push("Stock Quantity");
-        markInputError("same_stock");
+        markInputError("batch_stock");
     }
 
     if (expiryValue === "") {
         missingFields.push("Expiry Date");
-        markInputError("same_expiry");
+        markInputError("batch_expiry");
     }
 
     if (costValue === "") {
         missingFields.push("Buying Price");
-        markInputError("same_cost");
+        markInputError("batch_cost");
     }
 
     if (missingFields.length > 0) {
@@ -484,7 +847,7 @@ function processAddSameMedicine() {
     const newCost = parseFloat(costValue);
 
     if (isNaN(newStock) || newStock <= 0) {
-        markInputError("same_stock");
+        markInputError("batch_stock");
 
         showMessageModal(
             "error",
@@ -496,7 +859,7 @@ function processAddSameMedicine() {
     }
 
     if (isNaN(newCost) || newCost <= 0) {
-        markInputError("same_cost");
+        markInputError("batch_cost");
 
         showMessageModal(
             "error",
@@ -507,22 +870,13 @@ function processAddSameMedicine() {
         return;
     }
 
+    const med = supplies[currentBatchMedicineIndex];
+
     const newSelling = calculateSellingPrice(newCost);
 
     autoSellingInput.value = newSelling;
 
-    const oldMed = supplies[currentAddMedicineIndex];
-
-    supplies.push({
-        name: oldMed.name,
-        category: oldMed.category,
-        costPrice: newCost,
-        sellingPrice: newSelling,
-        stock: newStock,
-        minStock: oldMed.minStock || 10,
-        expiryDate: expiryValue,
-        refundable: oldMed.refundable
-    });
+    addBatchToMedicine(med, newStock, expiryValue, newCost);
 
     saveInventoryData();
 
@@ -530,13 +884,66 @@ function processAddSameMedicine() {
 
     updateSummaryCards();
 
-    closeAddSameMedicineModal();
+    closeAddBatchModal();
 
     showMessageModal(
         "success",
         "Batch Added Successfully",
-        "Another batch of " + oldMed.name + " has been added. Selling price was calculated automatically."
+        "The new stock was added under the same medicine. The selling price is now based on the highest buying price."
     );
+}
+
+/* DETAILS MODAL */
+
+function openDetailsModal(index) {
+    const med = supplies[index];
+
+    const detailsBody = document.getElementById("batch_details_body");
+
+    document.getElementById("details_medicine_name").textContent = med.name;
+    document.getElementById("details_total_stock").textContent = getTotalStock(med);
+
+    detailsBody.innerHTML = "";
+
+    sortBatchesByExpiry(med);
+
+    med.batches.forEach(function (batch, batchIndex) {
+
+        const expired = isExpiredDate(batch.expiryDate);
+
+        const statusText = expired ? "Expired" : "Valid";
+        const statusClass = expired ? "expired_status" : "valid_status";
+
+        const batchCost = Number(batch.costPrice) || Number(med.costPrice) || 0;
+        const batchSelling = batch.sellingPrice || calculateSellingPrice(batchCost);
+
+        let highestPriceLabel = "";
+
+        if (batchCost === Number(med.costPrice)) {
+            highestPriceLabel = `<span class="highest_price_status">Used for selling</span>`;
+        }
+
+        detailsBody.innerHTML += `
+            <tr>
+                <td>Batch ${batchIndex + 1}</td>
+                <td>${batch.stock}</td>
+                <td>${batch.expiryDate}</td>
+                <td>${batchCost} EGP ${highestPriceLabel}</td>
+                <td>${batchSelling} EGP</td>
+                <td>
+                    <span class="${statusClass}">
+                        ${statusText}
+                    </span>
+                </td>
+            </tr>
+        `;
+    });
+
+    document.getElementById("details_modal").style.display = "flex";
+}
+
+function closeDetailsModal() {
+    document.getElementById("details_modal").style.display = "none";
 }
 
 /* PAGE LOAD */

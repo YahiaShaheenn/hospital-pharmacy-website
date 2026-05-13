@@ -193,7 +193,7 @@ td {
 .btn_edit {
     background-color: #409fa8;
     color: white;
-    padding: 8px 16px;
+    padding: 8px 14px;
     border: none;
     border-radius: 20px;
     font-weight: bold;
@@ -201,21 +201,48 @@ td {
     transition: transform 0.2s;
 }
 
-.btn_same {
+.btn_batch {
     background-color: #4CAF50;
     color: white;
-    padding: 8px 16px;
+    padding: 8px 14px;
     border: none;
     border-radius: 20px;
     font-weight: bold;
     cursor: pointer;
-    margin-left: 8px;
+    margin-left: 6px;
+    transition: transform 0.2s;
+}
+
+.btn_details {
+    background-color: #FF9800;
+    color: white;
+    padding: 8px 14px;
+    border: none;
+    border-radius: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-left: 6px;
     transition: transform 0.2s;
 }
 
 .btn_edit:hover,
-.btn_same:hover {
+.btn_batch:hover,
+.btn_details:hover {
     transform: scale(1.05);
+}
+
+.batch_count {
+    display: block;
+    margin-top: 5px;
+    color: #7f8c8d;
+    font-size: 0.8rem;
+}
+
+.price_note {
+    display: block;
+    margin-top: 5px;
+    color: #FF9800;
+    font-size: 0.78rem;
 }
 
 /* MODALS */
@@ -286,6 +313,53 @@ td {
 
 .cancel_btn:hover {
     background-color: #e9ecef;
+}
+
+/* DETAILS MODAL */
+.details_modal_content {
+    width: 800px;
+}
+
+.details_total {
+    margin-bottom: 15px;
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+.details_total span {
+    color: #409fa8;
+}
+
+.details_table {
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+
+.details_table th,
+.details_table td {
+    padding: 12px;
+}
+
+.details_close_btn {
+    width: 100%;
+}
+
+.valid_status {
+    color: #4CAF50;
+    font-weight: bold;
+}
+
+.expired_status {
+    color: #f44336;
+    font-weight: bold;
+}
+
+.highest_price_status {
+    color: #FF9800;
+    font-weight: bold;
+    display: block;
+    font-size: 0.78rem;
+    margin-top: 4px;
 }
 
 /* ROW COLORS */
@@ -398,6 +472,10 @@ td {
     td {
         padding: 12px 8px;
     }
+
+    .details_modal_content {
+        width: 95%;
+    }
 }
 
 @media (max-width: 600px) {
@@ -414,7 +492,15 @@ td {
         padding: 20px;
     }
 
-    .table_section {
+    .table_section,
+    .details_table {
         overflow-x: auto;
+    }
+
+    .btn_edit,
+    .btn_batch,
+    .btn_details {
+        display: block;
+        margin: 5px auto;
     }
 }
