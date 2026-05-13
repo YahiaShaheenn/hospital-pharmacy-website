@@ -38,6 +38,7 @@ function searchmed() {
             <div class="medicine-result">
                 <p><strong>${supplies[i].name}</strong></p>
                 <p>Price: ${supplies[i].sellingPrice} EGP</p>
+                <p>Stock: ${getAvailableStock(supplies[i])}</p>
                 <button onclick="addToCart(${i})">Add to Cart</button>
             </div>
         `;
@@ -47,31 +48,46 @@ function searchmed() {
         results.innerHTML = "<p>No medicine found.</p>";
     }
 }
-function addToCart(i) {   // add selected medicine to cart 
-    if (supplies[i].stock <= 0) {
-        showAlert("This item is out of stock!");   //checks if the item is out of stock before adding to cart
-        return; 
+function addToCart(i) {
+   let availableStock = getAvailableStock(supplies[i]);
+    if (availableStock <= 0) {
+        showAlert("This item is out of stock!");
+        return;
     }
-    if (new Date(supplies[i].expiryDate) < new Date()) {
-        showAlert(supplies[i].name + " is expired and cannot be sold!");  //checks if the item is expired before adding to cart
+
+    let hasValidBatch = false;
+    if (Array.isArray(supplies[i].batches)) {
+        for (let b = 0; b < supplies[i].batches.length; b++) {
+            if (new Date(supplies[i].batches[b].expiryDate) >= new Date()) {
+                hasValidBatch = true;
+                break;
+            }
+        }
+    } else {
+        hasValidBatch = new Date(supplies[i].expiryDate) >= new Date();
+    }
+
+    if (!hasValidBatch) {
+        showAlert(supplies[i].name + " is expired and cannot be sold!");
         return;
     }
 
     let item = supplies[i];
     for (let j = 0; j < cart.length; j++) {
         if (cart[j].name === item.name) {
-            if (cart[j].qty >= supplies[i].stock) {
-                showAlert("No more stock available for " + item.name + "!"); //makes sure you can't add more to cart than available in stock
+            if (cart[j].qty >= availableStock) {
+                showAlert("No more stock available for " + item.name + "!");
                 return;
             }
-            cart[j].qty++;   //update cart without adding duplicate entry
+            cart[j].qty++;
             renderCart();
             return;
         }
     }
-    cart.push({ name: item.name, price: item.sellingPrice, qty: 1 });   // if item not already in cart add it 
+    cart.push({ name: item.name, price: item.sellingPrice, qty: 1 });
     renderCart();
 }
+
 
 function renderCart() {                                          // render cart items total title and payment section
     localStorage.setItem("cart", JSON.stringify(cart));
@@ -108,9 +124,10 @@ function renderCart() {                                          // render cart 
 
 function increaseQty(j) {
     for (let i = 0; i < supplies.length; i++) {
-        if (supplies[i].name === cart[j].name) {                    // checks if increasing quantity exceeds stock before allowing it            
-            if (cart[j].qty >= supplies[i].stock) {
-                showAlert("No more stock available for " + cart[j].name + "!");  // shows alert if quantity exceeds stock
+        if (supplies[i].name === cart[j].name) {
+            let availableStock = getAvailableStock(supplies[i]);
+            if (cart[j].qty >= availableStock) {
+                showAlert("No more stock available for " + cart[j].name + "!");
                 return;
             }
             break;
@@ -119,7 +136,6 @@ function increaseQty(j) {
     cart[j].qty++;
     renderCart();
 }
-
 function decreaseQty(j) {
     if (cart[j].qty > 1) {
         cart[j].qty--;
@@ -136,7 +152,7 @@ function removeItem(j) {   // remove item from cart entirely
 
 function checkout() {
     if (cart.length === 0) {
-        showAlert("Your cart is empty!");                                     // validate cart and payment method then decrement stock and generate receipt
+        showAlert("Your cart is empty!");
         return;
     }
     let paymentinput = document.querySelector('input[name="payment"]:checked');
@@ -148,7 +164,19 @@ function checkout() {
     for (let j = 0; j < cart.length; j++) {
         for (let i = 0; i < supplies.length; i++) {
             if (supplies[i].name === cart[j].name) {
-                supplies[i].stock -= cart[j].qty;
+                let remaining = cart[j].qty;
+                if (Array.isArray(supplies[i].batches)) {
+                    for (let b = 0; b < supplies[i].batches.length; b++) {
+                        if (new Date(supplies[i].batches[b].expiryDate) < new Date()) continue;
+                        if (remaining <= 0) break;
+                        let take = Math.min(supplies[i].batches[b].stock, remaining);
+                        supplies[i].batches[b].stock -= take;
+                        remaining -= take;
+                    }
+                    supplies[i].stock = supplies[i].batches.reduce(function(sum, b) { return sum + b.stock; }, 0);
+                } else {
+                    supplies[i].stock -= cart[j].qty;
+                }
                 break;
             }
         }
@@ -157,6 +185,7 @@ function checkout() {
     localStorage.setItem("suppliesStock", JSON.stringify(supplies));
     generateReceipt(paymentinput.value);
 }
+
 
 function generateReceipt(paymentmethod) {
     let sellerName = sessionStorage.getItem("currentDoctor");                                              //// build and display receipt, save sale to history, clear cart
@@ -368,4 +397,17 @@ function processRefund(saleIndex) {
 
 function closeRefund() {
     document.getElementById("refund-bg").style.display = "none";
+}
+
+function getAvailableStock(supply) {
+    if (Array.isArray(supply.batches)) {
+        let total = 0;
+        for (let b = 0; b < supply.batches.length; b++) {
+            if (new Date(supply.batches[b].expiryDate) >= new Date()) {
+                total += supply.batches[b].stock;
+            }
+        }
+        return total;
+    }
+    return supply.stock;
 }

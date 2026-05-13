@@ -1224,3 +1224,88 @@ window.onload = function () {
 
     preventNegativeNumbers();
 };
+
+function importExcel() {
+    let file = document.getElementById("excel-import").files[0];
+    let reader = new FileReader();
+    reader.onload = function(e) {
+        let data = new Uint8Array(e.target.result);
+        let workbook = XLSX.read(data, { type: "array" });
+        let sheet = workbook.Sheets[workbook.SheetNames[0]];
+        let rows = XLSX.utils.sheet_to_json(sheet, { raw: false });
+
+        for (let i = 0; i < rows.length; i++) {
+            let row = rows[i];
+            let name = row["Name"] || "Unknown";
+            let cat = row["Category"] || "General";
+            let cost = parseFloat(row["Cost Price"]) || 0;
+            let stock = parseInt(row["Stock"]) || 0;
+            let minStock = parseInt(row["Min Stock"]) || 10;
+            let expiry = row["Expiry Date"] || "2030-01-01";
+            let refundable = row["Refundable"] === "true" ? "Refundable" : "Non-Refundable";
+
+            let existing = supplies.find(function(med) {
+                return normalizeName(med.name) === normalizeName(name);
+            });
+
+            if (existing) {
+                addBatchToMedicine(existing, stock, expiry, cost);
+            } else {
+                let newMedicine = {
+                    name: name,
+                    category: cat,
+                    costPrice: cost,
+                    sellingPrice: calculateSellingPrice(cost),
+                    stock: 0,
+                    minStock: minStock,
+                    expiryDate: "",
+                    refundable: refundable,
+                    batches: []
+                };
+                addBatchToMedicine(newMedicine, stock, expiry, cost);
+                supplies.push(newMedicine);
+            }
+        }
+
+        saveInventoryData();
+        displayTable(supplies);
+        updateSummaryCards();
+        alert("Medicines imported successfully!");
+    };
+    reader.readAsArrayBuffer(file);
+}
+function exportExcel() {
+    let rows = [];
+    for (let i = 0; i < supplies.length; i++) {
+        let med = supplies[i];
+        if (Array.isArray(med.batches) && med.batches.length > 0) {
+            for (let j = 0; j < med.batches.length; j++) {
+                let batch = med.batches[j];
+                rows.push({
+                    "Name": med.name,
+                    "Category": med.category,
+                    "Cost Price": batch.costPrice,
+                    "Stock": batch.stock,
+                    "Min Stock": med.minStock,
+                    "Expiry Date": batch.expiryDate,
+                    "Refundable": med.refundable === "Refundable" ? "true" : "false"
+                });
+            }
+        } else {
+            rows.push({
+                "Name": med.name,
+                "Category": med.category,
+                "Cost Price": med.costPrice,
+                "Stock": med.stock,
+                "Min Stock": med.minStock,
+                "Expiry Date": med.expiryDate,
+                "Refundable": med.refundable === "Refundable" ? "true" : "false"
+            });
+        }
+    }
+
+    let worksheet = XLSX.utils.json_to_sheet(rows);
+    let workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Inventory");
+    XLSX.writeFile(workbook, "pharmacy_inventory.xlsx");
+}
