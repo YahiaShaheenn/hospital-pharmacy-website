@@ -1,6 +1,6 @@
 window.onload = function() {
     if(!sessionStorage.getItem("currentDoctor")) {
-        window.location.href = "LogIn.html";
+        window.location.href = "index.html";
         alert("Please log in to access the Sales.");   // redirect to login if not logged in, then restore cart on page load
     }
     if(document.getElementById("cart")) {

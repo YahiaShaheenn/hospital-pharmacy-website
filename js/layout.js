@@ -73,7 +73,7 @@ body::before{
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: url('../style and script files/saidaleya.png');
+    background-image: url('images/saidaleya.png');
     background-repeat: no-repeat;
     background-position: center 120px;
     background-size: 700px;
@@ -164,11 +164,11 @@ topbar.innerHTML = `
         <h1>Al-Shifaa</h1>
 
         <div class="profile">
-            <a href="login.html" class="profile-icon"  id="logout" title="Logout">
+            <a href="index.html" class="profile-icon"  id="logout" title="Logout">
                 <span class="material-icons">logout</span>
             </a>
 
-            <a href="LogIn.html" class="profile-icon" title="Profile" id="profileLink">
+            <a href="index.html" class="profile-icon" title="Profile" id="profileLink">
                 <span class="material-icons">account_circle</span>
             </a>
         </div>
@@ -180,7 +180,7 @@ topbar.innerHTML = `
         <button type="button" onclick="location.href='inventory.html'">Inventory</button>
         <button type="button" onclick="location.href='sales.html'">Sales</button>
         <button type="button" onclick="location.href='reports.html'">Reports</button>
-        <button id="manageDoctorsBtn" type="button" onclick="location.href='admin.html'">Manage Doctors</button>
+        <button id="manageDoctorsBtn" type="button" onclick="location.href='Admin.html'">Manage Doctors</button>
     </div>
 `;
 

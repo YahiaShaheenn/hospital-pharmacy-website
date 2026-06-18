@@ -1,7 +1,7 @@
 window.onload = function() {
 if (!sessionStorage.getItem("currentDoctor")) {
 
-    window.location.href = "LogIn.html";
+    window.location.href = "index.html";
     alert("Please log in to access the dashboard.");
 
 }
@@ -10,7 +10,7 @@ if (!sessionStorage.getItem("currentDoctor")) {
 document.getElementById("logout").addEventListener("click", function () {
     sessionStorage.removeItem("currentDoctor");
     sessionStorage.setItem("admin", "false");
-    window.location.href = "LogIn.html";
+    window.location.href = "index.html";
 });
 
 const isAdmin = sessionStorage.getItem("admin") === "true";

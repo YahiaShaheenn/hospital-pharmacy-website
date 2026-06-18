@@ -764,7 +764,7 @@ window.addEventListener("load", function () {
 
         alert("Please log in to access the Reports.");
 
-        window.location.href = "LogIn.html";
+        window.location.href = "index.html";
 
     }
 
